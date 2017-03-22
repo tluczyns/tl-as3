@@ -37,7 +37,7 @@ package tl.loader {
 				for (i = 0; i < this.arrPathSwf.length; i++)
 					this.arrWeightSwf[i] = 1;
 			}
-			this.classLibrary = classLibrary || base.loader.Library;
+			this.classLibrary = classLibrary || tl.loader.Library;
 			this.createAndInitLoaderProgress();
 			this.prepareLoadContentQueue();
 		}
