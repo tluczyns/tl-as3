@@ -39,9 +39,11 @@ package tl.btn {
 		}
 
 		public function setElementsOnOutOver(isOutOver: uint): void {
-			for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
-				var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
-				tweenMouseOutOver[["reverse", "play"][isOutOver]]();
+			if (this.vecTweenMouseOutOver) {
+				for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
+					var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
+					tweenMouseOutOver[["reverse", "play"][isOutOver]]();
+				}
 			}
 		}
 		

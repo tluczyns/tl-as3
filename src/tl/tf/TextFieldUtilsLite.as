@@ -11,14 +11,14 @@ package tl.tf {
 	
 	public class TextFieldUtilsLite extends Singleton {
 		
-		public static function createTextField(tFormat: TextFormat = null, isDynamicInput: uint = 0, isSingleMultiLine: uint = 0, isAutoSizeLeftCenterNone: uint = 0, isSetEventForSelectionInInputTf: Boolean = false): TextField {
+		public static function createTextField(tFormat: TextFormat = null, isDynamicInput: uint = 0, isSingleMultiLine: uint = 0, isAutoSizeLeftCenterNone: uint = 0, isAntiAliasNormalAdvanced: uint = 1, isSetEventForSelectionInInputTf: Boolean = false): TextField {
 			var tf: TextField = new TextField();
 			tf.type = [TextFieldType.DYNAMIC, TextFieldType.INPUT][isDynamicInput];
 			if ((isDynamicInput == 1) && (isSetEventForSelectionInInputTf)) TextFieldUtilsLite.setEventForSelectionInInputTf(tf);
 			tf.selectable = [false, true][isDynamicInput];
 			tf.multiline = [false, true][isSingleMultiLine];
 			tf.wordWrap = [false, true][isSingleMultiLine];
-			tf.antiAliasType = AntiAliasType.ADVANCED;
+			tf.antiAliasType = [AntiAliasType.NORMAL, AntiAliasType.ADVANCED][isAntiAliasNormalAdvanced];
 			tf.autoSize = [[TextFieldAutoSize.LEFT, TextFieldAutoSize.CENTER, TextFieldAutoSize.NONE][isAutoSizeLeftCenterNone], TextFieldAutoSize.LEFT][isDynamicInput];
 			if (isDynamicInput == 1) {
 				var heightForInputText: Number = tf.height + 5;
