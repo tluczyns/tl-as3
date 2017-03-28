@@ -32,16 +32,8 @@ package tl.gallery {
 			//ModelSection.addEventListener(EventModelSection.PARAMETERS_CHANGE, this.selectItem);
 		}
 		
-		static public function getIdWithoutSuff(id: String): String {
-			var indCloneCharInId: int = id.indexOf(MultiCircleGallery.ARR_CHAR_DIMENSION_TO_ID_WHEN_CLONE[0]);
-			var idWithoutStuff: String = id;
-			if (indCloneCharInId > -1)
-				idWithoutStuff = idWithoutStuff.substring(0, indCloneCharInId);
-			return idWithoutStuff;
-		}
-		
 		public function get idWithoutSuff(): String {
-			return MultiItemGallery.getIdWithoutSuff(this.id);
+			return MultiCircleGallery.getIdItemWithoutCharsWhenClone(this.id);
 		}
 		
 		protected function draw(): void {

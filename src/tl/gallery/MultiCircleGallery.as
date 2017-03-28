@@ -25,18 +25,24 @@ package tl.gallery {
 		static public const BASE_NAME_PARAMETER_ID_ITEM_GALLERY: String = "ig";
 		static public const ARR_CHAR_DIMENSION_TO_ID_WHEN_CLONE: Array = ["u", "v", "w", "x", "y", "z"];	
 		
+		static public function getIdItemWithoutCharsWhenClone(idItem: String): String {
+			const indCharWhenCloneInIdItem: int = idItem.indexOf(MultiCircleGallery.ARR_CHAR_DIMENSION_TO_ID_WHEN_CLONE[0]);
+			if (indCharWhenCloneInIdItem > -1) idItem = idItem.substring(0, indCharWhenCloneInIdItem);
+			return idItem;
+		}
+		
 		private var arrData: Array;
 		protected var arrCountRenderableInRow: Array;
-		public var arrItem:  Array;
+		protected var arrItem:  Array;
 		public var containerItem: Sprite;
-		private var row: MultiRowCircleGallery;
+		protected var row: MultiRowCircleGallery;
 		//item
 		protected var nameParamItem: String;
 		private var idItemSequentGeneric: uint;
 		protected var dictIdToIdWithSuff: DictionaryExt;
 		//row
 		private var vecOfVecRowInDimension: Vector.<Vector.<MultiRowCircleGallery>>;
-		private var dictIdToVecNumInDimension: DictionaryExt;
+		protected var dictIdToVecNumInDimension: DictionaryExt;
 		protected var dictVecNumInDimensionToId: DictionaryExt;
 		//swf address gateway
 		public var idItemSelected: String;
@@ -294,10 +300,8 @@ package tl.gallery {
 			//trace("idItemSelected:", idItemSelected, vecNumInDimensionItemToSelect)
 			if (!vecNumInDimensionItemToSelect) {
 				//trace("idItemSelected2:", idItemSelected, this.dictIdToIdWithSuff[idItemSelected]);	
-				if (!this.isEmptyIdItemSelected(idItemSelected)) {
-					var indCloneCharInId: int = idItemSelected.indexOf(MultiCircleGallery.ARR_CHAR_DIMENSION_TO_ID_WHEN_CLONE[0]);
-					if (indCloneCharInId > -1) idItemSelected = idItemSelected.substring(0, indCloneCharInId);
-				}
+				if (!this.isEmptyIdItemSelected(idItemSelected))
+					idItemSelected = MultiCircleGallery.getIdItemWithoutCharsWhenClone(idItemSelected);
 				//trace("idItemSelected3:", idItemSelected, this.dictIdToIdWithSuff[idItemSelected]);	
 				if ((this.isEmptyIdItemSelected(idItemSelected)) || (this.dictIdToIdWithSuff[idItemSelected])) {
 					if (!this.dictIdToIdWithSuff[idItemSelected]) idItemSelected = this.getIdItemDefault(); 
@@ -306,7 +310,7 @@ package tl.gallery {
 				} 
 				//trace("idItemSelected4:", idItemSelected, vecNumInDimensionItemToSelect);	
 				if (!vecNumInDimensionItemToSelect) vecNumInDimensionItemToSelect = this.getVecNumInDimensionItemDefault(); 
-				this.setCurrentSwfAddressValueWithId(vecNumInDimensionItemToSelect, 0);
+				this.setCurrentSwfAddressValueWithItemToSelect(vecNumInDimensionItemToSelect, 0);
 			} else {
 				if (idItemSelected != this.idItemSelected) {
 					this.idItemSelected = idItemSelected;
@@ -366,11 +370,15 @@ package tl.gallery {
 		
 		//controllers swfaddress changing items (obtain proper id and set swfaddress with it)
 		
-		protected function setCurrentSwfAddressValueWithId(vecNumInDimensionItemToSelect: Vector.<uint>, isFromDefaultMouseWheelAuto: uint, isPrevNext: int = -1, numDimension: int = -1): void {
+		protected function getSwfAddressObjParamItemToSelect(vecNumInDimensionItemToSelect: Vector.<uint>): Object {
 			var idItemToSelect: String = this.dictVecNumInDimensionToId[vecNumInDimensionItemToSelect];
 			var objParamItem: Object = {};
 			objParamItem[this.nameParamItem] = idItemToSelect;
-			SWFAddress.setCurrentValueWithParameters(objParamItem, false);
+			return objParamItem;
+		}
+		
+		protected function setCurrentSwfAddressValueWithItemToSelect(vecNumInDimensionItemToSelect: Vector.<uint>, isFromDefaultMouseWheelAuto: uint, isPrevNext: int = -1, numDimension: int = -1): void {
+			SWFAddress.setCurrentValueWithParameters(this.getSwfAddressObjParamItemToSelect(vecNumInDimensionItemToSelect), false);
 		}
 		
 		//stary sposób, działa, ale bez użycia swfaddress i this.idNumItemSelected 
@@ -396,14 +404,14 @@ package tl.gallery {
 					var numInDimensionSelected: uint = vecNumInDimensionItemSelected[i];
 					var numInDimensionToSelect: uint;
 					if (i == numDimension) numInDimensionToSelect = MathExt.moduloPositive(numInDimensionSelected + [-1, 1][isPrevNext], rowInDimensionSelected.vecRenderable.length);
-					else numInDimensionToSelect = rowInDimensionSelected.numSelected
+					else numInDimensionToSelect = rowInDimensionSelected.numSelected;
 					vecNumInDimensionItemToSelect[i] = numInDimensionToSelect;
 					if (i < vecNumInDimensionItemSelected.length - 1) {
 						rowInDimensionSelected = MultiRowCircleGallery(rowInDimensionSelected.vecRenderable[numInDimensionSelected]);
 						rowInDimensionToSelect = MultiRowCircleGallery(rowInDimensionToSelect.vecRenderable[numInDimensionToSelect]);
 					}
 				}
-				this.setCurrentSwfAddressValueWithId(vecNumInDimensionItemToSelect, 1, isPrevNext, numDimension);
+				this.setCurrentSwfAddressValueWithItemToSelect(vecNumInDimensionItemToSelect, 1, isPrevNext, numDimension);
 			}
 		}
 		
@@ -432,7 +440,7 @@ package tl.gallery {
 				rowInDimensionSelected = MultiRowCircleGallery(rowInDimensionSelected.vecRenderable[numInDimensionToSelect]);
 				vecNumInDimensionItemToSelect[i] = [rowInDimensionSelected.vecRenderable.length - 1, 0][isPrevNext];
 			}
-			this.setCurrentSwfAddressValueWithId(vecNumInDimensionItemToSelect, 2, isPrevNext);
+			this.setCurrentSwfAddressValueWithItemToSelect(vecNumInDimensionItemToSelect, 2, isPrevNext);
 		}
 		
 		//controllers
@@ -456,7 +464,7 @@ package tl.gallery {
 		//arrows
 		
 		public var containerVecArrows: Sprite;
-		private var vecArrows: Vector.<ArrowsGalleryMulti>;
+		protected var vecArrows: Vector.<ArrowsGalleryMulti>;
 		
 		protected function getVecClassArrows(): Vector.<Class> {
 			return new Vector.<Class>();
