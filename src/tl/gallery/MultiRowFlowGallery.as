@@ -32,7 +32,7 @@ package tl.gallery {
 				if (renderableInRow is IMultiItemGallery) {
 					if (!this.isRenderableInRow(numInDimensionRenderableToRemove, i)) {
 						//trace("removeChild:", numInDimensionRenderableToRemove, i)
-						if (this.containerItem.contains(DisplayObject(IMultiItemGallery(renderableInRow))) this.containerItem.removeChild(DisplayObject(IMultiItemGallery(renderableInRow)));
+						if (this.containerItem.contains(DisplayObject(IMultiItemGallery(renderableInRow)))) this.containerItem.removeChild(DisplayObject(IMultiItemGallery(renderableInRow)));
 						this.vecRenderableInRow.splice(i--, 1);
 					}
 				} else if (renderableInRow is MultiRowFlowGallery) {
@@ -74,7 +74,7 @@ package tl.gallery {
 		
 		private function addRenderableInRow(arrCountRenderableInRow: Array): void {
 			this.arrCountRenderableInRow = arrCountRenderableInRow;
-			trace("addRenderableInRow:", this.arrCountRenderableInRow.length, this.vecRenderableInRow.length, this.numRenderableFirst, this.vecNumInDimension)
+			//trace("addRenderableInRow:", this.arrCountRenderableInRow.length, this.vecRenderableInRow.length, this.numRenderableFirst, this.vecNumInDimension)
 			var renderableInRow: IRenderable;
 			var numInDimensionRenderableToAdd: uint;
 			for (var i: int = 0; i < this.vecRenderableInRow.length; i++) {
@@ -129,6 +129,7 @@ package tl.gallery {
 			var renderableToAdd: IRenderable = this.vecRenderable[numInDimensionRenderableToAdd];
 			this.setNumInRowInRenderableInRow(renderableToAdd, numRenderableInRow);
 			if (renderableToAdd is IMultiItemGallery) {
+				//trace("addChild:", numInDimensionRenderableToAdd);
 				this.containerItem.addChild(DisplayObject(IMultiItemGallery(renderableToAdd)));
 				this.isForceRenderParentRow = true;
 			} else if (renderableToAdd is MultiRowFlowGallery) {

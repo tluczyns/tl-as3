@@ -26,8 +26,8 @@ package tl.math {
 			return val - Math.floor(val);
 		}
 		
-    	public static function randomBool():Boolean {
-             return (Math.random() > 0.5);    	
+    	public static function get randomBool(): Boolean {
+            return (Math.random() > 0.5);    	
     	}
 		
 		public static function getDigitArray(number: uint): Array {
