@@ -109,7 +109,7 @@ package tl.loader {
 			this.initSwfVariables();
 			this.addChild(this.swfApplication);
 			this.swfApplication.alpha = 1;
-			if (!this.isTweenShow) TweenNano.from(this.swfApplication, LoaderSwfMultiple.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
+			if (this.isTweenShow) TweenNano.from(this.swfApplication, LoaderSwfMultiple.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
 			else this.initSwf();
 		}
 		
