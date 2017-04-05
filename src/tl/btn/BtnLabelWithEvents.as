@@ -3,7 +3,7 @@ package tl.btn {
 	import flash.display.Sprite;
 	import flash.display.DisplayObject;
 	
-	public class BtnLabelWithEvents extends BtnHitWithEvents {
+	public class BtnLabelWithEvents extends BtnHitWithEvents implements IBtnWithEvents {
 		
 		private var tfLabel: *//ITextField;
 		

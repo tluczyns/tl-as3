@@ -189,7 +189,19 @@ package tl.bitmap {
 				bmpDataFill.dispose();
 			}
 			bmpDataSrcClone.dispose();
-			
+		}
+		
+		static public function reduceColours(bmpDataSrc: BitmapData, colours: uint = 16, preserveWhite: Boolean = false): void {
+			var arrRed:Array = new Array(256);
+			var arrGreen:Array = new Array(256);
+			var arrBlue:Array = new Array(256);
+			var n:Number = 256 / ( colours / 3 );
+			for (var i: int = 0; i < 256; i++) {
+				arrBlue[i] = ((i == 255) && preserveWhite) ? i : Math.floor(i / n) * n;
+				arrGreen[i] = arrBlue[i] << 8;
+				arrRed[i] = arrGreen[i] << 8;
+			}
+			bmpDataSrc.paletteMap(bmpDataSrc, bmpDataSrc.rect, new Point(), arrRed, arrGreen, arrBlue);
 		}
 		
 	}

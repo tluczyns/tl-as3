@@ -1,16 +1,16 @@
 package tl.btn {
 	import flash.display.Sprite;
 	import com.greensock.TweenNano; 
-	import com.greensock.easing.*;
+	import com.greensock.easing.Linear;
 	import flash.events.MouseEvent;
 	
-	public class BtnHitAndBlockWithEvents extends BtnHitWithEvents implements IBtnWithEvents, IBtnBlock, IBtn {
+	public class BtnLabelAndBlockWithEvents extends BtnLabelWithEvents implements IBtnBlock {
 		
-		private var _isEnabled: Boolean;
+		public var _isEnabled: Boolean;
 		private var isOver: Boolean;
 		
-		public function BtnHitAndBlockWithEvents(hit: Sprite = null, isEnabled: Boolean = false): void {
-			super(hit);
+		public function BtnLabelAndBlockWithEvents(strLabel: String, hit: Sprite = null, isEnabled: Boolean = false): void {
+			super(strLabel, hit);
 			this._isEnabled = !isEnabled;
 			this.isEnabled = isEnabled;
 			this.isOver = false;
