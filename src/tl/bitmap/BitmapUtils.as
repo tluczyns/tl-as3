@@ -197,7 +197,7 @@ package tl.bitmap {
 			var arrBlue:Array = new Array(256);
 			var n:Number = 256 / ( colours / 3 );
 			for (var i: int = 0; i < 256; i++) {
-				arrBlue[i] = ((i == 255) && preserveWhite) ? i : Math.floor(i / n) * n;
+				arrBlue[i] = ((i == 255) && preserveWhite) ? i : Math.round(i / n) * n;
 				arrGreen[i] = arrBlue[i] << 8;
 				arrRed[i] = arrGreen[i] << 8;
 			}

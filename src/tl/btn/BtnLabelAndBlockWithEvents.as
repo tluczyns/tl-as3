@@ -53,13 +53,13 @@ package tl.btn {
 				this._isEnabled = value;
 				this.setUnblockBlockWhenAddRemoveMouseEvents(uint(value));
 				if (value) {
-					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-					this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
+					this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
+					this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
 					super.addMouseEvents();
 				} else {
 					super.removeMouseEvents();
-					this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-					this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
+					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
+					this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
 				}
 				if ((this.isOver) && (value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, false));
 			}
