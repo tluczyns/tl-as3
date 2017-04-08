@@ -89,7 +89,8 @@ package tl.gallery {
 			
 			this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
 			this.createControllers();
-			//setInterval(this.selectPrevNextItemInDimension, 2000, 1, 1);
+			//setTimeout(this.selectPrevNextItemInDimension, 1000, 1, 0, false);
+			//setTimeout(this.selectPrevNextItemInDimension, 2000, 1, 0, false);
 			//setInterval(this.selectPrevNextItemInDimension, 1500, 0, 0);
 			//setInterval(this.selectPrevNextItemInDimension, 1600, 1, 0);
 		}
@@ -392,7 +393,7 @@ package tl.gallery {
 			}
 		}*/
 
-		protected function selectPrevNextItemInDimension(isPrevNext: uint, numDimension: uint, idItemSelected: String = ""): void {
+		protected function selectPrevNextItemInDimension(isPrevNext: uint, numDimension: uint, isLoop: Boolean = true, idItemSelected: String = ""): void {
 			idItemSelected = idItemSelected || this.idItemSelected;
 			var vecNumInDimensionItemSelected: Vector.<uint> = this.dictIdToVecNumInDimension[idItemSelected];
 			if (numDimension < vecNumInDimensionItemSelected.length) {
@@ -403,7 +404,10 @@ package tl.gallery {
 				for (i = numDimension; i < vecNumInDimensionItemSelected.length; i++) {
 					var numInDimensionSelected: uint = vecNumInDimensionItemSelected[i];
 					var numInDimensionToSelect: uint;
-					if (i == numDimension) numInDimensionToSelect = MathExt.moduloPositive(numInDimensionSelected + [-1, 1][isPrevNext], rowInDimensionSelected.vecRenderable.length);
+					if (i == numDimension) {
+						if (isLoop) numInDimensionToSelect = MathExt.moduloPositive(numInDimensionSelected + [ -1, 1][isPrevNext], rowInDimensionSelected.vecRenderable.length);
+						else numInDimensionToSelect = Math.max(0, Math.min(numInDimensionSelected + [ -1, 1][isPrevNext], rowInDimensionSelected.vecRenderable.length - 1));
+					}
 					else numInDimensionToSelect = rowInDimensionSelected.numSelected;
 					vecNumInDimensionItemToSelect[i] = numInDimensionToSelect;
 					if (i < vecNumInDimensionItemSelected.length - 1) {
