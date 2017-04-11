@@ -12,21 +12,27 @@
 		
 		public function ControllerFullScreenOffOn(): void {
 			this.indicatorFullScreenOff.alpha = 0;
-			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.FULLSCREEN_OFF_ON, this.setVisibleIndicatorFullScreenOffOn);	
+			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.FULLSCREEN_OFF_ON, this.setVisibleIndicator);	
 			ModelVideoPlayer.isFullScreenOffOn = 0;
 			this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 		}
 		
 		private function onAddedToStage(e: Event): void {
 			this.removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
 			this.stage.addEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreenChange)
+		}
+		
+		private function onRemovedFromStage(e: Event): void {
+			this.removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+			this.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreenChange);
 		}
 		
 		private function onFullScreenChange(e: FullScreenEvent): void {
 			if (ModelVideoPlayer.isFullScreenOffOn != uint(e.fullScreen)) ModelVideoPlayer.isFullScreenOffOn = uint(e.fullScreen);
 		}
 		
-		private function setVisibleIndicatorFullScreenOffOn(e: EventModelVideoPlayer): void {
+		private function setVisibleIndicator(e: EventModelVideoPlayer): void {
 			var isFullScreenOffOn: uint = uint(e.data);
 			DspObjUtils.hideShow(this.indicatorFullScreenOff, isFullScreenOffOn);
 			DspObjUtils.hideShow(this.indicatorFullScreenOn, 1 - isFullScreenOffOn);
@@ -37,8 +43,7 @@
 		}
 		
 		override public function destroy(): void {
-			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.FULLSCREEN_OFF_ON, this.setVisibleIndicatorFullScreenOffOn);	
-			this.stage.removeEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreenChange);
+			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.FULLSCREEN_OFF_ON, this.setVisibleIndicator);	
 			super.destroy();
 		}
 

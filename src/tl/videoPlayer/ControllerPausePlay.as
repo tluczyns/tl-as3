@@ -3,7 +3,7 @@
 	import tl.types.DspObjUtils;
 	import flash.events.MouseEvent;
 
-	public class ControllerPausePlay extends ControllerVideoPlayer {
+	public dynamic class ControllerPausePlay extends ControllerVideoPlayer {
 		
 		public var indicatorPause: Sprite;
 		public var indicatorPlay: Sprite;

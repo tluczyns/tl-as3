@@ -63,7 +63,7 @@ package tl.videoPlayer {
 			var videoContainer: VideoContainer = VideoContainer(e.data);
 			videoContainer.video.attachNetStream(this);
 			if (getDefinitionByName(getQualifiedClassName(e.data)) == VideoContainerResizable)
-				ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.METADATA_SET, this.metadata);
+				ModelVideoPlayer.metadata = this.metadata;
 		}
 		
 		private function addListeners(): void {
@@ -82,6 +82,7 @@ package tl.videoPlayer {
 		
 		private function pauseOrPlay(e: EventModelVideoPlayer): void {
 			var isPausePlay: uint = uint(e.data);
+			//trace("isPausePlay:", isPausePlay)
 			if (isPausePlay == 0) {
 				this.mcEF.dispatchEvent(new Event(Event.ENTER_FRAME));
 				this.mcEF.removeEventListener(Event.ENTER_FRAME, this.onEnterFrameProgressHandler);
@@ -164,7 +165,7 @@ package tl.videoPlayer {
 			this.metadata.seekPoints = objMetaData.seekpoints;
 			this.metadata.frameRate = objMetaData.videoframerate;
 			this.metadata.duration = objMetaData.duration;
-			ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.METADATA_SET, this.metadata); 
+			ModelVideoPlayer.metadata = this.metadata;
 		}
 		
 		public function destroy(): void {

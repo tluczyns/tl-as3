@@ -13,6 +13,11 @@
 		public var isOver: Boolean = false;
 		
 		public function VideoCover(): void {
+			super();
+		}
+		
+		override public function addMouseEvents(): void {
+			super.addMouseEvents();
 			if (this.imgSplash != null) {
 				ModelVideoPlayer.addEventListener(EventModelVideoPlayer.PAUSE_PLAY, this.hideImgSplashWhenPlay);
 				ModelVideoPlayer.addEventListener(EventModelVideoPlayer.STOP, this.showImgSplashWhenStop);	
@@ -25,8 +30,10 @@
 			if (this.imgSplash != null) {
 				ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.PAUSE_PLAY, this.hideImgSplashWhenPlay);
 				ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.STOP, this.showImgSplashWhenStop);	
+				TweenNano.killTweensOf(this.imgSplash);
 			}
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.PAUSE_PLAY, this.hideShowMarkPausePlayFromEvent);
+			TweenNano.killTweensOf(this.markPausePlay);
 			this.markPausePlay.removeMouseEvents();
 			super.removeMouseEvents();
 		}
@@ -41,20 +48,21 @@
 		}
 		
 		private function hideShowMarkPausePlay(isHideShow: uint, isFromMouseOrEvent: uint): void {
+			var targetAlpha: Number;
+			if (isHideShow == 0) targetAlpha = [0, 0.2][uint(this.isOver)]
+			else if (isHideShow == 1) targetAlpha = [0.2, 1][isFromMouseOrEvent];
 			TweenNano.killTweensOf(this.markPausePlay);
-			TweenNano.to(this.markPausePlay, 5, {alpha: isHideShow * [0.3, 1][isFromMouseOrEvent], ease: Linear.easeNone, delay: [0, 5][uint((isFromMouseOrEvent == 1) && (isHideShow == 1))], useFrames: true});
+			TweenNano.to(this.markPausePlay, 5, {alpha: targetAlpha, ease: Linear.easeNone, delay: [0, 5][uint((isFromMouseOrEvent == 1) && (isHideShow == 1))], useFrames: true});
 		}
 		
 		private function hideShowMarkPausePlayFromEvent(e: EventModelVideoPlayer): void {
 			var isPausePlay: uint = uint(e.data);
-			if ((!this.isOver) || (isPausePlay == 0)) {
-				this.hideShowMarkPausePlay(1 - isPausePlay, 1);
-			}
+			this.hideShowMarkPausePlay(1 - isPausePlay, 1);
 		}
 		
 		override protected function onMouseOverHandler(event: MouseEvent): void {
 			this.isOver = true;
-			this.hideShowMarkPausePlay(1, 0);
+			if (ModelVideoPlayer.isPausePlay == 1) this.hideShowMarkPausePlay(1, 0);
 		}
 		
 		override protected function onMouseOutHandler(event: MouseEvent): void {

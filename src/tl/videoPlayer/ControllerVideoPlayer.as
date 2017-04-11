@@ -2,7 +2,7 @@ package tl.videoPlayer {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
 
-	public class ControllerVideoPlayer extends Sprite {
+	public dynamic class ControllerVideoPlayer extends Sprite {
 		
 		public var hit: Sprite;
 		public static var onMouseOverHandler: Function;

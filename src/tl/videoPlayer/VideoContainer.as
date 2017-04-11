@@ -1,7 +1,7 @@
 ﻿package tl.videoPlayer {
 	import flash.display.Sprite;
 	import flash.media.Video;
-	import flash.events.Event;
+	//import flash.events.Event;
 	import flash.net.NetStream;
 	
 	public class VideoContainer extends Sprite {

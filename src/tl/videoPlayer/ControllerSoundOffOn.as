@@ -3,20 +3,24 @@
 	import tl.types.DspObjUtils;
 	import flash.events.MouseEvent;
 
-	public class ControllerSoundOffOn extends ControllerVideoPlayer {
+	public dynamic class ControllerSoundOffOn extends ControllerVideoPlayer {
 		
-		public var indicator: Sprite;
+		public var indicatorSoundOff: Sprite;
+		public var indicatorSoundOn: Sprite;
 		private var oldVolume: Number;
 		
 		public function ControllerSoundOffOn(): void {
-			this.oldVolume = 1;
-			this.indicator.alpha = 0;
+			if (ModelVideoPlayer.volume > 0) this.oldVolume = ModelVideoPlayer.volume;
+			else this.oldVolume = 1;
+			this.indicatorSoundOff.alpha = uint(ModelVideoPlayer.volume == 0);
+			this.indicatorSoundOn.alpha = uint(ModelVideoPlayer.volume > 0);
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.setVisibleIndicator);
 		}
 		
 		protected function setVisibleIndicator(e: EventModelVideoPlayer): void {
 			var isSoundOffOn: uint = Math.ceil(Number(e.data));
-			DspObjUtils.hideShow(this.indicator, 1 - isSoundOffOn);
+			DspObjUtils.hideShow(this.indicatorSoundOff, 1 - isSoundOffOn);
+			DspObjUtils.hideShow(this.indicatorSoundOn, isSoundOffOn);
 		}
 		
 		override protected function onClickHandler(event: MouseEvent): void {

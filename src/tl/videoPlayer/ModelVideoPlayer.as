@@ -10,6 +10,7 @@
 		public static var _volume: Number = 1;
 		private static var _isFullScreenOffOn: uint = 0;
 		public static var isStop: Boolean = true;
+		private static var _metadata: Metadata;
 		
 		public static function addEventListener(type: String, func: Function, priority: uint = 10): void {
 			ModelVideoPlayer.modelDispatcher.addEventListener(type, func, false, priority);
@@ -48,6 +49,15 @@
 		static public function set isFullScreenOffOn(value: uint): void {
 			ModelVideoPlayer._isFullScreenOffOn = value;
 			ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.FULLSCREEN_OFF_ON, value); 
+		}
+		
+		static public function get metadata(): Metadata {
+			return ModelVideoPlayer._metadata;
+		}
+		
+		static public function set metadata(value: Metadata): void {
+			ModelVideoPlayer._metadata = value;
+			ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.METADATA_SET, value); 
 		}
 		
 	}

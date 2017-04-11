@@ -1,7 +1,7 @@
 ﻿package tl.videoPlayer {
 	import flash.events.MouseEvent;
 	
-	public class ControllerStop extends ControllerVideoPlayer {
+	public dynamic class ControllerStop extends ControllerVideoPlayer {
 		
 		public function ControllerStop(): void {}
 		
