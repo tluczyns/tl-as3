@@ -1,7 +1,7 @@
 ﻿package tl.videoPlayer {
 	import flash.display.Sprite;
-	import tl.types.DspObjUtils;
 	import com.greensock.TweenNano;
+	import tl.types.DspObjUtils;
 	import com.greensock.easing.Linear;
 	import flash.events.MouseEvent;
 	
@@ -72,11 +72,6 @@
 		
 		override protected function onClickHandler(event: MouseEvent): void {
 			if (this.alpha > 0) this.markPausePlay.hit.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-		}
-		
-		override public function destroy(): void {
-			this.removeMouseEvents();
-			super.destroy();
 		}
 		
 	}

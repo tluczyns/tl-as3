@@ -71,6 +71,7 @@
 		}
 		
 		public function destroy(): void {
+			this.removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.STREAM_LOAD, this.setLoadBarWidth);	
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.STREAM_PROGRESS, this.setProgressBarWidth);
 		}

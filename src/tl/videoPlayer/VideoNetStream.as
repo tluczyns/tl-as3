@@ -122,7 +122,7 @@ package tl.videoPlayer {
 		
 		private function volumeChange(e: EventModelVideoPlayer): void {
 			var volume: Number = Number(e.data);
-			TweenLite.to(this, 0.8, {volume: volume, ease: Linear.easeNone});
+			TweenLite.to(this, 0.4, {volume: volume, ease: Linear.easeNone});
 		}
 		
 		private function streamSeek(e: EventModelVideoPlayer): void {

@@ -1,7 +1,9 @@
 package tl.videoPlayer {
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import com.greensock.TweenNano;
+	import com.greensock.easing.Linear;
 	
 	public dynamic class ControllerSoundBars extends Sprite {
 		
@@ -12,11 +14,8 @@ package tl.videoPlayer {
 		public var marginBetweenBars: Number;
 		public var marginSide: Number;
 		public var ratioBarHeightSoundOff: Number;
-		public var colorHide: uint = 0xAAAAAA;
-		public var colorVisible: uint = 0xFFFFFF;
 		
 		public function ControllerSoundBars(): void {
-			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.setVisibleBars);
 			this.hit.width = 1;
 			this._countBars = 0;
 			this.arrBar = [];
@@ -24,7 +23,8 @@ package tl.videoPlayer {
 			this.marginSide = 3;
 			this.ratioBarHeightSoundOff = 0.3;
 			this.countBars = 3;
-			this.addMouseEvents();
+			this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.setVisibleBars);
 		}
 		
 		public function get countBars(): uint {
@@ -35,6 +35,7 @@ package tl.videoPlayer {
 			this.removeBars();
 			this._countBars = value;
 			this.addBars();
+			this.setVisibleBars();
 		}
 		
 		private function removeBars(): void {
@@ -60,32 +61,37 @@ package tl.videoPlayer {
 			this.setChildIndex(this.hit, this.numChildren - 1);
 		}
 		
-		public function addMouseEvents(): void {
-			this.buttonMode = true;
-			this.addEventListener(Event.ADDED_TO_STAGE, this.addMouseEventsOnAddedToStage);
+		private function onAddedToStage(e: Event): void {
+			this.removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
+			this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+			this.addMouseEvents();
 		}
 		
-		private function addMouseEventsOnAddedToStage(e: Event): void {
-			this.removeEventListener(Event.ADDED_TO_STAGE, this.addMouseEventsOnAddedToStage);
+		private function onRemovedFromStage(e: Event): void {
+			this.removeEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
+			this.removeMouseEvents();
+		}
+		
+		private function addMouseEvents(): void {
+			this.buttonMode = true;
 			this.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDownHandler);
 			this.stage.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUpHandler);
 		}
 
-		public function removeMouseEvents(): void {
+		private function removeMouseEvents(): void {
 			this.buttonMode = false;
 			this.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDownHandler);
-			if (this.stage) this.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUpHandler);
+			this.stage.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUpHandler);
+			this.onMouseUpHandler();
 		}
 		
 		private function onMouseDownHandler(e: MouseEvent): void {
-			if (this.stage) {
-				this.stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
-				this.stage.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
-			}
+			this.stage.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
+			this.stage.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_MOVE));
 		}
 		
 		private function onMouseUpHandler(e: MouseEvent = null): void {
-			if (this.stage) this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
+			this.stage.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
 		}
 		
 		private function onMouseMoveHandler(e: MouseEvent): void {
@@ -98,21 +104,22 @@ package tl.videoPlayer {
 			ModelVideoPlayer.volume = i / this.arrBar.length;
 		}
 		
-		private function setVisibleBars(e: EventModelVideoPlayer): void {
-			var volume: Number = Number(e.data);
+		private function setVisibleBars(e: EventModelVideoPlayer = null): void {
+			var volume: Number = e ? Number(e.data) : ModelVideoPlayer.volume;
 			var numFirstBarWithVolume: uint = Math.floor(volume * this.arrBar.length);
 			for (var i: uint = 0; i < this.countBars; i++) {
 				var bar: ControllerSoundBar = this.arrBar[i];
-				//bar.addRemoveTweenBrightness(uint(i < numFirstBarWithVolume));
-				bar.addTweenColor([this.colorHide, this.colorVisible][uint(i < numFirstBarWithVolume)])
+				var targetAlpha: Number = [0.2, 1][uint(i < numFirstBarWithVolume)];
+				if (e) {
+					TweenNano.killTweensOf(bar);	
+					TweenNano.to(bar, 5, {alpha: targetAlpha, ease: Linear.easeNone, useFrames: true});
+				} else bar.alpha = targetAlpha;
 			}
 		}
 		
-		public function destroy(e: Event = null): void {
+		public function destroy(): void {
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.setVisibleBars);
-			this.onMouseUpHandler();
-			this.removeMouseEvents();
-			this.removeEventListener(Event.ADDED_TO_STAGE, this.addMouseEventsOnAddedToStage);
+			this.removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 		}
 		
 	}
