@@ -95,7 +95,7 @@ package tl.bitmap {
 			return bmpDataWithGradientToTransparent;
 		}
 		
-		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null): BitmapData {
+		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null, smoothing: Boolean = true): BitmapData {
 			var bmpDataSrc: BitmapData = BitmapUtils.checkAndDrawBitmapDrawableToBitmapData(bmpDrawableSrc);
 			var ratioWidthToHeightDimensionMiniature: Number = dimensionMiniature.width / dimensionMiniature.height;
 			var ratioWidthToHeightBmpDataSrc: Number = bmpDataSrc.width / bmpDataSrc.height;
@@ -125,7 +125,7 @@ package tl.bitmap {
 				mrxScaleTranslateBmpDataMiniature.translate(translateX, translateY);
 				bmpDataMiniature = new BitmapData(dimensionMiniature.width, dimensionMiniature.height, true, 0x00FFFFFF);
 				if (stage) stage.quality = StageQuality.BEST;
-				bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, true);
+				bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, smoothing);
 				if (stage) stage.quality = StageQuality.HIGH;
 			}
 			if (bmpDataSrc != bmpDrawableSrc) {
