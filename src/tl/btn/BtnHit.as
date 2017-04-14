@@ -19,7 +19,6 @@ package tl.btn {
 				hit.alpha = 0;
 				this.addChild(hit);
 				this.hit = hit;
-				
 			}
 		}
 		

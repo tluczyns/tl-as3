@@ -17,6 +17,7 @@ package tl.types {
 	import flash.display.MovieClip;
 	import com.greensock.plugins.FramePlugin;
 	import flash.geom.Matrix;
+	import flash.geom.Matrix3D;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -95,7 +96,21 @@ package tl.types {
 			mtx.concat(target.transform.matrix);
 			target.transform.matrix = mtx;
 		}
-
+		
+		static public function convertMatrix3DTo2D(target: DisplayObject): void {
+			var mrx3DTarget: Matrix3D = target.transform.matrix3D;
+			var dataMrx3DTarget:Vector.<Number> = mrx3DTarget.rawData;
+			var mrxTarget:Matrix = new Matrix();
+			mrxTarget.a = dataMrx3DTarget[0];
+			mrxTarget.c = dataMrx3DTarget[1];
+			mrxTarget.tx = target.x //- targetBounds.x;
+			mrxTarget.b = dataMrx3DTarget[4];
+			mrxTarget.d = dataMrx3DTarget[5];
+			mrxTarget.ty = target.y //- targetBounds.y;
+			target.transform.matrix3D = null;
+			target.transform.matrix = mrxTarget;
+		}
+		
 	}
 
 }
