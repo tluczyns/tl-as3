@@ -4,31 +4,35 @@ package tl.videoPlayer {
 	import com.greensock.plugins.TweenPlugin;
 	import com.greensock.plugins.VolumePlugin;
 	import flash.net.NetConnection;
+	import com.greensock.TweenLite;
+	import flash.utils.getDefinitionByName;
+	import flash.utils.getQualifiedClassName;
 	import flash.events.NetStatusEvent;
 	import flash.events.Event;
-	import com.greensock.TweenLite;
+	import flash.utils.ByteArray;
+	import flash.net.NetStreamAppendBytesAction;
 	import com.greensock.easing.Linear;
-	import flash.utils.getQualifiedClassName;
-	import flash.utils.getDefinitionByName;
 	
 	public class VideoNetStream extends NetStream {
 		
-		private var _urlVideo: String;
+		private var _urlOrBaVideo: *;
 		private var isLoop: Boolean;
 		private var isGoToBeginWhenStop: Boolean;
 		private var metadata: Metadata;
 		public var isLoaded: Boolean;
 		private var mcEF: MovieClip;
+		private var filePosBAForSeek: Number = 0;
+		private var timeBAForSeek: Number = 0;
 		
-		public function VideoNetStream(urlVideo: String, isPausePlay: uint = 0, isLoop: Boolean = false, inBufferSeek: Boolean = false, isGoToBeginWhenStop: Boolean = true, bufferTime: Number = 2): void {
+		public function VideoNetStream(urlOrBaVideo: *, isPausePlay: uint = 0, isLoop: Boolean = false, inBufferSeek: Boolean = false, isGoToBeginWhenStop: Boolean = true, bufferTime: Number = 2): void {
 			TweenPlugin.activate([VolumePlugin])
 			this.isLoop = isLoop;
-			this.inBufferSeek = true;
+			this.inBufferSeek = inBufferSeek;
 			this.isGoToBeginWhenStop = isGoToBeginWhenStop;
 			var nc: NetConnection = new NetConnection();
 			nc.connect(null);
 			super(nc);
-			this._urlVideo = urlVideo;
+			this._urlOrBaVideo = urlOrBaVideo;
 			this.configStream(bufferTime);
 			this.addListeners();
 			TweenLite.to(this, 0, {volume: ModelVideoPlayer._volume});
@@ -40,24 +44,23 @@ package tl.videoPlayer {
 			this.metadata = new Metadata();
 			this.metadata.onMetaData = this.onMetaDataHandler;
 			this.client = this.metadata;
-			this.bufferTime = bufferTime;
+			//this.bufferTime = bufferTime;
 			ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SET, this);
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.VIDEO_CONTAINER_ADDED, this.assignStreamToVideoContainer);
 			this.addEventListener(NetStatusEvent.NET_STATUS, this.onNetStatusHandler);
 			this.mcEF = new MovieClip();
 		}
 		
-		public function get urlVideo(): String {
-			return this._urlVideo;
+		public function get urlOrBaVideo(): * {
+			return this._urlOrBaVideo;
 		}
 		
-		public function set urlVideo(value: String): void {
+		public function set urlOrBaVideo(value: *): void {
 			this.close();
-			this._urlVideo = value;
+			this._urlOrBaVideo = value;
 			this.isLoaded = false;
 			this.metadata.duration = NaN;
 		}
-
 		
 		private function assignStreamToVideoContainer(e: EventModelVideoPlayer): void {
 			var videoContainer: VideoContainer = VideoContainer(e.data);
@@ -93,7 +96,13 @@ package tl.videoPlayer {
 				this.mcEF.dispatchEvent(new Event(Event.ENTER_FRAME));
 				if (this.isLoaded) this.resume();
 				else {
-					this.play(this.urlVideo);
+					if (this.urlOrBaVideo is String) this.play(this.urlOrBaVideo);
+					else if (this.urlOrBaVideo is ByteArray) {
+						this.play(null);
+						this.appendBytesAction(NetStreamAppendBytesAction.RESET_BEGIN);
+						this.appendBytes(this.urlOrBaVideo);
+						this.appendBytesAction(NetStreamAppendBytesAction.END_SEQUENCE);
+					}
 					this.resume();
 					this.mcEF.addEventListener(Event.ENTER_FRAME, this.onEnterFrameLoadHandler);
 					this.isLoaded = true;
@@ -103,7 +112,9 @@ package tl.videoPlayer {
 
 		private function onEnterFrameProgressHandler(e: Event): void {
 			if ((this.metadata != null) && (!isNaN(this.metadata.duration))) {
-				var ratioPlayedTimeStream: Number = this.time / this.metadata.duration;
+				var time: Number = this.time;
+				if (this._urlOrBaVideo is ByteArray) time += this.timeBAForSeek;
+				var ratioPlayedTimeStream: Number = time / this.metadata.duration;
 				ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_PROGRESS, ratioPlayedTimeStream);
 			}
 		}
@@ -128,7 +139,21 @@ package tl.videoPlayer {
 		private function streamSeek(e: EventModelVideoPlayer): void {
 			if (this.isLoaded) {
 				var ratioPosVideo: Number = Number(e.data);
-				this.seek(Math.round(ratioPosVideo * [this.metadata.duration, 1][uint(ratioPosVideo > 1)]));
+				var timeSeek: Number = Math.round(ratioPosVideo * [this.metadata.duration, 1][uint(ratioPosVideo > 1)])
+				if (this._urlOrBaVideo is ByteArray) {
+					var timeNext: Number;
+					var timeCurrent: Number;
+					for (var i: uint = 0; i < this.metadata.arrKeyFrame.length; i++) {
+						timeCurrent = this.metadata.arrKeyFrame[i].time;
+						timeNext = (i < this.metadata.arrKeyFrame.length - 1) ? this.metadata.arrKeyFrame[i + 1].time : Infinity;
+						if ((timeSeek >= timeCurrent) && (timeSeek < timeNext)) {
+							this.filePosBAForSeek = this.metadata.arrKeyFrame[i].filePos;
+							this.timeBAForSeek = timeSeek = timeCurrent;
+							break;
+						}
+					}
+				}
+				this.seek(timeSeek);
 				ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_PROGRESS, ratioPosVideo);
 			}
 		}
@@ -149,6 +174,13 @@ package tl.videoPlayer {
 				case 'NetStream.Play.StreamNotFound':
 					break;
 				case 'NetStream.Seek.Notify':
+					if (this._urlOrBaVideo is ByteArray) {
+						this.appendBytesAction(NetStreamAppendBytesAction.RESET_SEEK);
+						var baVideoFromPosSeek: ByteArray = new ByteArray();
+						ByteArray(this._urlOrBaVideo).position = this.filePosBAForSeek;
+						ByteArray(this._urlOrBaVideo).readBytes(baVideoFromPosSeek);
+						this.appendBytes(baVideoFromPosSeek);
+					}					
 					break;
 				case 'NetStream.Buffer.Empty':
 					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_EMPTY, null); 
@@ -160,6 +192,12 @@ package tl.videoPlayer {
 		}
 		
 		private function onMetaDataHandler(objMetaData: Object): void {
+			if (objMetaData.keyframes) {
+				this.metadata.arrKeyFrame = new Array(objMetaData.keyframes.times.length);
+				for (var i: uint = 0; i < objMetaData.keyframes.times.length; i++)
+					this.metadata.arrKeyFrame[i] = {time: objMetaData.keyframes.times[i], filePos: objMetaData.keyframes.filepositions[i]};
+			}
+			
 			this.metadata.width = objMetaData.width;
 			this.metadata.height = objMetaData.height;
 			this.metadata.seekPoints = objMetaData.seekpoints;

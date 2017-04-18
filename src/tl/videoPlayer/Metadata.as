@@ -7,6 +7,7 @@ package tl.videoPlayer {
 		public var seekPoints: Number;
 		public var frameRate: Number;
 		public var duration: Number;
+		public var arrKeyFrame: Array;
 		
 		public function Metadata(width: Number = 0, height: Number = 0): void {
 			this.width = width;
