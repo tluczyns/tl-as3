@@ -2,6 +2,7 @@ package tl.ui {
 	import tl.types.Singleton;
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
+	import flash.events.Event;
 	
 	//based on com.senocular.utils.Key
 	public class Key extends Singleton {
@@ -12,10 +13,15 @@ package tl.ui {
 		static public function construct(stage: Stage): void {
 			if ((stage != null) && (Key.stage == null)) {
 				Key.stage = stage;
-				Key.objKeysDown = new Object();
-				Key.stage.addEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
-				Key.stage.addEventListener(KeyboardEvent.KEY_UP, onKeyUp);			
+				Key.objKeysDown = {};
+				Key.stage.addEventListener(KeyboardEvent.KEY_DOWN, Key.onKeyDown);
+				Key.stage.addEventListener(KeyboardEvent.KEY_UP, Key.onKeyUp);
+				Key.stage.addEventListener(Event.DEACTIVATE, Key.removeKeys);
 			}
+		}
+		
+		static private function removeKeys(e: Event): void {
+			Key.objKeysDown = {}
 		}
 		
 		static private function onKeyDown(e: KeyboardEvent):void {
@@ -32,6 +38,7 @@ package tl.ui {
 		
 		static public function destroy():void {
 			if (Key.stage) {
+				Key.stage.removeEventListener(Event.DEACTIVATE, Key.removeKeys);
 				Key.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 				Key.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 				Key.stage = null;
