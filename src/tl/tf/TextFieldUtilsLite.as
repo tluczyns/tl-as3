@@ -91,6 +91,17 @@ package tl.tf {
 			}
 		}
 		
+		public static function traceFonts():void {
+			var embeddedFonts:Array = Font.enumerateFonts(false);
+			embeddedFonts.sortOn("fontName", Array.CASEINSENSITIVE);
+			trace("\n\n----- Enumerate Fonts -----");
+			for (var i:int = 0; i < embeddedFonts.length; i++) {
+				var font: Font = embeddedFonts[i];
+				trace(font.fontName, font.fontStyle);
+			}
+			trace("---------------------------\n\n");
+		}
+		
 	}
 
 }
