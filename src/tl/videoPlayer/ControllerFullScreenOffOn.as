@@ -1,6 +1,7 @@
 ﻿package tl.videoPlayer {
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.display.StageDisplayState;
 	import flash.events.FullScreenEvent;
 	import tl.types.DspObjUtils;
 	import flash.events.MouseEvent;
@@ -11,7 +12,7 @@
 		public var indicatorFullScreenOn: Sprite;
 		
 		public function ControllerFullScreenOffOn(): void {
-			this.indicatorFullScreenOff.alpha = 0;
+			this.indicatorFullScreenOff.alpha = this.indicatorFullScreenOn.alpha = 0;
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.FULLSCREEN_OFF_ON, this.setVisibleIndicator);	
 			this.setVisibleIndicator();
 			this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
@@ -20,7 +21,8 @@
 		private function onAddedToStage(e: Event): void {
 			this.removeEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			this.addEventListener(Event.REMOVED_FROM_STAGE, this.onRemovedFromStage);
-			this.stage.addEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreenChange)
+			ModelVideoPlayer.isFullScreenOffOn = 1 - uint(this.stage.displayState == StageDisplayState.NORMAL);
+			this.stage.addEventListener(FullScreenEvent.FULL_SCREEN, this.onFullScreenChange);
 		}
 		
 		private function onRemovedFromStage(e: Event): void {
