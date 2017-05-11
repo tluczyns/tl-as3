@@ -53,7 +53,7 @@ package tl.game.firework {
 		private function createSoundFirework(nameSoundFirework: String): void {
 			if (nameSoundFirework) {
 				this.soundFirework = Library.getMovieClip(nameSoundFirework);
-				this.soundFirework.initVolume = 0.5;
+				this.soundFirework.initVolume = 0.3;
 				this.soundFirework.playExt();
 			}
 		}
