@@ -111,6 +111,51 @@ package tl.types {
 			target.transform.matrix = mrxTarget;
 		}
 		
+		
+		static public function getRGB(objHSL: Object): Object {
+			var h:Number = objHSL.h, s:Number = objHSL.s, l:Number = objHSL.l;
+			h = h / 360;
+			var r:Number;
+			var g:Number;
+			var b:Number;
+ 			if (l==0) {
+				r=g=b=0;
+			} else {
+				if(s == 0) 
+					r=g=b=l;
+				else {
+					var t2:Number = (l<=0.5)? l*(1+s):l+s-(l*s);
+					var t1:Number = 2*l-t2;
+					var t3:Vector.<Number> = new Vector.<Number>();
+					t3.push(h+1/3);
+					t3.push(h);
+					t3.push(h-1/3);
+					var clr:Vector.<Number> = new Vector.<Number>();
+					clr.push(0);
+					clr.push(0);
+					clr.push(0);
+					for (var i: int = 0; i < 3; i++) {
+						if(t3[i]<0)
+							t3[i]+=1;
+						if(t3[i]>1)
+							t3[i]-=1;
+ 
+						if(6*t3[i] < 1)
+							clr[i]=t1+(t2-t1)*t3[i]*6;
+						else if(2*t3[i]<1)
+							clr[i]=t2;
+						else if(3*t3[i]<2)
+							clr[i]=(t1+(t2-t1)*((2/3)-t3[i])*6);
+						else
+							clr[i]=t1;
+					}
+					r=clr[0];
+					g=clr[1];
+					b=clr[2];
+				}
+			}
+			return {r: int(r*255),g: int(g*255), b: int(b*255)};
+		}
 	}
 
 }

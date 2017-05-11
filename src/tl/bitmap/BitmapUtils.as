@@ -95,7 +95,7 @@ package tl.bitmap {
 			return bmpDataWithGradientToTransparent;
 		}
 		
-		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null, smoothing: Boolean = true): BitmapData {
+		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null, smoothing: Boolean = true, useShape: Boolean = true): BitmapData {
 			var bmpDataSrc: BitmapData = BitmapUtils.checkAndDrawBitmapDrawableToBitmapData(bmpDrawableSrc);
 			var ratioWidthToHeightDimensionMiniature: Number = dimensionMiniature.width / dimensionMiniature.height;
 			var ratioWidthToHeightBmpDataSrc: Number = bmpDataSrc.width / bmpDataSrc.height;
@@ -124,9 +124,25 @@ package tl.bitmap {
 				mrxScaleTranslateBmpDataMiniature.scale(scale, scale);
 				mrxScaleTranslateBmpDataMiniature.translate(translateX, translateY);
 				bmpDataMiniature = new BitmapData(dimensionMiniature.width, dimensionMiniature.height, true, 0x00FFFFFF);
-				if (stage) stage.quality = StageQuality.BEST;
-				bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, smoothing);
-				if (stage) stage.quality = StageQuality.HIGH;
+				var shpMiniature: Shape;
+				if (useShape) shpMiniature = new Shape();
+				var currQualityStage: String;
+				if (stage) {
+					currQualityStage = stage.quality;
+					stage.quality = StageQuality.BEST;
+					if (useShape) stage.addChild(shpMiniature);
+				}
+				if (useShape) {
+					shpMiniature.graphics.beginBitmapFill(bmpDataSrc,mrxScaleTranslateBmpDataMiniature, false, smoothing);
+					shpMiniature.graphics.drawRect(0, 0, dimensionMiniature.width, dimensionMiniature.height);
+					shpMiniature.graphics.endFill();
+					bmpDataMiniature.draw(shpMiniature, null, null, null, null, smoothing);
+				} else 
+					bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, smoothing); //gorsza jakość
+				if (stage) {
+					if (useShape) stage.removeChild(shpMiniature);
+					stage.quality = currQualityStage;
+				}
 			}
 			if (bmpDataSrc != bmpDrawableSrc) {
 				bmpDataSrc.dispose();
@@ -191,17 +207,19 @@ package tl.bitmap {
 			bmpDataSrcClone.dispose();
 		}
 		
-		static public function reduceColours(bmpDataSrc: BitmapData, colours: uint = 16, preserveWhite: Boolean = false): void {
+		static public function reduceColors(bmpDataSrc: BitmapData, countColors: uint = 16, preserveWhite: Boolean = false): void {
+			var arrAlpha:Array = new Array(256);
 			var arrRed:Array = new Array(256);
 			var arrGreen:Array = new Array(256);
 			var arrBlue:Array = new Array(256);
-			var n:Number = 256 / ( colours / 3 );
+			var n:Number = 256 / ( countColors / 3 );
 			for (var i: int = 0; i < 256; i++) {
 				arrBlue[i] = ((i == 255) && preserveWhite) ? i : Math.round(i / n) * n;
 				arrGreen[i] = arrBlue[i] << 8;
 				arrRed[i] = arrGreen[i] << 8;
+				arrAlpha[i] = arrRed[i] << 8;
 			}
-			bmpDataSrc.paletteMap(bmpDataSrc, bmpDataSrc.rect, new Point(), arrRed, arrGreen, arrBlue);
+			bmpDataSrc.paletteMap(bmpDataSrc, bmpDataSrc.rect, new Point(), arrRed, arrGreen, arrBlue, arrAlpha);
 		}
 		
 	}
