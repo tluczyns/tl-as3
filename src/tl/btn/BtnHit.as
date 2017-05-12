@@ -43,13 +43,13 @@ package tl.btn {
 			if (!this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
 				this.hit.buttonMode = true;
-				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-				this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
-				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDownHandler);
-				this.hit.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUpHandler);
-				this.hit.addEventListener(MouseEvent.CLICK, this.onClickHandler);
-				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMoveHandler);
-				this.hit.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
+				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+				this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.hit.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.hit.addEventListener(MouseEvent.CLICK, this.onClick);
+				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
+				this.hit.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
 			}
 		}
 		
@@ -57,49 +57,49 @@ package tl.btn {
 			if (this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
 				this.hit.buttonMode = false;
-				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-				this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
-				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDownHandler);
-				this.hit.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUpHandler);
-				this.hit.removeEventListener(MouseEvent.CLICK, this.onClickHandler);
+				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+				this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
+				this.hit.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
+				this.hit.removeEventListener(MouseEvent.CLICK, this.onClick);
 				if (this.hit.hasEventListener(MouseEvent.MOUSE_MOVE)) {
-					this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
-					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMoveHandler);
+					this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
 				}
 			}
 		}
 
-		protected function onMouseOverHandler(event: MouseEvent): void {
+		protected function onMouseOver(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OVER));
 		}
 		
-		protected function onMouseOutHandler(event: MouseEvent): void {
+		protected function onMouseOut(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));	
 		}
 		
-		protected function onMouseDownHandler(event: MouseEvent): void {
+		private function onMouseDown(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.DOWN));
 		}
 		
-		protected function onMouseUpHandler(event: MouseEvent): void {
+		private function onMouseUp(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.UP));	
 		}
 		
-		protected function onClickHandler(event: MouseEvent): void {
+		private function onClick(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.CLICKED));
 		}
 		
-		private function onMouseOverForMouseMoveHandler(event: MouseEvent): void {
+		private function onMouseOverForMouseMove(e: MouseEvent): void {
 			if (this.hit.hasEventListener(MouseEvent.MOUSE_MOVE)) {
-				this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
-				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMoveHandler);
+				this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
 			}
 		}
 		
-		private function onMouseMoveHandler(event: MouseEvent): void {
-			this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMoveHandler);
-			this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMoveHandler);
-			this.onMouseOverHandler(event);
+		private function onMouseMove(e: MouseEvent): void {
+			this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
+			this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
+			this.onMouseOver(e);
 		}
 		
 		protected function removeHit(): void {
