@@ -29,17 +29,17 @@ package tl.btn {
 			this.isEnabled = false;
 		}
 		
-		override protected function onMouseOverHandler(event: MouseEvent): void {
+		override protected function onMouseOver(event: MouseEvent): void {
 			this.isOver = true;
 			if (this.isEnabled) {
-				super.onMouseOverHandler(event);
+				super.onMouseOver(event);
 			}
 		}
 		
-		override protected function onMouseOutHandler(event: MouseEvent): void {
+		override protected function onMouseOut(event: MouseEvent): void {
 			this.isOver = false;
 			if (this.isEnabled) {
-				super.onMouseOutHandler(event);
+				super.onMouseOut(event);
 			}
 		}
 		
@@ -53,13 +53,13 @@ package tl.btn {
 				this._isEnabled = value;
 				this.setUnblockBlockWhenAddRemoveMouseEvents(uint(value));
 				if (value) {
-					this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-					this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
+					this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+					this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 					super.addMouseEvents();
 				} else {
 					super.removeMouseEvents();
-					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverHandler);
-					this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutHandler);
+					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
+					this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				}
 				if ((this.isOver) && (value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, false));
 			}
