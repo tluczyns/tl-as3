@@ -10,7 +10,7 @@ package tl.btn {
 		
 		public function BtnClose(cross: Sprite = null, hit: Sprite = null): void {
 			this.initCross(cross);
-			super(hit);
+			super(hit, true);
 			this.cross.x = this.hit.width / 2;
 			this.cross.y = this.hit.height / 2;
 		}

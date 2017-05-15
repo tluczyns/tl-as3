@@ -5,7 +5,7 @@
 	import com.greensock.TweenMax;
 	import com.greensock.easing.*;
 	
-	public class BtnArrow extends BtnHitAndBlockWithEvents {
+	public class BtnArrow extends BtnHitWithEvents {
 		
 		public var isPrevNext: uint;
 		private var isMoveXOrY: uint;

@@ -14,9 +14,10 @@ package tl.btn {
 		
 		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, rectDimension: Rectangle = null): void {
 			this.initHit(hit, rectDimension);
+			this.addMouseEventsForIsOver();
+			this.isOver = false;
 			this._isEnabled = !isEnabled;
 			this.isEnabled = isEnabled;
-			this.isOver = false;
 		}
 		
 		//hit
@@ -46,6 +47,27 @@ package tl.btn {
 			this.addMouseEvents();
 		}
 		
+		//mouse events for isOver
+		
+		private function addMouseEventsForIsOver(): void {
+			this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverBase);
+			this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutBase);
+		}
+		
+		
+		private function removeMouseEventsForIsOver(): void {
+			this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOutBase);
+			this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverBase);
+		}
+		
+		private function onMouseOverBase(e: MouseEvent): void {
+			this.isOver = true;
+		}
+		
+		private function onMouseOutBase(e: MouseEvent): void {
+			this.isOver = false;
+		}
+		
 		//mouse events
 		
 		private function addMouseEvents(): void {
@@ -58,8 +80,6 @@ package tl.btn {
 				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.hit.addEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.hit.addEventListener(MouseEvent.CLICK, this.onClick);
-				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
-				this.hit.addEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
 			}
 		}
 		
@@ -72,20 +92,14 @@ package tl.btn {
 				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
 				this.hit.removeEventListener(MouseEvent.MOUSE_UP, this.onMouseUp);
 				this.hit.removeEventListener(MouseEvent.CLICK, this.onClick);
-				if (this.hit.hasEventListener(MouseEvent.MOUSE_MOVE)) {
-					this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
-					this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
-				}
 			}
 		}
 
 		protected function onMouseOver(e: MouseEvent): void {
-			this.isOver = true;
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OVER));
 		}
 		
 		protected function onMouseOut(e: MouseEvent): void {
-			this.isOver = false;
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));	
 		}
 		
@@ -101,19 +115,6 @@ package tl.btn {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.CLICKED));
 		}
 		
-		private function onMouseOverForMouseMove(e: MouseEvent): void {
-			if (this.hit.hasEventListener(MouseEvent.MOUSE_MOVE)) {
-				this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
-				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
-			}
-		}
-		
-		private function onMouseMove(e: MouseEvent): void {
-			this.hit.removeEventListener(MouseEvent.MOUSE_MOVE, this.onMouseMove);
-			this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOverForMouseMove);
-			this.onMouseOver(e);
-		}
-		
 		//set enabled
 		
 		public function get isEnabled(): Boolean {
@@ -122,16 +123,16 @@ package tl.btn {
 		
 		public function set isEnabled(value: Boolean): void {
 			if (value != this._isEnabled) {
-				if ((this.isOver) && (!value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, false));
+				if ((this.isOver) && (!value)) this.onMouseOut(null);
 				this._isEnabled = value;
-				this.setBtnEnabled(uint(value));
+				this.setElementsIsEnabled(uint(value));
 				if (value) this.addMouseEvents();
 				else this.removeMouseEvents();
-				if ((this.isOver) && (value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, false));
+				if ((this.isOver) && (value)) this.onMouseOver(null);
 			}
 		}
 		
-		protected function setBtnEnabled(isDisabledEnabled: uint): void {
+		protected function setElementsIsEnabled(isDisabledEnabled: uint): void {
 			Tweener.removeTweens(this);
 			Tweener.addTween(this, {time: 0.3, alpha: [0.3, 1][isDisabledEnabled], transition: "linear"});
 			//TweenNano.killTweensOf(this);
@@ -152,6 +153,7 @@ package tl.btn {
 			//TweenNano.killTweensOf(this);
 			this._isEnabled = false;
 			this.removeMouseEvents();
+			this.removeMouseEventsForIsOver();
 			this.removeHit();
 		}
 		

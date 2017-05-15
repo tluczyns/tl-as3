@@ -3,9 +3,9 @@ package tl.btn {
 
 	public class BtnHitWithEventsSimple extends BtnHit implements IBtnWithEvents {
 		
-		public function BtnHitWithEventsSimple(hit: Sprite = null): void {
+		public function BtnHitWithEventsSimple(hit: Sprite = null, isEnabled: Boolean = true): void {
 			this.addBtnHitEvents();
-			super(hit);
+			super(hit, isEnabled);
 		}
 		
 		public function addBtnHitEvents(): void {

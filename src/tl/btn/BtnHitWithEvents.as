@@ -6,9 +6,9 @@ package tl.btn {
 		
 		private var vecTweenMouseOutOver: Vector.<TweenMax>;
 		
-		public function BtnHitWithEvents(hit: Sprite = null): void {
+		public function BtnHitWithEvents(hit: Sprite = null, isEnabled: Boolean = true): void {
 			this.vecTweenMouseOutOver = this.createVecTweenMouseOutOver();
-			super(hit);
+			super(hit, isEnabled);
 		}
 		
 		protected function createVecTweenMouseOutOver(): Vector.<TweenMax> {

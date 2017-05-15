@@ -3,8 +3,6 @@ package tl.btn {
 	
 	public interface IBtn extends IEventDispatcher {
 		
-		//function addMouseEvents(): void;
-		//function removeMouseEvents(): void;
 		function get isEnabled(): Boolean;
 		function set isEnabled(value: Boolean): void;
 		function get width(): Number;
