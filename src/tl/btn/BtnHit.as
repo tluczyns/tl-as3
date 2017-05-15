@@ -1,18 +1,26 @@
 package tl.btn {
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
-	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
+	import flash.events.MouseEvent;
+	import caurina.transitions.Tweener;	
 	
 	public class BtnHit extends MovieClip implements IBtn {
 		
+		private var _isEnabled: Boolean;
+		private var isOver: Boolean;
+		
 		public var hit: Sprite;
 		
-		public function BtnHit(hit: Sprite = null, rectDimension: Rectangle = null): void {
+		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, rectDimension: Rectangle = null): void {
 			this.initHit(hit, rectDimension);
-			this.addMouseEvents();
+			this._isEnabled = !isEnabled;
+			this.isEnabled = isEnabled;
+			this.isOver = false;
 		}
-
+		
+		//hit
+		
 		private function initHit(hit: Sprite = null, rectDimension: Rectangle = null): void {
 			if (this.hit == null) { 
 				if (!hit) hit = this.createGenericHit(rectDimension);
@@ -38,7 +46,9 @@ package tl.btn {
 			this.addMouseEvents();
 		}
 		
-		public function addMouseEvents(): void {
+		//mouse events
+		
+		private function addMouseEvents(): void {
 			this.hit.tabEnabled = false;	
 			if (!this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
@@ -53,7 +63,7 @@ package tl.btn {
 			}
 		}
 		
-		public function removeMouseEvents(): void {
+		private function removeMouseEvents(): void {
 			if (this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
 				this.hit.buttonMode = false;
@@ -70,10 +80,12 @@ package tl.btn {
 		}
 
 		protected function onMouseOver(e: MouseEvent): void {
+			this.isOver = true;
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OVER));
 		}
 		
 		protected function onMouseOut(e: MouseEvent): void {
+			this.isOver = false;
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));	
 		}
 		
@@ -102,6 +114,32 @@ package tl.btn {
 			this.onMouseOver(e);
 		}
 		
+		//set enabled
+		
+		public function get isEnabled(): Boolean {
+			return this._isEnabled;
+		}
+		
+		public function set isEnabled(value: Boolean): void {
+			if (value != this._isEnabled) {
+				if ((this.isOver) && (!value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OUT, false));
+				this._isEnabled = value;
+				this.setBtnEnabled(uint(value));
+				if (value) this.addMouseEvents();
+				else this.removeMouseEvents();
+				if ((this.isOver) && (value)) this.hit.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_OVER, false));
+			}
+		}
+		
+		protected function setBtnEnabled(isDisabledEnabled: uint): void {
+			Tweener.removeTweens(this);
+			Tweener.addTween(this, {time: 0.3, alpha: [0.3, 1][isDisabledEnabled], transition: "linear"});
+			//TweenNano.killTweensOf(this);
+			//TweenNano.to(this, 0.3, {alpha: [0.3, 1][isRemoveAdd], ease: Linear.easeNone});
+		}
+		
+		//
+		
 		protected function removeHit(): void {
 			if (this.hit != null) {
 				this.removeChild(this.hit);
@@ -110,6 +148,9 @@ package tl.btn {
 		}
 		
 		public function destroy(): void {
+			Tweener.removeTweens(this);
+			//TweenNano.killTweensOf(this);
+			this._isEnabled = false;
 			this.removeMouseEvents();
 			this.removeHit();
 		}

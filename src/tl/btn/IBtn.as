@@ -3,15 +3,17 @@ package tl.btn {
 	
 	public interface IBtn extends IEventDispatcher {
 		
-		function addMouseEvents(): void;
-		function removeMouseEvents(): void;
+		//function addMouseEvents(): void;
+		//function removeMouseEvents(): void;
+		function get isEnabled(): Boolean;
+		function set isEnabled(value: Boolean): void;
 		function get width(): Number;
 		function get height(): Number;
 		function get x(): Number;
 		function get y(): Number;
 		function set x(value: Number): void;
 		function set y(value: Number): void;
-		
+		function destroy(): void;	
 	}
 	
 }
