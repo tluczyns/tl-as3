@@ -8,12 +8,12 @@ package tl.ui {
 	public class Key extends Singleton {
 		
 		static private var stage: Stage;
-		static private var objKeysDown: Object;
+		static private var arrKeyDown: Array;
 		
 		static public function construct(stage: Stage): void {
 			if ((stage != null) && (Key.stage == null)) {
 				Key.stage = stage;
-				Key.objKeysDown = {};
+				Key.arrKeyDown = [];
 				Key.stage.addEventListener(KeyboardEvent.KEY_DOWN, Key.onKeyDown);
 				Key.stage.addEventListener(KeyboardEvent.KEY_UP, Key.onKeyUp);
 				Key.stage.addEventListener(Event.DEACTIVATE, Key.removeKeys);
@@ -21,20 +21,33 @@ package tl.ui {
 		}
 		
 		static private function removeKeys(e: Event): void {
-			Key.objKeysDown = {}
+			Key.arrKeyDown = [];
 		}
 		
-		static private function onKeyDown(e: KeyboardEvent):void {
-			Key.objKeysDown[e.keyCode] = true;
+		static private function onKeyDown(e: KeyboardEvent): void {
+			if (Key.arrKeyDown.indexOf(e.keyCode) == -1)
+				Key.arrKeyDown.push(e.keyCode)
 		}
 		
-		static private function onKeyUp(e: KeyboardEvent):void {
-			delete Key.objKeysDown[e.keyCode];
+		static private function onKeyUp(e: KeyboardEvent): void {
+			var indexOfKeyCode: uint = Key.arrKeyDown.indexOf(e.keyCode);
+			if (indexOfKeyCode > -1)
+				Key.arrKeyDown.splice(indexOfKeyCode, 1);
 		}
 		
-		static public function isDown(keyCode:uint): Boolean {
-			return Boolean(keyCode in Key.objKeysDown);
+		static public function isDown(keyCode: uint): Boolean {
+			return Boolean(Key.arrKeyDown.indexOf(keyCode) > -1);
 		}
+		
+		static public function getLastDown(arrKeyCode: Array): int {
+			var maxIndexOfKeyCode: int = -1
+			for (var i: uint = 0; i < arrKeyCode.length; i++) {
+				maxIndexOfKeyCode = Math.max(maxIndexOfKeyCode, Key.arrKeyDown.indexOf(arrKeyCode[i]));
+			}
+			if (maxIndexOfKeyCode > -1) return Key.arrKeyDown[maxIndexOfKeyCode];
+			else return -1;
+		}
+		
 		
 		static public function destroy():void {
 			if (Key.stage) {
@@ -42,7 +55,7 @@ package tl.ui {
 				Key.stage.removeEventListener(KeyboardEvent.KEY_DOWN, onKeyDown);
 				Key.stage.removeEventListener(KeyboardEvent.KEY_UP, onKeyUp);
 				Key.stage = null;
-				Key.objKeysDown = null;
+				Key.arrKeyDown = null;
 			}
 		}
 		
