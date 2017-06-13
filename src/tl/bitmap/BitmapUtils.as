@@ -95,7 +95,7 @@ package tl.bitmap {
 			return bmpDataWithGradientToTransparent;
 		}
 		
-		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null, smoothing: Boolean = true, useShape: Boolean = true): BitmapData {
+		static public function drawMiniature(bmpDrawableSrc: IBitmapDrawable, dimensionMiniature: Rectangle, isCropEmptySpace: uint = 0, parentBmp: Bitmap = null, stage: Stage = null, isTransparent: Boolean = true, useShape: Boolean = true): BitmapData {
 			var bmpDataSrc: BitmapData = BitmapUtils.checkAndDrawBitmapDrawableToBitmapData(bmpDrawableSrc);
 			var ratioWidthToHeightDimensionMiniature: Number = dimensionMiniature.width / dimensionMiniature.height;
 			var ratioWidthToHeightBmpDataSrc: Number = bmpDataSrc.width / bmpDataSrc.height;
@@ -123,7 +123,7 @@ package tl.bitmap {
 				var mrxScaleTranslateBmpDataMiniature: Matrix = new Matrix();
 				mrxScaleTranslateBmpDataMiniature.scale(scale, scale);
 				mrxScaleTranslateBmpDataMiniature.translate(translateX, translateY);
-				bmpDataMiniature = new BitmapData(dimensionMiniature.width, dimensionMiniature.height, true, 0x00FFFFFF);
+				bmpDataMiniature = new BitmapData(dimensionMiniature.width, dimensionMiniature.height, isTransparent, 0);
 				var shpMiniature: Shape;
 				if (useShape) shpMiniature = new Shape();
 				var currQualityStage: String;
@@ -133,12 +133,12 @@ package tl.bitmap {
 					if (useShape) stage.addChild(shpMiniature);
 				}
 				if (useShape) {
-					shpMiniature.graphics.beginBitmapFill(bmpDataSrc,mrxScaleTranslateBmpDataMiniature, false, smoothing);
+					shpMiniature.graphics.beginBitmapFill(bmpDataSrc,mrxScaleTranslateBmpDataMiniature, false, true);
 					shpMiniature.graphics.drawRect(0, 0, dimensionMiniature.width, dimensionMiniature.height);
 					shpMiniature.graphics.endFill();
-					bmpDataMiniature.draw(shpMiniature, null, null, null, null, smoothing);
+					bmpDataMiniature.draw(shpMiniature, null, null, null, null, true);
 				} else 
-					bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, smoothing); //gorsza jakość
+					bmpDataMiniature.draw(bmpDataSrc, mrxScaleTranslateBmpDataMiniature, null, null, null, true); //gorsza jakość
 				if (stage) {
 					if (useShape) stage.removeChild(shpMiniature);
 					stage.quality = currQualityStage;
