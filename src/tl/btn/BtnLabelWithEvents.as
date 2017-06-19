@@ -5,7 +5,7 @@ package tl.btn {
 	
 	public class BtnLabelWithEvents extends BtnHitWithEvents implements IBtnWithEvents {
 		
-		private var tfLabel: *//ITextField;
+		protected var tfLabel: *//ITextField;
 		
 		public function BtnLabelWithEvents(strLabel: String, hit: Sprite = null): void {
 			this.addTFLabel();
