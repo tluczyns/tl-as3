@@ -72,6 +72,7 @@ package tl.videoPlayer {
 		private function addListeners(): void {
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.PAUSE_PLAY, this.pauseOrPlay);	
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.STOP, this.stop);
+			//ModelVideoPlayer.addEventListener(EventModelVideoPlayer.BUFFER_EMPTY, this.stop);
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.volumeChange);
 			ModelVideoPlayer.addEventListener(EventModelVideoPlayer.STREAM_SEEK, this.streamSeek);
 		}
@@ -79,6 +80,7 @@ package tl.videoPlayer {
 		private function removeListeners(): void {
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.PAUSE_PLAY, this.pauseOrPlay);	
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.STOP, this.stop);
+			//ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.BUFFER_EMPTY, this.stop);
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.VOLUME_CHANGE, this.volumeChange);
 			ModelVideoPlayer.removeEventListener(EventModelVideoPlayer.STREAM_SEEK, this.streamSeek);
 		}
@@ -166,8 +168,8 @@ package tl.videoPlayer {
 				case 'NetStream.Play.Start':
 					break;
 				case 'NetStream.Play.Stop':
-					if (!this.isLoop) ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP, null); 
-					else ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
+					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
+					if (!this.isLoop) ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP); 
 					break;
 				case 'NetStream.FileStructureInvalid':				
 					break;
@@ -175,18 +177,24 @@ package tl.videoPlayer {
 					break;
 				case 'NetStream.Seek.Notify':
 					if (this._urlOrBaVideo is ByteArray) {
-						this.appendBytesAction(NetStreamAppendBytesAction.RESET_SEEK);
-						var baVideoFromPosSeek: ByteArray = new ByteArray();
-						ByteArray(this._urlOrBaVideo).position = this.filePosBAForSeek;
-						ByteArray(this._urlOrBaVideo).readBytes(baVideoFromPosSeek);
-						this.appendBytes(baVideoFromPosSeek);
+						if (this.timeBAForSeek > this.metadata.duration - 0.3) {
+							ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_EMPTY); 
+						} else {
+							this.appendBytesAction(NetStreamAppendBytesAction.RESET_SEEK);
+							var baVideoFromPosSeek: ByteArray = new ByteArray();
+							ByteArray(this._urlOrBaVideo).position = this.filePosBAForSeek;
+							ByteArray(this._urlOrBaVideo).readBytes(baVideoFromPosSeek);
+							this.appendBytes(baVideoFromPosSeek);
+						}
 					}					
 					break;
 				case 'NetStream.Buffer.Empty':
-					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_EMPTY, null); 
+					if (this._urlOrBaVideo is ByteArray) ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP);
+					else ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
+					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_EMPTY); 
 					break;
 				case 'NetStream.Buffer.Full':
-					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_FULL, null); 
+					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_FULL); 
 					break;
 			}
 		}
