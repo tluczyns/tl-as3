@@ -87,7 +87,6 @@ package tl.videoPlayer {
 		
 		private function pauseOrPlay(e: EventModelVideoPlayer): void {
 			var isPausePlay: uint = uint(e.data);
-			//trace("isPausePlay:", isPausePlay)
 			if (isPausePlay == 0) {
 				this.mcEF.dispatchEvent(new Event(Event.ENTER_FRAME));
 				this.mcEF.removeEventListener(Event.ENTER_FRAME, this.onEnterFrameProgressHandler);
@@ -168,8 +167,8 @@ package tl.videoPlayer {
 				case 'NetStream.Play.Start':
 					break;
 				case 'NetStream.Play.Stop':
-					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
 					if (!this.isLoop) ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP); 
+					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
 					break;
 				case 'NetStream.FileStructureInvalid':				
 					break;
