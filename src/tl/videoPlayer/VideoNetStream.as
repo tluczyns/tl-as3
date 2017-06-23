@@ -23,6 +23,7 @@ package tl.videoPlayer {
 		private var mcEF: MovieClip;
 		private var filePosBAForSeek: Number = 0;
 		private var timeBAForSeek: Number = 0;
+		private var isTimeBAForSeekChanged: Boolean = true;
 		
 		public function VideoNetStream(urlOrBaVideo: *, isPausePlay: uint = 0, isLoop: Boolean = false, inBufferSeek: Boolean = false, isGoToBeginWhenStop: Boolean = true, bufferTime: Number = 2): void {
 			TweenPlugin.activate([VolumePlugin])
@@ -114,7 +115,11 @@ package tl.videoPlayer {
 		private function onEnterFrameProgressHandler(e: Event): void {
 			if ((this.metadata != null) && (!isNaN(this.metadata.duration))) {
 				var time: Number = this.time;
-				if (this._urlOrBaVideo is ByteArray) time += this.timeBAForSeek;
+				if (this._urlOrBaVideo is ByteArray) {
+					if ((this.isTimeBAForSeekChanged) && (this.time > 0)) time = 0;
+					else this.isTimeBAForSeekChanged = false;
+					time += this.timeBAForSeek;
+				}
 				var ratioPlayedTimeStream: Number = time / this.metadata.duration;
 				ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_PROGRESS, ratioPlayedTimeStream);
 			}
@@ -150,6 +155,7 @@ package tl.videoPlayer {
 						if ((timeSeek >= timeCurrent) && (timeSeek < timeNext)) {
 							this.filePosBAForSeek = this.metadata.arrKeyFrame[i].filePos;
 							this.timeBAForSeek = timeSeek = timeCurrent;
+							this.isTimeBAForSeekChanged = true;
 							break;
 						}
 					}
@@ -188,8 +194,7 @@ package tl.videoPlayer {
 					}					
 					break;
 				case 'NetStream.Buffer.Empty':
-					if (this._urlOrBaVideo is ByteArray) ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP);
-					else ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_SEEK, 0);
+					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STOP);
 					ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.BUFFER_EMPTY); 
 					break;
 				case 'NetStream.Buffer.Full':
