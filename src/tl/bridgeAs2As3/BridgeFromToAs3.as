@@ -6,9 +6,9 @@ class tl.bridgeAs2As3.BridgeFromToAs3 extends MovieClip {
 	private var lcFromAs3: LocalConnectionFromAs3;
 	private var lcToAs3: LocalConnectionToAs3;
 
-	public function BridgeFromToAs3(suffixNameConnection: String) {
-		this.lcFromAs3 = new LocalConnectionFromAs3(this, suffixNameConnection);
-		this.lcToAs3 = new LocalConnectionToAs3(suffixNameConnection);		
+	public function BridgeFromToAs3(suffNameConnection: String) {
+		this.lcFromAs3 = new LocalConnectionFromAs3(this, suffNameConnection);
+		this.lcToAs3 = new LocalConnectionToAs3(suffNameConnection);
 	}
 	
 	public function call(strFunction: String, args: Array) {
