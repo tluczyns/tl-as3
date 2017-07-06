@@ -25,8 +25,10 @@ package tl.loader {
 		protected var arrSwf: Array;
 		protected var swfApplication: *;
 		
-		public function LoaderSwfMultiple(pathAssets: String, arrNameSwf: Array, addToPathSwf: String = "swf/", numSwfApplication: int = 0, arrWeightSwf: Array = null, scaleMode: String = StageScaleMode.NO_SCALE, classLibrary: Class = null): void {
-			InitUtils.initApp(this, scaleMode);
+		public function LoaderSwfMultiple(): void {}
+		
+		protected function init(pathAssets: String, arrNameSwf: Array, addToPathSwf: String = "swf/", numSwfApplication: int = 0, arrWeightSwf: Array = null, scaleMode: String = StageScaleMode.NO_SCALE, classLibrary: Class = null): void {
+			//InitUtils.initApp(this, scaleMode);
 			this.pathAssets = pathAssets;
 			this.arrPathSwf = new Array(arrNameSwf.length);
 			for (var i: uint = 0; i < arrNameSwf.length; i++)

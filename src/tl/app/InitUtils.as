@@ -17,10 +17,9 @@ package tl.app {
 		private static var rectMask: Rectangle;
 		
 		public static function initApp(iObj: DisplayObjectContainer, scaleMode: String = "noScale"/*StageScaleMode.NO_SCALE*/, rectMask: Rectangle = null): void {
-			InitUtils.scaleMode = scaleMode;
 			InitUtils.rectMask = rectMask;
 			InitUtils.setupContextMenu(iObj);
-			InitUtils.setupStageAndMask(iObj);
+			InitUtils.setupStageAndMask(iObj, scaleMode);
 		}
 		
 		public static function setupContextMenu(iObj: InteractiveObject): void {
@@ -29,7 +28,8 @@ package tl.app {
             iObj.contextMenu = contextMenu;
 		}
 		
-		public static function setupStageAndMask(dspObjContainer: DisplayObjectContainer): void {
+		public static function setupStageAndMask(dspObjContainer: DisplayObjectContainer, scaleMode: String = "noScale"/*StageScaleMode.NO_SCALE*/): void {
+			InitUtils.scaleMode = scaleMode;
 			if (dspObjContainer.stage) InitUtils.setupStageAndMaskOnAddedToStage({target: dspObjContainer});
 			else dspObjContainer.addEventListener(Event.ADDED_TO_STAGE, InitUtils.setupStageAndMaskOnAddedToStage);
 		}
