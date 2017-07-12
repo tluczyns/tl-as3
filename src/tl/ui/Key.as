@@ -46,7 +46,7 @@ package tl.ui {
 			var vecCallbackKeyDownUp: Vector.<FunctionCallback> = Key["vecCallbackKey" + ["Down", "Up"][isDownUp]];
 			for (var i: uint = 0; i < vecCallbackKeyDownUp.length; i++) {
 				var callbackKeyDownUp: FunctionCallback = vecCallbackKeyDownUp[i];
-				if (callbackKeyDownUp.params.indexOf(keyCode)) 
+				if (callbackKeyDownUp.params.indexOf(keyCode) > -1) 
 					callbackKeyDownUp.call([keyCode]);
 			}
 		}

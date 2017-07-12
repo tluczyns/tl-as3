@@ -56,15 +56,13 @@ package tl.types {
 		}
 		
 		public static function setColor(dspObj: DisplayObject, tint: uint, numFrames: int = 10, onComplete: Function = null, onCompleteParams: Array = null): void {
-			if (onComplete != null)
-				onCompleteParams = (onCompleteParams != null) ? onCompleteParams : [];
+			if (onComplete != null) onCompleteParams = (onCompleteParams != null) ? onCompleteParams : [];
+			TweenPlugin.activate([HexColorsPlugin, TintPlugin]);
 			if ((getDefinitionByName(getQualifiedClassName(dspObj)) == TextField) || (getDefinitionByName(getQualifiedSuperclassName(dspObj)) == TextField)) {
-				TweenPlugin.activate([HexColorsPlugin, TintPlugin]);
 				var objColorTf: Object = {tint: TextField(dspObj).getTextFormat().color};
 				TweenLite.killTweensOf(objColorTf, false, {hexColors: true});
 				TweenLite.to(objColorTf, numFrames, {hexColors:{tint: tint}, useFrames: true, ease: Linear.easeNone, onUpdate: DspObjUtils.drawColorTf, onUpdateParams: [TextField(dspObj), objColorTf], onComplete: onComplete, onCompleteParams: onCompleteParams});
 			} else {
-				
 				TweenLite.killTweensOf(dspObj, false, {tint: true});
 				TweenLite.to(dspObj, numFrames, {tint: tint, useFrames: true, ease: Linear.easeNone, onComplete: onComplete, onCompleteParams: onCompleteParams});
 			}

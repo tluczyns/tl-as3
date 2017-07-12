@@ -3,8 +3,8 @@ package tl.form {
 
 	public class EventForm extends EventModel {
 
-		public static const PROCESSED_POSITIVE: String = "processedPositive";
-		public static const PROCESSED_NEGATIVE: String = "processedNegative";
+		public static const SUBMIT_SUCCESS: String = "submitSuccess";
+		public static const SUBMIT_ERROR: String = "submitError";
 		
 		public function EventForm(type: String, data: * = null): void {
 			super(type, data);
