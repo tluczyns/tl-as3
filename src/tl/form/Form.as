@@ -168,8 +168,8 @@ package tl.form {
 		
 		//tf message
 		
-		protected function createTFMessage(arrTextDurationMessage: Array, arrTextIsBadGoodCloseMessage: Array, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
-			this.tfMessage = new TFMessageForm(this, arrTextDurationMessage, arrTextIsBadGoodCloseMessage, this.colorsTFMessage, tFormatMessage, widthTFMessage);
+		protected function createTFMessage(arrDurationMessage: Array, arrBadMessage: Array, arrGoodMessage: Array, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
+			this.tfMessage = new TFMessageForm(this, arrDurationMessage, arrBadMessage, arrGoodMessage, this.colorsTFMessage, tFormatMessage, widthTFMessage);
 			if (posTFMessage) {
 				this.tfMessage.x = Math.round(posTFMessage.x);
 				this.tfMessage.y = Math.round(posTFMessage.y);
@@ -313,36 +313,37 @@ package tl.form {
 			}
 		}
 		
-		public function onExternalInterfaceResult(result: uint = 1): void {
-			this.showAndHideSubmitFormMessage(result);
+		public function onExternalInterfaceResult(result: Object): void {
+			this.showAndHideSubmitFormMessage(result.num, result.isBadGood);
 		}
 		
 		protected function onUrlRequestResult(isSuccess: Boolean, response: *, params: *): void {
-			var result: int = -1;
+			var num: uint = 0;
+			var isBadGood: uint = 0;
 			try {
 				if (isSuccess) {
 					var responseXML: XML
 					if (response is XML) responseXML = response;
 					else responseXML = new XML(response);
-					result = uint(responseXML.@result);
+					num = uint(responseXML.@numResult);
+					isBadGood = uint(responseXML.@isBadGoodResult);
 				}
 			} catch (e: Error) {}
-			this.showAndHideSubmitFormMessage(result);
+			this.showAndHideSubmitFormMessage(num, isBadGood);
 		}
 		
-		private function onSubmitFormSuccess(result: * ): void {
+		private function onSubmitFormSuccess(result: *): void {
 			this.idCallSubmitForm = -1;
-			this.showAndHideSubmitFormMessage(result);
+			this.showAndHideSubmitFormMessage(result.num, result.isBadGood);
 		}
 		
 		private function onSubmitFormError(error: Object, typeError: uint): void {
 			this.idCallSubmitForm = -1;
-			this.showAndHideSubmitFormMessage(0);
+			this.showAndHideSubmitFormMessage(0, 0);
 		}
 		
-		protected function showAndHideSubmitFormMessage(result: uint): void {
-			if (this.tfMessage)
-				this.tfMessage.showAndHideMessage(result);
+		protected function showAndHideSubmitFormMessage(num: uint, isBadGood: uint): void {
+			if (this.tfMessage) this.tfMessage.showResponseMessage(num, isBadGood);
 		}
 		
 		//////

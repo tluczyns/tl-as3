@@ -14,17 +14,19 @@
 		static public const DESTROYED: String = "destroyed";
 		
 		private var classForm: Form;
-		private var arrTextDurationMessage: Array;
-		public var arrTextIsBadGoodHideMessage: Array;
-		public var colorsTFMessage: ColorsTFMessage;
+		private var arrDurationMessage: Array;
+		public var arrResponseBadMessage: Array;
+		public var arrResponseGoodMessage: Array;
+		private var colorsTFMessage: ColorsTFMessage;
 		private var tFormatMessage: TextFormat;
 		private var timerHideMessage: Timer;
-		public var typeHideMessage: uint;
+		private var isBadGood: uint;
 		
-		public function TFMessageForm(classForm: Form, arrTextDurationMessage: Array, arrTextIsBadGoodHideMessage: Array, colorsTFMessage: ColorsTFMessage = null, tFormatMessage: TextFormat = null, width: Number = 0): void {
+		public function TFMessageForm(classForm: Form, arrDurationMessage: Array, arrResponseBadMessage: Array, arrResponseGoodMessage: Array, colorsTFMessage: ColorsTFMessage = null, tFormatMessage: TextFormat = null, width: Number = 0): void {
 			this.classForm = classForm;
-			this.arrTextDurationMessage = arrTextDurationMessage || [];
-			this.arrTextIsBadGoodHideMessage = arrTextIsBadGoodHideMessage || [];
+			this.arrDurationMessage = arrDurationMessage || [];
+			this.arrResponseBadMessage = arrResponseBadMessage || [];
+			this.arrResponseGoodMessage = arrResponseGoodMessage || [];
 			this.colorsTFMessage = colorsTFMessage || new ColorsTFMessage();
 			super();
 			this.alpha = 0;
@@ -41,23 +43,24 @@
             this.setColor(this.colorsTFMessage.colorDurationMessage);
 		}
 		
-		public function showDurationMessage(typeMessage: uint): void {
+		public function showDurationMessage(num: uint): void {
 			TextFieldUtilsDots.stopAddDots(this);
 			DspObjUtils.hideShow(this, 1);
 			this.setColor(this.colorsTFMessage.colorDurationMessage);
-			this.text = this.arrTextDurationMessage[typeMessage];
+			this.text = this.arrDurationMessage[num];
 			TextFieldUtilsDots.addDots(this);
 		}
 		
-		public function showAndHideMessage(typeHideMessage: uint): void {
-			if (typeHideMessage < this.arrTextIsBadGoodHideMessage.length) {
-				if (this.arrTextIsBadGoodHideMessage[typeHideMessage].text) {
+		public function showResponseMessage(num: uint, isBadGood: uint): void {
+			var arrMessage: Array = [this.arrResponseBadMessage, this.arrResponseGoodMessage][isBadGood];
+			if (num < arrMessage.length) {
+				this.isBadGood = isBadGood;
+				if (arrMessage[num]) {
 					TextFieldUtilsDots.stopAddDots(this);
-					this.text = this.arrTextIsBadGoodHideMessage[typeHideMessage].text;
+					this.text = arrMessage[num];
 				}
 				DspObjUtils.hideShow(this, 1);
-				this.typeHideMessage = typeHideMessage;
-				this.setColor([this.colorsTFMessage.colorBadHideMessage, this.colorsTFMessage.colorGoodHideMessage][this.arrTextIsBadGoodHideMessage[typeHideMessage].isBadGood]);
+				this.setColor([this.colorsTFMessage.colorBadHideMessage, this.colorsTFMessage.colorGoodHideMessage][isBadGood]);
 				if (this.timerHideMessage != null) this.timerHideMessage.stop();
 				this.timerHideMessage = new Timer(Math.round(Math.pow(this.text.length, 0.62) * 3.5 * 100), 1);//60
 				this.timerHideMessage.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerCompleteHideMessage);
@@ -72,16 +75,15 @@
 		}
 		
 		public function onTimerCompleteHideMessage(e: TimerEvent = null): void {
-			DspObjUtils.hideShow(this, 0, -1, this.finishHideTFMessageForm);
+			DspObjUtils.hideShow(this, 0, -1, this.finishHideMessage);
 		}
 		
-		private function finishHideTFMessageForm(): void {
+		private function finishHideMessage(): void {
 			this.text = "";
 			this.classForm.isSubmitting = false;
 			this.classForm.blockUnblock(1);
-			var isBadGoodHideMessage: uint = this.arrTextIsBadGoodHideMessage[this.typeHideMessage].isBadGood;
-			if (isBadGoodHideMessage == 0) this.classForm.dispatchEvent(new EventForm(EventForm.SUBMIT_ERROR));
-			else if (isBadGoodHideMessage == 1) this.classForm.dispatchEvent(new EventForm(EventForm.SUBMIT_SUCCESS));
+			if (this.isBadGood == 0) this.classForm.dispatchEvent(new EventForm(EventForm.SUBMIT_ERROR));
+			else if (this.isBadGood == 1) this.classForm.dispatchEvent(new EventForm(EventForm.SUBMIT_SUCCESS));
 		}
 		
 		public function destroy(e: Event = null): void {
