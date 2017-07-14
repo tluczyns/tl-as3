@@ -3,7 +3,7 @@ package tl.form {
 	import tl.service.DescriptionCall;
 	import flash.utils.Dictionary;
 	import flash.text.TextFormat;
-	import tl.sharedObjects.SharedObjectInstance;
+	import tl.so.SharedObjectInstance;
 	import tl.btn.BtnHit;
 	import tl.btn.InjectorBtnHitClickedOnKeyEnter;
 	import flash.events.Event;
