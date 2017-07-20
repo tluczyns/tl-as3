@@ -4,9 +4,9 @@ package tl.loader {
 	import tl.app.InitUtils;
 	import flash.display.StageScaleMode;
 	import tl.loader.Library;
-	//import com.greensock.TweenNano;
-	//import com.greensock.easing.Linear;
-	import caurina.transitions.Tweener;
+	import com.greensock.TweenNano;
+	import com.greensock.easing.Linear;
+	//import caurina.transitions.Tweener;
 	import flash.display.DisplayObject;
 	
 	public class LoaderSwfMultiple extends Sprite {
