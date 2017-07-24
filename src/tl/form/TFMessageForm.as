@@ -62,7 +62,7 @@
 				DspObjUtils.hideShow(this, 1);
 				this.setColor([this.colorsTFMessage.colorBadHideMessage, this.colorsTFMessage.colorGoodHideMessage][isBadGood]);
 				if (this.timerHideMessage != null) this.timerHideMessage.stop();
-				this.timerHideMessage = new Timer(Math.round(Math.pow(this.text.length, 0.62) * 3.5 * 100), 1);//60
+				this.timerHideMessage = new Timer(Math.round(Math.pow(this.text.length, 0.62) * 250), 1);//60
 				this.timerHideMessage.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerCompleteHideMessage);
 				this.timerHideMessage.start();
 			}
