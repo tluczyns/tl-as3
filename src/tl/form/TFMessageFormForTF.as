@@ -36,7 +36,7 @@ package tl.form {
 				this.text = this.arrTextBadMessage[typeMessage];
 				DspObjUtils.hideShow(this, 1);
 				if (this.timerHideMessage != null) this.timerHideMessage.stop();
-				this.timerHideMessage = new Timer(Math.round(Math.pow(this.text.length, 0.62) * 200), 1);
+				this.timerHideMessage = new Timer(Math.round(Math.pow(this.text.length, 0.62) * 250), 1);
 				this.timerHideMessage.addEventListener(TimerEvent.TIMER_COMPLETE, this.onTimerCompleteHideMessage);
 				this.timerHideMessage.start();
 			}
