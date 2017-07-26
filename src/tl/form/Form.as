@@ -168,8 +168,8 @@ package tl.form {
 		
 		//tf message
 		
-		protected function createTFMessage(arrDurationMessage: Array, arrBadMessage: Array, arrGoodMessage: Array, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
-			this.tfMessage = new TFMessageForm(this, arrDurationMessage, arrBadMessage, arrGoodMessage, this.colorsTFMessage, tFormatMessage, widthTFMessage);
+		protected function createTFMessage(arrDurationMessage: Array, arrResponseBadMessage: Array, arrResponseGoodMessage: Array, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
+			this.tfMessage = new TFMessageForm(this, arrDurationMessage, arrResponseBadMessage, arrResponseGoodMessage, this.colorsTFMessage, tFormatMessage, widthTFMessage);
 			if (posTFMessage) {
 				this.tfMessage.x = Math.round(posTFMessage.x);
 				this.tfMessage.y = Math.round(posTFMessage.y);
