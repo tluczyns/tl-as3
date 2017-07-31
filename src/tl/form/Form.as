@@ -26,7 +26,6 @@ package tl.form {
 		protected var descriptionCall: DescriptionCall;
 		
 		protected var colorsTFWithBg: ColorsTFWithBg;
-		protected var colorsTFMessage: ColorsTFMessage;
 		protected var isEnterListener: Boolean;
 		private var dictTFToSoProp: Dictionary;
 		private var dictTFToBgTF: Dictionary;
@@ -42,10 +41,9 @@ package tl.form {
 		private var injectorBtnSubmitClickedOnKeyEnter: InjectorBtnHitClickedOnKeyEnter;
 		private var idCallSubmitForm: int;
 		
-		public function Form(descriptionCall: DescriptionCall, soName: String = "", tFormatMessageForTF: TextFormat = null, colorsTFWithBg: ColorsTFWithBg = null, colorsTFMessage: ColorsTFMessage = null, isEnterListener: Boolean = true): void {
+		public function Form(descriptionCall: DescriptionCall, soName: String = "", tFormatMessageForTF: TextFormat = null, colorsTFWithBg: ColorsTFWithBg = null, isEnterListener: Boolean = true): void {
 			this.descriptionCall = descriptionCall;
 			this.colorsTFWithBg = colorsTFWithBg;
-			this.colorsTFMessage = colorsTFMessage ? colorsTFMessage : new ColorsTFMessage();
 			this.isEnterListener = isEnterListener;
 			this.initSoPropForTFs();
 			this.initBgTFForTFs();
@@ -77,7 +75,7 @@ package tl.form {
 		}
 		
 		protected function createMessageTFForTF(arrStrBadMessage: Array, tfToSetMessage: TextField, autoSize: String = TextFieldAutoSize.LEFT, posTFMessageForTF: Point = null): TFMessageFormForTF {
-			var tfMessageForTF: TFMessageFormForTF = new TFMessageFormForTF(arrStrBadMessage, this.colorsTFMessage.colorBadHideMessage, this.tFormatMessageForTF, autoSize);
+			var tfMessageForTF: TFMessageFormForTF = new TFMessageFormForTF(arrStrBadMessage, this.tFormatMessageForTF, autoSize);
 			this.addChild(tfMessageForTF);
 			if (posTFMessageForTF) {
 				tfMessageForTF.x = posTFMessageForTF.x;
@@ -102,7 +100,7 @@ package tl.form {
 		}
 		
 		protected function initTF(tf: TextField, strInitTF: String): void {
-			tf.tabIndex = this.arrTF.length + 1;
+			tf.tabIndex = this.arrTF.length;
 			tf.focusRect = false;
 			this.addStrInitForTF(tf, strInitTF);
 			this.addListenersForTF(tf);
@@ -140,7 +138,8 @@ package tl.form {
 		}
 		
 		protected function onTFChanged(event: Event): void {
-			this.checkIsAllDataAndSetEnableBtnSubmit();
+			//this.checkIsAllDataAndSetEnableBtnSubmit();
+			this.checkIsAllData(false, false);
 			this.checkAndHideShowBadTFMessage(TextField(event.target));
 		}
 		
@@ -168,8 +167,8 @@ package tl.form {
 		
 		//tf message
 		
-		protected function createTFMessage(arrDurationMessage: Array, arrResponseBadMessage: Array, arrResponseGoodMessage: Array, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
-			this.tfMessage = new TFMessageForm(this, arrDurationMessage, arrResponseBadMessage, arrResponseGoodMessage, this.colorsTFMessage, tFormatMessage, widthTFMessage);
+		protected function createTFMessage(arrDurationMessage: Array, arrResponseBadMessage: Array, arrResponseGoodMessage: Array, colorsTFMessage: ColorsTFMessage = null, tFormatMessage: TextFormat = null, widthTFMessage: Number = 0, posTFMessage: Point = null): void {
+			this.tfMessage = new TFMessageForm(this, arrDurationMessage, arrResponseBadMessage, arrResponseGoodMessage, colorsTFMessage, tFormatMessage, widthTFMessage);
 			if (posTFMessage) {
 				this.tfMessage.x = Math.round(posTFMessage.x);
 				this.tfMessage.y = Math.round(posTFMessage.y);
@@ -195,7 +194,6 @@ package tl.form {
 			this.addChild(this.btnSubmit);
 			this.btnSubmit.addEventListener(EventBtnHit.CLICKED, this.onBtnSubmitClicked);
 			this.idCallSubmitForm = -1;
-			this.checkIsAllDataAndSetEnableBtnSubmit();
 		}
 		
 		private function removeBtnSubmit(): void {
@@ -209,7 +207,7 @@ package tl.form {
 		}
 		
 		private function onBtnSubmitClicked(e: EventBtnHit): void {
-			if (this.checkIsAllData()) this.submit();
+			if (this.checkIsAllData(false, true)) this.submit();
 		}
 		
 		//
@@ -222,7 +220,7 @@ package tl.form {
 			return 0;
 		}
 		
-		protected function checkIsAllData(isSetFocusOnNoDataInTF: Boolean = false): Boolean {
+		protected function checkIsAllData(isSetFocusOnNoDataInTF: Boolean = false, isCheckAndHideShowBadTFMessage: Boolean = false): Boolean {
 			var isAllData: Boolean = true;
 			for (var i: uint = 0; i < this.arrTF.length; i++) {
 				var tf: TextField = this.arrTF[i];
@@ -236,13 +234,14 @@ package tl.form {
 					if ((bgTF) && (this.colorsTFWithBg.colorBgTFBad != -1) && (this.colorsTFWithBg.colorBgTFOk != -1)) DspObjUtils.setColor(bgTF, [this.colorsTFWithBg.colorBgTFBad, this.colorsTFWithBg.colorBgTFOk][isDataBadOkForDisplay], Form.COUNT_FRAMES_CHANGE_COLOR);
 				}
 				if (isNoDataInTF > 0) isAllData = false;
+				if (isCheckAndHideShowBadTFMessage) this.checkAndHideShowBadTFMessage(tf);
 			}
 			return isAllData;
 		}
 		
-		public function checkIsAllDataAndSetEnableBtnSubmit(isSetFocusOnNoDataInTF: Boolean = false): void {
+		/*public function checkIsAllDataAndSetEnableBtnSubmit(isSetFocusOnNoDataInTF: Boolean = false): void {
 			this.btnSubmit.isEnabled = this.checkIsAllData(isSetFocusOnNoDataInTF);
-		}
+		}*/
 		
 		private function blockUnblockTextFields(isBlockUnblock: uint): void {
 			for (var i: uint = 0; i < this.arrTF.length; i++) {
@@ -262,10 +261,10 @@ package tl.form {
 		public function blockUnblock(isBlockUnblock: uint): void {
 			if ((isBlockUnblock == 1) && (this.isSubmitting)) isBlockUnblock = 0;
 			this.blockUnblockTextFields(isBlockUnblock);
-			if (isBlockUnblock == 0) {
-				if (this.btnSubmit) this.btnSubmit.isEnabled = false;
-			} else if (isBlockUnblock == 1) {
-				this.checkIsAllDataAndSetEnableBtnSubmit(true);
+			this.btnSubmit.isEnabled = Boolean(isBlockUnblock);
+			if (isBlockUnblock == 1) {
+				//this.checkIsAllDataAndSetEnableBtnSubmit(true);
+				this.checkIsAllData(true, false);
 				if ((this.arrTF.length > 0) && (this.stage != null)) {
 					var tf: TextField = this.arrTF[0];
 					this.stage.focus = tf;

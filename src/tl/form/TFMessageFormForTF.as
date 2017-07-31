@@ -13,7 +13,7 @@ package tl.form {
 		private var arrTextBadMessage: Array;
 		private var timerHideMessage: Timer;
 		
-		public function TFMessageFormForTF(arrTextBadMessage: Array, colorBadMessage: int = 0xFF0000, tFormatMessage: TextFormat = null, autoSize: String = TextFieldAutoSize.LEFT): void {
+		public function TFMessageFormForTF(arrTextBadMessage: Array, tFormatMessage: TextFormat = null, autoSize: String = TextFieldAutoSize.LEFT): void {
 			this.arrTextBadMessage = arrTextBadMessage || [];
 			super();
 			this.alpha = 0;
@@ -25,7 +25,6 @@ package tl.form {
 			this.multiline = this.wordWrap = false;
 			this.antiAliasType = AntiAliasType.ADVANCED;
 			this.text = " ";
-            tFormatMessage.color = colorBadMessage;
 			if (autoSize == TextFieldAutoSize.RIGHT) tFormatMessage.align = TextFormatAlign.RIGHT;
             this.setTextFormat(tFormatMessage);
 			this.defaultTextFormat = tFormatMessage;

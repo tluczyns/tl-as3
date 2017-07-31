@@ -55,10 +55,8 @@
 			var arrMessage: Array = [this.arrResponseBadMessage, this.arrResponseGoodMessage][isBadGood];
 			if (num < arrMessage.length) {
 				this.isBadGood = isBadGood;
-				if (arrMessage[num]) {
-					TextFieldUtilsDots.stopAddDots(this);
-					this.text = arrMessage[num];
-				}
+				TextFieldUtilsDots.stopAddDots(this);
+				this.text = arrMessage[num];
 				DspObjUtils.hideShow(this, 1);
 				this.setColor([this.colorsTFMessage.colorBadHideMessage, this.colorsTFMessage.colorGoodHideMessage][isBadGood]);
 				if (this.timerHideMessage != null) this.timerHideMessage.stop();
