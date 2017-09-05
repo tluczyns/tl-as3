@@ -20,7 +20,7 @@ package tl.loader {
 		private var numSwfApplication: int;
 		private var arrWeightSwf: Array;
 		private var classLibrary: Class;
-		private var loadContentQueue: LoadContentQueue;
+		private var queueLoadContent: QueueLoadContent;
 		private var arrIndSwf: Array;
 		private var isAllSwfsLoaded: Boolean;
 		protected var arrSwf: Array;
@@ -42,7 +42,7 @@ package tl.loader {
 			}
 			this.classLibrary = classLibrary || tl.loader.Library;
 			this.createAndInitLoaderProgress();
-			this.prepareLoadContentQueue();
+			this.prepareQueueLoadContent();
 		}
 		
 		protected function createLoaderProgress(): LoaderProgress {
@@ -61,15 +61,15 @@ package tl.loader {
 			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 1, transition: "linear", onComplete: this.startLoading});
 		}
 		
-		private function prepareLoadContentQueue(): void {
-			this.loadContentQueue = new LoadContentQueue(this.onContentLoadCompleteHandler, this, this.loaderProgress);
+		private function prepareQueueLoadContent(): void {
+			this.queueLoadContent = new QueueLoadContent(this.onContentLoadCompleteHandler, this, this.loaderProgress);
 			this.arrIndSwf = [];
 			for (var i: uint = 0; i < this.arrPathSwf.length; i++)
-				this.arrIndSwf.push(this.loadContentQueue.addToLoadQueue(String(this.arrPathSwf[i]), this.arrWeightSwf[i]));
+				this.arrIndSwf.push(this.queueLoadContent.addToLoadQueue(String(this.arrPathSwf[i]), this.arrWeightSwf[i]));
 		}
 		
 		protected function startLoading(): void {
-			this.loadContentQueue.startLoading();
+			this.queueLoadContent.startLoading();
 		}
 		
 		private function onContentLoadCompleteHandler(arrContent: Array): void {
@@ -77,7 +77,7 @@ package tl.loader {
 			this.arrSwf = new Array(this.arrIndSwf.length);
 			for (var i: uint = 0; i < this.arrIndSwf.length; i++) {
 				var objSwf: Object = arrContent[this.arrIndSwf[i]];
-				if ((objSwf.isLoaded) && (objSwf.type == LoadContentQueue.SWF)) {
+				if ((objSwf.isLoaded) && (objSwf.type == QueueLoadContent.SWF)) {
 					var swf: DisplayObject = objSwf.content;
 					if (i == this.numSwfApplication) this.swfApplication = swf;
 					this.classLibrary["addSwf"](swf);

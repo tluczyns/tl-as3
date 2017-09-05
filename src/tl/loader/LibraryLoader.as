@@ -1,6 +1,6 @@
 package tl.loader {
 	import flash.display.Sprite;
-	import tl.loader.LoadContentQueue;
+	import tl.loader.QueueLoadContent;
 	import tl.loader.progress.LoaderProgress;
 	import caurina.transitions.Tweener;
 	import flash.display.DisplayObject;
@@ -10,14 +10,14 @@ package tl.loader {
 		private static const TIME_HIDE_SHOW: Number = 0.2;
 		
 		private var loaderProgress: LoaderProgress;
-		protected var loadContentQueue: LoadContentQueue;
+		protected var queueLoadContent: QueueLoadContent;
 		private var arrIndSwfLib: Array;
 		protected var isAllLibrariesLoaded: Boolean;
 		public var arrSwfLib: Array;
 		
 		function LibraryLoader(arrFilenameSwfLib: Array): void {
 			this.createAndInitLoaderProgress();
-			this.prepareLoadContentQueue(arrFilenameSwfLib);
+			this.prepareQueueLoadContent(arrFilenameSwfLib);
 		}
 		
 		protected function createLoaderProgress(): LoaderProgress {
@@ -31,20 +31,20 @@ package tl.loader {
 			Tweener.addTween(this.loaderProgress, {alpha: 1, time: LibraryLoader.TIME_HIDE_SHOW, transition: "linear", onComplete: this.startLoading});
 		}
 		
-		private function prepareLoadContentQueue(arrFilenameSwfLib: Array): void {
-			this.loadContentQueue = new LoadContentQueue(this.onContentLoadCompleteHandler, this, this.loaderProgress);
+		private function prepareQueueLoadContent(arrFilenameSwfLib: Array): void {
+			this.queueLoadContent = new QueueLoadContent(this.onContentLoadCompleteHandler, this, this.loaderProgress);
 			this.loadContent(arrFilenameSwfLib);
 		}
 		
 		protected function loadContent(arrFilenameSwfLib: Array): void {
 			this.arrIndSwfLib = [];
 			for (var i:uint = 0; i < arrFilenameSwfLib.length; i++) {
-				this.arrIndSwfLib.push(this.loadContentQueue.addToLoadQueue(String(arrFilenameSwfLib[i])));
+				this.arrIndSwfLib.push(this.queueLoadContent.addToLoadQueue(String(arrFilenameSwfLib[i])));
 			}
 		}
 		
 		private function startLoading(): void {
-			this.loadContentQueue.startLoading();
+			this.queueLoadContent.startLoading();
 		}
 		
 		protected function onContentLoadCompleteHandler(arrContent: Array): void {
@@ -53,7 +53,7 @@ package tl.loader {
 			for (var i:uint = 0; i < this.arrIndSwfLib.length; i++) {
 				var objSwfLib: Object = arrContent[this.arrIndSwfLib[i]];
 				if (objSwfLib.isLoaded) {
-					if (objSwfLib.type == LoadContentQueue.SWF) {
+					if (objSwfLib.type == QueueLoadContent.SWF) {
 						this.arrSwfLib[i] = objSwfLib.content;
 						Library.addSwf(DisplayObject(objSwfLib.content));
 					}
