@@ -49,7 +49,7 @@ package tl.types {
 						onCompleteParams = (onCompleteParams != null) ? onCompleteParams : [];
 				}
 				try {
-					TweenLite.killTweensOf(dspObj, false, {autoAlpha: true});
+					TweenLite.killTweensOf(dspObj, {autoAlpha: true});
 				} catch(e: TypeError) {};
 				TweenLite.to(dspObj, numFrames, {autoAlpha: isHideShow, useFrames: true, ease: Linear.easeNone, onComplete: onComplete, onCompleteParams: onCompleteParams});
 			//}
@@ -60,10 +60,10 @@ package tl.types {
 			TweenPlugin.activate([HexColorsPlugin, TintPlugin]);
 			if ((getDefinitionByName(getQualifiedClassName(dspObj)) == TextField) || (getDefinitionByName(getQualifiedSuperclassName(dspObj)) == TextField)) {
 				var objColorTf: Object = {tint: TextField(dspObj).getTextFormat().color};
-				TweenLite.killTweensOf(objColorTf, false, {hexColors: true});
+				TweenLite.killTweensOf(objColorTf, {hexColors: true});
 				TweenLite.to(objColorTf, numFrames, {hexColors:{tint: tint}, useFrames: true, ease: Linear.easeNone, onUpdate: DspObjUtils.drawColorTf, onUpdateParams: [TextField(dspObj), objColorTf], onComplete: onComplete, onCompleteParams: onCompleteParams});
 			} else {
-				TweenLite.killTweensOf(dspObj, false, {tint: true});
+				TweenLite.killTweensOf(dspObj, {tint: true});
 				TweenLite.to(dspObj, numFrames, {tint: tint, useFrames: true, ease: Linear.easeNone, onComplete: onComplete, onCompleteParams: onCompleteParams});
 			}
 		}
@@ -84,7 +84,7 @@ package tl.types {
 		
 		static public function stopPlaying(mc: MovieClip): void {
 			TweenPlugin.activate([FramePlugin]);
-			TweenLite.killTweensOf(mc, false, {frame: true});
+			TweenLite.killTweensOf(mc, {frame: true});
 		}
 		
 		static public function skew(target: DisplayObject, _x:Number, _y:Number):void {
