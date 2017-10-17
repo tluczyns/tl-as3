@@ -12,7 +12,11 @@ package tl.btn {
 		
 		public var hit: Sprite;
 		
-		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, rectDimension: Rectangle = null): void {
+		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
+			if (isConstruct) this.construct(hit, isEnabled);
+		}
+		
+		protected function construct(hit: Sprite = null, isEnabled: Boolean = true): void {
 			this.initHit(hit, rectDimension);
 			this.addMouseEventsForIsOver();
 			this.isOver = false;
@@ -25,10 +29,11 @@ package tl.btn {
 		private function initHit(hit: Sprite = null, rectDimension: Rectangle = null): void {
 			if (this.hit == null) { 
 				if (!hit) hit = this.createGenericHit(rectDimension);
-				hit.alpha = 0;
 				this.addChild(hit);
 				this.hit = hit;
 			}
+			this.setChildIndex(this.hit, this.numChildren - 1);
+			this.hit.alpha = 0;
 		}
 		
 		public function createGenericHit(rectDimension: Rectangle = null): Sprite {
@@ -103,15 +108,15 @@ package tl.btn {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));	
 		}
 		
-		private function onMouseDown(e: MouseEvent): void {
+		protected function onMouseDown(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.DOWN));
 		}
 		
-		private function onMouseUp(e: MouseEvent): void {
+		protected function onMouseUp(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.UP));	
 		}
 		
-		private function onClick(e: MouseEvent): void {
+		protected function onClick(e: MouseEvent): void {
 			this.dispatchEvent(new EventBtnHit(EventBtnHit.CLICKED));
 		}
 		

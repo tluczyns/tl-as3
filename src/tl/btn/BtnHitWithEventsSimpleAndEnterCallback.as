@@ -9,8 +9,8 @@ package tl.btn {
 		
 		private var callbackDownEnter: FunctionCallback;
 			
-		public function BtnHitWithEventsSimpleAndEnterCallback(hit: Sprite = null, isEnabled: Boolean = true): void {
-			super(hit, isEnabled);
+		public function BtnHitWithEventsSimpleAndEnterCallback(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
+			super(hit, isEnabled, isConstruct);
 			this.addEventListener(Event.ADDED_TO_STAGE, this.createCallbackKeyDown);
 		}
 		
