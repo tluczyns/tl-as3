@@ -16,8 +16,8 @@ package tl.btn {
 			if (isConstruct) this.construct(hit, isEnabled);
 		}
 		
-		protected function construct(hit: Sprite = null, isEnabled: Boolean = true): void {
-			this.initHit(hit, rectDimension);
+		public function construct(hit: Sprite = null, isEnabled: Boolean = true): void {
+			this.initHit(hit);
 			this.addMouseEventsForIsOver();
 			this.isOver = false;
 			this._isEnabled = !isEnabled;
@@ -76,10 +76,10 @@ package tl.btn {
 		//mouse events
 		
 		private function addMouseEvents(): void {
-			this.hit.tabEnabled = false;	
+			this.hit.tabEnabled = false;
 			if (!this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.hit.buttonMode = true;
+				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = true;
 				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -91,7 +91,7 @@ package tl.btn {
 		private function removeMouseEvents(): void {
 			if (this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.hit.buttonMode = false;
+				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = false;
 				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);

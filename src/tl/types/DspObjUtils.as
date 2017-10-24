@@ -1,4 +1,5 @@
-package tl.types {
+﻿package tl.types {
+	import flash.display.GraphicsSolidFill;
 	import tl.types.Singleton;
 	import flash.utils.Dictionary;
 	import com.greensock.plugins.TweenPlugin;
@@ -18,6 +19,9 @@ package tl.types {
 	import com.greensock.plugins.FramePlugin;
 	import flash.geom.Matrix;
 	import flash.geom.Matrix3D;
+	import flash.display.DisplayObjectContainer;
+	import flash.display.Shape;
+	import flash.display.IGraphicsData;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -154,6 +158,40 @@ package tl.types {
 			}
 			return {r: int(r*255),g: int(g*255), b: int(b*255)};
 		}
+		
+		static public function cloneGraphics(container: DisplayObjectContainer, colorToSet: int = -1,  alphaToSet: Number = 1): DisplayObjectContainer {
+			var containerClone: DisplayObjectContainer = new Sprite();
+			for (var i: uint = 0; i < container.numChildren; i++) {
+				var child: DisplayObject = container.getChildAt(i);
+				var childClone: DisplayObject;
+				if (child is Shape) {
+					childClone = new Shape();
+					var graphicsChild: Vector.<IGraphicsData> = Shape(child).graphics.readGraphicsData();
+					if (colorToSet != -1) {
+						for each (var iGraphicsData: IGraphicsData in graphicsChild) {
+							if (iGraphicsData is GraphicsSolidFill) {
+								GraphicsSolidFill(iGraphicsData).color = colorToSet;
+								GraphicsSolidFill(iGraphicsData).alpha = alphaToSet;
+							}
+						}
+					}
+					Shape(childClone).graphics.drawGraphicsData(graphicsChild);
+				} else if (child is DisplayObjectContainer) childClone = DspObjUtils.cloneGraphics(DisplayObjectContainer(child), colorToSet, alphaToSet);
+				containerClone.addChild(childClone);
+			}
+			return containerClone;
+		}
+		
+		static public function cloneDspObjProps(dspObjTarget: DisplayObject, dspObjSrc: Object): void {
+			dspObjSrc = dspObjSrc || {};
+			if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
+			dspObjTarget.x = dspObjSrc.x || 0;
+			dspObjTarget.y = dspObjSrc.y || 0;
+			dspObjTarget.rotation = dspObjSrc.rotation || 0;
+			dspObjTarget.scaleX = dspObjSrc.scaleX || 1;
+			dspObjTarget.scaleY = dspObjSrc.scaleY || 1;
+		}
+		
 	}
 
 }
