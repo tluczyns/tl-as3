@@ -182,7 +182,7 @@
 			return containerClone;
 		}
 		
-		static public function cloneDspObjProps(dspObjTarget: DisplayObject, dspObjSrc: Object): void {
+		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object): void {
 			dspObjSrc = dspObjSrc || {};
 			if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
 			dspObjTarget.x = dspObjSrc.x || 0;
