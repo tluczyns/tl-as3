@@ -29,7 +29,10 @@ package tl.btn {
 		}
 		
 		public function setElementsOnOutOver(isOutOver: uint): void {
-			//throw new Error("setElementsOnOutOver must be implemented");
+			for (var i: uint = 0; i < this.vecInjector.length; i++) {
+				var injector: InjectorBtnHit = this.vecInjector[i];
+				if (injector is InjectorBtnHitWithEvents) InjectorBtnHitWithEvents(injector).setElementsOnOutOver(this, isOutOver);
+			}
 		}
 		
 		protected function onClicked(e: EventBtnHit): void {

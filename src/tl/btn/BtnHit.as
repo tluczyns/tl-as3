@@ -1,18 +1,20 @@
-package tl.btn {
+﻿package tl.btn {
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
 	import flash.events.MouseEvent;
-	import caurina.transitions.Tweener;	
+	//import caurina.transitions.Tweener;	
 	
 	public class BtnHit extends MovieClip implements IBtn {
 		
 		private var _isEnabled: Boolean;
 		private var isOver: Boolean;
+		protected var vecInjector: Vector.<InjectorBtnHit>;
 		
 		public var hit: Sprite;
 		
 		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
+			this.vecInjector = new Vector.<InjectorBtnHit>();
 			if (isConstruct) this.construct(hit, isEnabled);
 		}
 		
@@ -138,10 +140,27 @@ package tl.btn {
 		}
 		
 		protected function setElementsIsEnabled(isDisabledEnabled: uint): void {
-			Tweener.removeTweens(this);
-			Tweener.addTween(this, {time: 0.3, alpha: [0.3, 1][isDisabledEnabled], transition: "linear"});
+			//Tweener.removeTweens(this);
+			//Tweener.addTween(this, {time: 0.3, alpha: [0.3, 1][isDisabledEnabled], transition: "linear"});
 			//TweenNano.killTweensOf(this);
 			//TweenNano.to(this, 0.3, {alpha: [0.3, 1][isRemoveAdd], ease: Linear.easeNone});
+			for (var i: uint = 0; i < this.vecInjector.length; i++) {
+				var injector: InjectorBtnHit = this.vecInjector[i]
+				injector.setElementsIsEnabled(this, isDisabledEnabled);
+			}
+		}
+		
+		//injector
+		
+		public function addInjector(injector: InjectorBtnHit): void {
+			if (this.vecInjector.indexOf(injector) == -1) this.vecInjector.push(injector);
+		}
+		
+		private function removeInjector(injector: InjectorBtnHit): Boolean {
+			var indOfInjector: int = this.vecInjector.indexOf(injector);
+			var isRemove: Boolean = (indOfInjector > -1);
+			if (isRemove) this.vecInjector.removeAt(indOfInjector);
+			return isRemove;
 		}
 		
 		//
@@ -154,7 +173,7 @@ package tl.btn {
 		}
 		
 		public function destroy(): void {
-			Tweener.removeTweens(this);
+			//Tweener.removeTweens(this);
 			//TweenNano.killTweensOf(this);
 			this._isEnabled = false;
 			this.removeMouseEvents();
