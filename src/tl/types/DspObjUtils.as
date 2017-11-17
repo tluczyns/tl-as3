@@ -184,6 +184,8 @@
 		
 		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object): void {
 			dspObjSrc = dspObjSrc || {};
+			dspObjSrc.scaleX = dspObjSrc.scaleX || dspObjSrc.scale;
+			dspObjSrc.scaleY = dspObjSrc.scaleY || dspObjSrc.scale;
 			if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
 			dspObjTarget.x = dspObjSrc.x || 0;
 			dspObjTarget.y = dspObjSrc.y || 0;
