@@ -159,7 +159,7 @@
 		private function removeInjector(injector: InjectorBtnHit): Boolean {
 			var indOfInjector: int = this.vecInjector.indexOf(injector);
 			var isRemove: Boolean = (indOfInjector > -1);
-			if (isRemove) this.vecInjector.removeAt(indOfInjector);
+			if (isRemove) this.vecInjector.splice(indOfInjector, 1);
 			return isRemove;
 		}
 		
