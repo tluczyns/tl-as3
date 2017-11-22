@@ -34,7 +34,7 @@
 				this.addChild(hit);
 				this.hit = hit;
 			}
-			this.setChildIndex(this.hit, this.numChildren - 1);
+			if (this.numChildren > 0) this.setChildIndex(this.hit, this.numChildren - 1);
 			this.hit.alpha = 0;
 		}
 		
