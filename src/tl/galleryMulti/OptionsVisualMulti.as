@@ -1,4 +1,4 @@
-package tl.gallery {
+package tl.galleryMulti {
 	import com.greensock.easing.*;
 	
 	public class OptionsVisualMulti extends Object {

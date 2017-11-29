@@ -1,4 +1,4 @@
-package tl.gallery {
+package tl.galleryMulti {
 	import tl.service.ExternalInterfaceExt;
 	
 	public class OptionsControllerMulti extends Object {

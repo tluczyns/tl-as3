@@ -3,6 +3,7 @@ package tl.gallery {
 	import flash.events.Event;
 	import tl.btn.BtnArrow;
 	import tl.btn.EventBtnHit;
+	import tl.galleryMulti.MultiCircleGallery;
 	import tl.vspm.EventModel;
 	
 	public class ArrowsGalleryMulti extends Sprite {

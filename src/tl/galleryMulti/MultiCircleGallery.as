@@ -1,5 +1,9 @@
-package tl.gallery {
+package tl.galleryMulti {
 	import flash.display.Sprite;
+	import tl.galleryMulti.MultiItemGallery;
+	import tl.galleryMulti.MultiRowCircleGallery;
+	import tl.galleryMulti.OptionsControllerMulti;
+	import tl.galleryMulti.OptionsVisualMulti;
 	import tl.types.DictionaryExt;
 	import flash.events.Event;
 	//swf address gateway

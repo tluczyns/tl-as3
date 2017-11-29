@@ -3,6 +3,7 @@ package tl.gallery {
 	public class OptionsController extends Object {
 
 		public var isArrow: Boolean; 
+		public var isItemClickable: Boolean;
 		public var isMouseMove: Boolean;
 		public var isMouseWheel: Boolean;
 		public var isAutoChangeItem: Boolean;
@@ -10,8 +11,9 @@ package tl.gallery {
 		public var timeChangeItemFirstTime: uint;
 		public var timeChangeItem: uint;
 		
-		public function OptionsController(isArrow: Boolean = false, isMouseWheel: Boolean = true, isSetMouseWheelOnStage: Boolean = false, isMouseMove: Boolean = false,  isAutoChangeItem: Boolean = false, timeChangeItemFirstTime: uint = 5000, timeChangeItem: uint = 2500): void {
+		public function OptionsController(isArrow: Boolean = false, isItemClickable: Boolean = false, isMouseWheel: Boolean = true, isSetMouseWheelOnStage: Boolean = false, isMouseMove: Boolean = false, isAutoChangeItem: Boolean = false, timeChangeItemFirstTime: uint = 5000, timeChangeItem: uint = 2500): void {
 			this.isArrow = isArrow;
+			this.isItemClickable = isItemClickable;
 			this.isMouseWheel = isMouseWheel;
 			this.isSetMouseWheelOnStage = isSetMouseWheelOnStage;
 			this.isMouseMove = isMouseMove;

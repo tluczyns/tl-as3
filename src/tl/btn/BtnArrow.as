@@ -42,7 +42,7 @@
 			}
 		}
 		
-		private function removeArrow(): void {
+		private function deleteArrow(): void {
 			TweenMax.killTweensOf(this.arrow);
 			this.removeChild(this.arrow);
 			this.arrow = null;
@@ -68,7 +68,7 @@
 		}
 		
 		override public function destroy(): void {
-			this.removeArrow();
+			this.deleteArrow();
 			super.destroy();
 		}
 		

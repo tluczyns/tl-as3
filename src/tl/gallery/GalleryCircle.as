@@ -9,11 +9,11 @@ package tl.gallery {
 	import flash.utils.setInterval;
 	import tl.math.MathExt;
 	import tl.btn.BtnArrow;
-	import tl.btn.BtnHitEvent;
+	import tl.btn.EventBtnHit;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
 	
-	public class CircleGallery extends Sprite {
+	public class GalleryCircle extends Sprite {
 		
 		protected var arrData: Array;
 		public var arrItem: Array;
@@ -29,18 +29,18 @@ package tl.gallery {
 		public var optionsController: OptionsController;
 		protected var optionsVisual: OptionsVisual;
 				
-		public function CircleGallery(arrData: Array = null, numFieldForItemSelected: int = -1, optionsController: OptionsController = null, optionsVisual: OptionsVisual = null, numFirstItemSelected: uint = 0): void {
+		public function GalleryCircle(arrData: Array = null, numFieldForItemSelected: int = -1, optionsController: OptionsController = null, optionsVisual: OptionsVisual = null, numFirstItemSelected: uint = 0): void {
 			/*arrData = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffff00];
 			this.x = this.y = 300;*/
 			this.arrData = arrData;
 			if ((this.arrData) && (this.arrData.length)) {
 				this.optionsController = optionsController || new OptionsController();
 				this.optionsVisual = optionsVisual || new OptionsVisual();
-				this.arrItemInField = new Array(this.lengthArrItemInField);
+				this.arrItemInField = [];
 				this.createItems();
 				this.numFieldForItemSelected = (numFieldForItemSelected == -1) ? Math.ceil((this.lengthArrItemInField - 1) / 2) - 1 : numFieldForItemSelected;
 				this.numFirstItemSelected = numFirstItemSelected;
-				this.timeOne = 1 / this.arrItemInField.length;//this.lengthArrItemInField - 1//this.arrItemInField.length;
+				this.timeOne = 1 / this.lengthArrItemInField;//this.lengthArrItemInField - 1//this.arrItemInField.length;
 				this.timeTotal = this.timeOne * this.arrItem.length;
 				this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			}// else throw new Error("no or empty data");
@@ -53,12 +53,12 @@ package tl.gallery {
 		private function createItems(): void {
 			var countItems: uint = 0;
 			do countItems += this.arrData.length;
-			while (countItems < this.arrItemInField.length); //ręczne zduplikowanie itemów, jeśli jest ich za mało, aby wypełnić wszystkie pola
+			while (countItems < this.lengthArrItemInField); //ręczne zduplikowanie itemów, jeśli jest ich za mało, aby wypełnić wszystkie pola
 			this.arrItem = new Array(countItems);
 			this.containerItem = new Sprite();
 			var classForItem: Class = this.getClassForItem();
 			for (var i: uint = 0; i < countItems; i++) {
-				var item: ItemGallery = new classForItem(i, this.arrData[i % this.arrData.length]);
+				var item: ItemGallery = new classForItem(this, i, this.arrData[i % this.arrData.length]);
 				this.initItem(item);
 				this.arrItem[i] = item;
 			}
@@ -73,7 +73,7 @@ package tl.gallery {
 			this.containerItem.addChild(item);
 		}
 		
-		private function removeItems(): void {
+		private function deleteItems(): void {
 			for (var i: uint = 0; i < this.arrItem.length; i++) {
 				var item: ItemGallery = this.arrItem[i];
 				item.destroy();
@@ -123,10 +123,10 @@ package tl.gallery {
 			this.arrBtnArrowPrevNext = new Array(2);
 			this.containerBtnArrow = new Sprite();
 			for (var i: uint = 0; i < this.arrBtnArrowPrevNext.length; i++) {
-				var classBtnArrowPrevNext: Class = this.getClassForBtnArrowPrevNext();
+				var classBtnArrowPrevNext: Class = this.getClassBtnArrowPrevNext();
 				var btnArrowPrevNext: BtnArrow = new classBtnArrowPrevNext(i);
 				btnArrowPrevNext.isEnabled = true;
-				btnArrowPrevNext.addEventListener(BtnHitEvent.CLICKED, this.onBtnArrowClicked);
+				btnArrowPrevNext.addEventListener(EventBtnHit.CLICKED, this.onBtnArrowClicked);
 				this.containerBtnArrow.addChild(btnArrowPrevNext);	
 				this.arrBtnArrowPrevNext[i] = btnArrowPrevNext;
 			}
@@ -134,7 +134,7 @@ package tl.gallery {
 			this.setPositionArrowsInit();
 		}
 		
-		protected function getClassForBtnArrowPrevNext(): Class {
+		protected function getClassBtnArrowPrevNext(): Class {
 			return BtnArrow;
 		}
 		
@@ -142,11 +142,11 @@ package tl.gallery {
 		
 		protected function setPositionArrowsOnItem(): void {}
 
-		protected function onBtnArrowClicked(e: BtnHitEvent): void {
+		protected function onBtnArrowClicked(e: EventBtnHit): void {
 			this.selectPrevNextItem(BtnArrow(e.target).isPrevNext);
 		}
 		
-		private function removeArrows(): void {
+		private function deleteArrows(): void {
 			for (var i: uint = 0; i < this.arrBtnArrowPrevNext.length; i++) {
 				var btnArrowPrevNext: BtnArrow = this.arrBtnArrowPrevNext[i];
 				btnArrowPrevNext.destroy();
@@ -182,7 +182,7 @@ package tl.gallery {
 			this.isActiveWheel = true;
 		}
 		
-		private function removeMouseWheel(): void {
+		private function deleteMouseWheel(): void {
 			var intrObjForMouseWheel: InteractiveObject;
 			if (this.optionsController.isSetMouseWheelOnStage) intrObjForMouseWheel = this.stage;
 			else intrObjForMouseWheel = this.containerItem;
@@ -294,12 +294,12 @@ package tl.gallery {
 		
 		public function destroy(): void {
 			if ((this.arrData) && (this.arrData.length)) {
-				this.removeItems();
+				this.deleteItems();
 				this.removeEventListener(EventGallery.SELECTED_ITEM_CHANGED, this.onItemSelected);
 				if (this.arrData.length > 1) {
 					if (this.optionsController.isAutoChangeItem) this.removeAutoChangeItem();
-					if (this.optionsController.isMouseWheel) this.removeMouseWheel();
-					if (this.optionsController.isArrow) this.removeArrows();
+					if (this.optionsController.isMouseWheel) this.deleteMouseWheel();
+					if (this.optionsController.isArrow) this.deleteArrows();
 				}
 				TweenMax.killTweensOf(this);
 			}

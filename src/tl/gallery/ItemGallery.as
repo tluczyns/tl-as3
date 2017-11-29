@@ -1,20 +1,22 @@
 package tl.gallery {
 	import tl.btn.BtnHitWithEvents;
 	import flash.display.Sprite;
-	import tl.btn.BtnHitEvent;
+	import tl.btn.EventBtnHit;
 	
 	public class ItemGallery extends BtnHitWithEvents {
 		
+		protected var gallery: GalleryCircle;
 		public var num: uint;
 		protected var objData: Object;
 		public var time: Number;
 		
-		public function ItemGallery(num: Number, objData: Object = null, hit: Sprite = null): void {
+		public function ItemGallery(gallery: GalleryCircle, num: Number, objData: Object = null, hit: Sprite = null): void {
+			this.gallery = gallery;
 			this.objData = objData;
 			this.num = num;
 			this.draw();
 			super(hit);
-			this.addEventListener(BtnHitEvent.CLICKED, this.onClickedHandler);
+			if (!this.gallery.optionsController.isItemClickable) this.isEnabled = false;
 		}
 		
 		protected function draw(): void {
@@ -23,7 +25,7 @@ package tl.gallery {
 			this.graphics.endFill();*/
 		}
 		
-		protected function removeDraw(): void {
+		protected function deleteDraw(): void {
 			//this.graphics.clear();
 		}
 		
@@ -37,13 +39,12 @@ package tl.gallery {
 			//trace("value:", value)
 		}
 		
-		protected function onClickedHandler(e: BtnHitEvent): void {
+		override protected function onClicked(e: EventBtnHit): void {
 			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.num, true));
 		}
 		
 		override public function destroy(): void {
-			this.removeEventListener(BtnHitEvent.CLICKED, this.onClickedHandler);
-			this.removeDraw();
+			this.deleteDraw();
 			super.destroy();
 		}
 		

@@ -1,4 +1,7 @@
-package tl.gallery {
+package tl.galleryMulti {
+	import tl.galleryMulti.MultiRowFlowGallery;
+	import tl.galleryMulti.OptionsControllerMulti;
+	import tl.galleryMulti.OptionsVisualMulti;
  
 	public class MultiFlowGallery extends MultiCircleGallery {
 		

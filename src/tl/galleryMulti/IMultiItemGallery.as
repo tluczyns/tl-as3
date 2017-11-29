@@ -1,4 +1,4 @@
-package tl.gallery {
+package tl.galleryMulti {
 	
 	public interface IMultiItemGallery extends IRenderable {
 		

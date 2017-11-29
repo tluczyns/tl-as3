@@ -1,6 +1,8 @@
-package tl.gallery {
+package tl.galleryMulti {
 	import flash.display.Sprite;
 	import flash.display.DisplayObject;
+	import tl.galleryMulti.OptionsControllerMulti;
+	import tl.galleryMulti.OptionsVisualMulti;
 
 	public class MultiRowFlowGallery extends MultiRowCircleGallery {
 		
