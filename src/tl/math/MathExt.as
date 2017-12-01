@@ -117,7 +117,7 @@ package tl.math {
 			return channel;
 		}
 		
-		static public function splitRGB(color: uint): Array {			
+		static public function splitRGB(color: uint): Array {
 			return [color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff];
 		}
 		
@@ -152,5 +152,11 @@ package tl.math {
 			return Math.log(val) * Math.LOG10E;
 		}
 		
+		static public function calculateProjectionPointOnLine(pointLineStart: Object, pointLineEnd: Object, point: Object): Point {
+			var u: Number = ((pointLineEnd.x - pointLineStart.x) * (point.x - pointLineStart.x) + (pointLineEnd.y - pointLineStart.y) * (point.y - pointLineStart.y)) / (Math.pow(pointLineEnd.x - pointLineStart.x, 2) + Math.pow(pointLineEnd.y - pointLineStart.y, 2));
+			return new Point(pointLineStart.x + u * (pointLineEnd.x - pointLineStart.x), pointLineStart.y + u * (pointLineEnd.y - pointLineStart.y));
+		}
+		
     }
+	
 }
