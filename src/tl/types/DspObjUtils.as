@@ -186,7 +186,9 @@
 			dspObjSrc = dspObjSrc || {};
 			dspObjSrc.scaleX = dspObjSrc.scaleX || dspObjSrc.scale;
 			dspObjSrc.scaleY = dspObjSrc.scaleY || dspObjSrc.scale;
-			if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
+			try {
+				if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
+			} catch (e: Error) {}
 			dspObjTarget.x = dspObjSrc.x || 0;
 			dspObjTarget.y = dspObjSrc.y || 0;
 			dspObjTarget.rotation = dspObjSrc.rotation || 0;
