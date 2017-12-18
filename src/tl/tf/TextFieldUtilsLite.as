@@ -102,6 +102,19 @@ package tl.tf {
 			trace("---------------------------\n\n");
 		}
 		
+		//ustawia wysokość pola tekstowego bez zmieniania wielkości czcionki, ale z dostosowaniem pola tekstowego
+		public static function setHeightTF(tf: TextField, height: Number): void {
+			tf.width = tf.textWidth;
+			tf.height = tf.textHeight;	
+			tf.multiline = tf.wordWrap = true;
+			var step: Number = 3;
+			while (tf.height < height) {
+				tf.width = Number(tf.width) - step;
+				tf.height = tf.textHeight;	
+			}
+			tf.width = Number(tf.width) + step;
+		}
+		
 	}
 
 }
