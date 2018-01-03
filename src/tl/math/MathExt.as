@@ -157,6 +157,10 @@ package tl.math {
 			return new Point(pointLineStart.x + u * (pointLineEnd.x - pointLineStart.x), pointLineStart.y + u * (pointLineEnd.y - pointLineStart.y));
 		}
 		
+		static public function xor(lhs: Boolean, rhs: Boolean): Boolean {
+			return !(lhs && rhs) && (lhs || rhs);
+		}
+		
     }
 	
 }
