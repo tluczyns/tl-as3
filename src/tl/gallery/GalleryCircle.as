@@ -10,6 +10,7 @@ package tl.gallery {
 	import tl.math.MathExt;
 	import tl.btn.BtnArrow;
 	import tl.btn.EventBtnHit;
+	import flash.text.TextField;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.Quad;
 	
@@ -28,7 +29,7 @@ package tl.gallery {
 		protected var _time: Number;
 		public var optionsController: OptionsController;
 		protected var optionsVisual: OptionsVisual;
-				
+		
 		public function GalleryCircle(arrData: Array = null, numFieldForItemSelected: int = -1, optionsController: OptionsController = null, optionsVisual: OptionsVisual = null, numFirstItemSelected: uint = 0): void {
 			/*arrData = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffff00];
 			this.x = this.y = 300;*/
@@ -108,6 +109,7 @@ package tl.gallery {
 		private function addControllers(): void {
 			if (this.arrData.length > 1) {
 				if (this.optionsController.isArrow) this.createArrows();
+				if (this.optionsController.isTFNumItem) this.createTFNumItem();
 				if (this.optionsController.isMouseWheel) this.initMouseWheel();
 				if (this.optionsController.isAutoChangeItem) this.initAutoChangeItem();
 			}
@@ -155,6 +157,33 @@ package tl.gallery {
 			}
 			this.arrBtnArrowPrevNext = [];
 			this.removeChild(this.containerBtnArrow);
+			this.containerBtnArrow = null;
+		}
+		
+		//tfNumItem
+		
+		protected var tfNumItem: TextField;
+		
+		private function createTFNumItem(): void {
+			this.tfNumItem = this.getTFNumItem();
+			this.addChild(this.tfNumItem);
+			this.setPositionTFNumItemInit();
+		}
+		
+		protected function getTFNumItem(): TextField {
+			return new TextField();
+		}
+		
+		protected function setPositionTFNumItemInit(): void {}
+		
+		protected function setValueTFNumItem(): void {
+			this.tfNumItem.text = String(this.numItemSelected + 1) + "/" + String(this.arrItem.length);
+		}
+		
+		private function deleteTFNumItem(): void {
+			this.arrBtnArrowPrevNext = [];
+			this.removeChild(this.tfNumItem);
+			this.tfNumItem = null;
 		}
 		
 		//mouse wheel
@@ -239,10 +268,11 @@ package tl.gallery {
 				if (this.numItemSelected != -1) ItemGallery(this.arrItem[this.numItemSelected]).selected = false;
 				this.numItemSelected = numItemSelected;
 				ItemGallery(this.arrItem[this.numItemSelected]).selected = true;
+				if (this.tfNumItem) this.setValueTFNumItem();
 				var timeNumItemSelected: Number = MathExt.moduloPositive((this.numItemSelected - this.numFieldForItemSelected) * this.timeOne, this.timeTotal);
 				var diffTimeGlobal: Number = MathExt.minDiffWithSign(timeNumItemSelected, this.time, this.timeTotal);
 				TweenMax.to(this, Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
-				if (this.optionsController.isArrow) this.setPositionArrowsOnItem();
+				if (this.containerBtnArrow) this.setPositionArrowsOnItem();
 			//}
 		}
 		
@@ -300,6 +330,7 @@ package tl.gallery {
 					if (this.optionsController.isAutoChangeItem) this.removeAutoChangeItem();
 					if (this.optionsController.isMouseWheel) this.deleteMouseWheel();
 					if (this.optionsController.isArrow) this.deleteArrows();
+					if (this.optionsController.isTFNumItem) this.deleteTFNumItem();
 				}
 				TweenMax.killTweensOf(this);
 			}
