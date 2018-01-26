@@ -22,6 +22,7 @@
 	import flash.display.DisplayObjectContainer;
 	import flash.display.Shape;
 	import flash.display.IGraphicsData;
+	import flash.display.Bitmap;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -194,6 +195,19 @@
 			dspObjTarget.rotation = dspObjSrc.rotation || 0;
 			dspObjTarget.scaleX = dspObjSrc.scaleX || 1;
 			dspObjTarget.scaleY = dspObjSrc.scaleY || 1;
+		}
+		
+		static public function deleteDspObj(dspObj: DisplayObject): void {
+			if (dspObj is DisplayObjectContainer) {
+				for (var i: uint = 0; i < DisplayObjectContainer(dspObj).numChildren; i++)
+					DspObjUtils.deleteDspObj(DisplayObjectContainer(dspObj).getChildAt(i));
+			} else if (dspObj is Bitmap) {
+				Bitmap(dspObj).bitmapData.dispose();
+				Bitmap(dspObj).bitmapData = null;
+			} else if (dspObj is Shape) {
+				Shape(dspObj).graphics.clear();
+			}
+			dspObj = null;
 		}
 		
 	}
