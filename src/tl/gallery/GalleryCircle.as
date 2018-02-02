@@ -269,7 +269,7 @@ package tl.gallery {
 				this.numItemSelected = numItemSelected;
 				ItemGallery(this.arrItem[this.numItemSelected]).selected = true;
 				if (this.tfNumItem) this.setValueTFNumItem();
-				if ((this.optionsController.isArrow) && (!this.optionsController.isLoopItemsByArrow)) this.checkIsEdgeInnerItemAndBlockUnblockArrows();
+				if ((this.vecBtnArrowPrevNext) && (!this.optionsController.isLoopItemsByArrow)) this.checkIsEdgeInnerItemAndBlockUnblockArrows();
 				var timeNumItemSelected: Number = MathExt.moduloPositive((this.numItemSelected - this.numFieldForItemSelected) * this.timeOne, this.timeTotal);
 				var diffTimeGlobal: Number = MathExt.minDiffWithSign(timeNumItemSelected, this.time, this.timeTotal);
 				TweenMax.to(this, Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
