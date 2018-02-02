@@ -14,7 +14,7 @@ package tl.gallery {
 		override protected function get lengthArrItemInField(): Number {
 			return this.countFieldsForItems + 1;
 		}
-			
+		
 		override protected function initItem(item: ItemGallery): void {
 			if (this.optionsVisual.isAlphaManagement) item.alpha = 0;
 		}

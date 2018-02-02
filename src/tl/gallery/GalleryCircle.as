@@ -90,19 +90,8 @@ package tl.gallery {
 		}
 		
 		protected function showItems(): void {
-			this.setInitialTime();
 			this.addControllers();
-			this.addEventListener(EventGallery.RENDER, this.onRender)
-		}
-		
-		private function onRender(e: EventGallery):void {
-			this.time = this.time;
-		}
-		
-		private function setInitialTime(): void {
-			this._time = MathExt.moduloPositive( -this.numFieldForItemSelected * this.timeOne, this.timeTotal);
-			this.numItemSelected = -1;
-			this.addEventListener(EventGallery.SELECTED_ITEM_CHANGED, this.onItemSelected)
+			this.setInitialTime();
 			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.numFirstItemSelected));
 		}
 		
@@ -113,24 +102,31 @@ package tl.gallery {
 				if (this.optionsController.isMouseWheel) this.initMouseWheel();
 				if (this.optionsController.isAutoChangeItem) this.initAutoChangeItem();
 			}
+			
+		}
+		
+		private function setInitialTime(): void {
+			this._time = MathExt.moduloPositive( -this.numFieldForItemSelected * this.timeOne, this.timeTotal);
+			this.numItemSelected = -1;
+			this.addEventListener(EventGallery.SELECTED_ITEM_CHANGED, this.onItemSelected)
 			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.numFirstItemSelected));
 		}
 		
 		//arrows
 		
 		private var containerBtnArrow: Sprite;
-		protected var arrBtnArrowPrevNext: Array;
+		protected var vecBtnArrowPrevNext: Vector.<BtnArrow>;
 		
 		private function createArrows(): void {
-			this.arrBtnArrowPrevNext = new Array(2);
+			this.vecBtnArrowPrevNext = new Vector.<BtnArrow>(2);
 			this.containerBtnArrow = new Sprite();
-			for (var i: uint = 0; i < this.arrBtnArrowPrevNext.length; i++) {
+			for (var i: uint = 0; i < this.vecBtnArrowPrevNext.length; i++) {
 				var classBtnArrowPrevNext: Class = this.getClassBtnArrowPrevNext();
 				var btnArrowPrevNext: BtnArrow = new classBtnArrowPrevNext(i);
 				btnArrowPrevNext.isEnabled = true;
 				btnArrowPrevNext.addEventListener(EventBtnHit.CLICKED, this.onBtnArrowClicked);
 				this.containerBtnArrow.addChild(btnArrowPrevNext);	
-				this.arrBtnArrowPrevNext[i] = btnArrowPrevNext;
+				this.vecBtnArrowPrevNext[i] = btnArrowPrevNext;
 			}
 			this.addChild(this.containerBtnArrow);
 			this.setPositionArrowsInit();
@@ -148,14 +144,19 @@ package tl.gallery {
 			this.selectPrevNextItem(BtnArrow(e.target).isPrevNext);
 		}
 		
+		private function checkIsEdgeInnerItemAndBlockUnblockArrows(): void {
+			this.vecBtnArrowPrevNext[0].isEnabled = (this.numItemSelected > 0);
+			this.vecBtnArrowPrevNext[1].isEnabled = (this.numItemSelected < this.arrItem.length - 1);
+		}
+		
 		private function deleteArrows(): void {
-			for (var i: uint = 0; i < this.arrBtnArrowPrevNext.length; i++) {
-				var btnArrowPrevNext: BtnArrow = this.arrBtnArrowPrevNext[i];
+			for (var i: uint = 0; i < this.vecBtnArrowPrevNext.length; i++) {
+				var btnArrowPrevNext: BtnArrow = this.vecBtnArrowPrevNext[i];
 				btnArrowPrevNext.destroy();
 				this.containerBtnArrow.removeChild(btnArrowPrevNext);
 				btnArrowPrevNext = null;
 			}
-			this.arrBtnArrowPrevNext = [];
+			this.vecBtnArrowPrevNext = null;
 			this.removeChild(this.containerBtnArrow);
 			this.containerBtnArrow = null;
 		}
@@ -181,7 +182,6 @@ package tl.gallery {
 		}
 		
 		private function deleteTFNumItem(): void {
-			this.arrBtnArrowPrevNext = [];
 			this.removeChild(this.tfNumItem);
 			this.tfNumItem = null;
 		}
@@ -269,6 +269,7 @@ package tl.gallery {
 				this.numItemSelected = numItemSelected;
 				ItemGallery(this.arrItem[this.numItemSelected]).selected = true;
 				if (this.tfNumItem) this.setValueTFNumItem();
+				if ((this.optionsController.isArrow) && (!this.optionsController.isLoopItemsByArrow)) this.checkIsEdgeInnerItemAndBlockUnblockArrows();
 				var timeNumItemSelected: Number = MathExt.moduloPositive((this.numItemSelected - this.numFieldForItemSelected) * this.timeOne, this.timeTotal);
 				var diffTimeGlobal: Number = MathExt.minDiffWithSign(timeNumItemSelected, this.time, this.timeTotal);
 				TweenMax.to(this, Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
