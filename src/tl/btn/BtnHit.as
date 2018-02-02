@@ -143,7 +143,7 @@
 			//Tweener.removeTweens(this);
 			//Tweener.addTween(this, {time: 0.3, alpha: [0.3, 1][isDisabledEnabled], transition: "linear"});
 			//TweenNano.killTweensOf(this);
-			//TweenNano.to(this, 0.3, {alpha: [0.3, 1][isRemoveAdd], ease: Linear.easeNone});
+			//TweenNano.to(this, 0.3, {alpha: [0.3, 1][isDisabledEnabled], ease: Linear.easeNone});
 			for (var i: uint = 0; i < this.vecInjector.length; i++) {
 				var injector: InjectorBtnHit = this.vecInjector[i]
 				injector.setElementsIsEnabled(this, isDisabledEnabled);

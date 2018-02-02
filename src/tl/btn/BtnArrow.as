@@ -48,6 +48,11 @@
 			this.arrow = null;
 		}
 		
+		override protected function setElementsIsEnabled(isDisabledEnabled: uint): void {
+			TweenMax.killTweensOf(this);
+			TweenMax.to(this, 0.3, {alpha: [0.3, 1][isDisabledEnabled], ease: Linear.easeNone});
+		}
+		
 		override protected function createVecTweenMouseOutOver(): Vector.<TweenMax> {
 			var objTweenFrom: Object = {useFrames: (this.timeAnimArrow >= 1), immediateRender: true}
 			objTweenFrom[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow + [this.arrow[["width", "height"][this.isMoveXOrY]] + this.moveXYArrow, 0][this.isPrevNext];
