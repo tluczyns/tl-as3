@@ -323,6 +323,13 @@ package tl.gallery {
 		
 		protected function manageArrItemInField(numItemFirst: Number): void {}
 		
+		public function selectItemImmediately(numItemToSelect: uint = 0): void {
+			var currTimeMoveOneItem: Number = this.optionsVisual.timeMoveOneItem;
+			this.optionsVisual.timeMoveOneItem = 0;
+			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, numItemToSelect));
+			this.optionsVisual.timeMoveOneItem = currTimeMoveOneItem;
+		}
+		
 		public function destroy(): void {
 			if ((this.arrData) && (this.arrData.length)) {
 				this.deleteItems();
