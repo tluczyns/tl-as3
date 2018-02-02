@@ -9,7 +9,7 @@
 		
 		private var _isEnabled: Boolean;
 		private var isOver: Boolean;
-		protected var vecInjector: Vector.<InjectorBtnHit>;
+		public var vecInjector: Vector.<InjectorBtnHit>;
 		
 		public var hit: Sprite;
 		
