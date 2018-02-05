@@ -1,4 +1,4 @@
-package tl.gallery {
+package tl.galleryMulti {
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import tl.btn.BtnArrow;
