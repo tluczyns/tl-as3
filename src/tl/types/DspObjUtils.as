@@ -160,8 +160,8 @@
 			return {r: int(r*255),g: int(g*255), b: int(b*255)};
 		}
 		
-		static public function cloneGraphics(container: DisplayObjectContainer, colorToSet: int = -1,  alphaToSet: Number = 1): DisplayObjectContainer {
-			var containerClone: DisplayObjectContainer = new Sprite();
+		static public function cloneGraphics(container: DisplayObjectContainer, colorToSet: int = -1,  alphaToSet: Number = 1): Sprite {
+			var containerClone: Sprite = new Sprite();
 			for (var i: uint = 0; i < container.numChildren; i++) {
 				var child: DisplayObject = container.getChildAt(i);
 				var childClone: DisplayObject;
