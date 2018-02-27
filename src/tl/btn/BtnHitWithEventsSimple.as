@@ -3,6 +3,8 @@ package tl.btn {
 
 	public class BtnHitWithEventsSimple extends BtnHit implements IBtnWithEvents {
 		
+		public var isOutOver: uint;
+		
 		public function BtnHitWithEventsSimple(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
 			this.addBtnHitEvents();
 			super(hit, isEnabled, isConstruct);
@@ -21,10 +23,12 @@ package tl.btn {
 		}
 
 		private function onOver(event: EventBtnHit): void {
+			this.isOutOver = 1;
 			this.setElementsOnOutOver(1);
 		}
 		
 		private function onOut(event: EventBtnHit): void {
+			this.isOutOver = 0;
 			this.setElementsOnOutOver(0);
 		}
 		

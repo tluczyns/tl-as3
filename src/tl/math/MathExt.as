@@ -157,6 +157,14 @@ package tl.math {
 			return new Point(pointLineStart.x + u * (pointLineEnd.x - pointLineStart.x), pointLineStart.y + u * (pointLineEnd.y - pointLineStart.y));
 		}
 		
+		static public function rotatePoint(pointToRotate: Object, angleRadians: Number, pointReference: Object = null): Point {
+			if (!pointReference) pointReference = new Point(0, 0);
+			return new Point(
+				(pointToRotate.x - pointReference.x) * Math.cos(angleRadians) - (pointToRotate.y - pointReference.y) * Math.sin(angleRadians) + pointReference.x,
+				(pointToRotate.x - pointReference.x) * Math.sin(angleRadians) + (pointToRotate.y - pointReference.y) * Math.cos(angleRadians) + pointReference.y
+			);
+		}
+		
 		static public function xor(lhs: Boolean, rhs: Boolean): Boolean {
 			return !(lhs && rhs) && (lhs || rhs);
 		}
