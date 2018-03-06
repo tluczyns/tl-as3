@@ -18,36 +18,36 @@ package tl.shader {
 		//TO DO
 		
 		static public function applySoftLight(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, SoftLightShader);		
 		}
 		
 		static public function applySaturation(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, SaturationShader);		
 		}
 		
 		static public function applyLuminosity(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, LuminosityShader);		
 		}
 		
 		static public function applyLuminosityMask(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, LuminosityMaskShader);		
 		}
 		
 		static public function applyHue(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, HueShader);
 		}
 		
 		static public function applyExclusion(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, ExclusionShader);
 		}
 		
 		static public function applyColor(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, ColorShader);
 		}
 		
 		
 		static public function applyColorBurn(bmpData: BitmapData): void {
-		
+			ShaderUtils.applyShader(bmpData, ColorBurnShader);
 		}
 		
 		static public function applyColorDodge(bmpData: BitmapData): void {
