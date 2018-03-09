@@ -10,7 +10,7 @@
 		private var isConstructed: Boolean = false;
 		private var _isEnabled: Boolean;
 		private var isOver: Boolean;
-		protected var vecInjector: Vector.<InjectorBtnHit>;
+		public var vecInjector: Vector.<InjectorBtnHit>;
 		
 		public var hit: Sprite;
 		
@@ -82,7 +82,7 @@
 			this.hit.tabEnabled = false;
 			if (!this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = true;
+				this.hit.mouseEnabled = this.hit.mouseChildren = this.hit.buttonMode = true;
 				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -94,7 +94,7 @@
 		private function removeMouseEvents(): void {
 			if (this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = false;
+				this.hit.mouseEnabled = this.hit.mouseChildren = this.hit.buttonMode = false;
 				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);

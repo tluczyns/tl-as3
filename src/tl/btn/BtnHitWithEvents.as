@@ -4,7 +4,7 @@ package tl.btn {
 
 	public class BtnHitWithEvents extends BtnHitWithEventsSimple implements IBtnWithEvents {
 		
-		private var vecTweenMouseOutOver: Vector.<TweenMax>;
+		public var vecTweenMouseOutOver: Vector.<TweenMax>;
 		
 		public function BtnHitWithEvents(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
 			this.vecTweenMouseOutOver = this.createVecTweenMouseOutOver();

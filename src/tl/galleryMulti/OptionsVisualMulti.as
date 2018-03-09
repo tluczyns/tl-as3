@@ -6,9 +6,9 @@ package tl.galleryMulti {
 		public var isDepthManagement: Boolean;
 		public var isAlphaManagement: Boolean;
 		public var timeMoveOneRenderable: Number;
-		public var easeMoveRenderables: Function;
+		public var easeMoveRenderables: *;
 		
-		public function OptionsVisualMulti(isDepthManagement: Boolean = true, isAlphaManagement: Boolean = true, timeMoveOneRenderable: Number = 0.7, easeMoveRenderables: Function = null): void {
+		public function OptionsVisualMulti(isDepthManagement: Boolean = true, isAlphaManagement: Boolean = true, timeMoveOneRenderable: Number = 0.7, easeMoveRenderables: * = null): void {
 			this.isDepthManagement = isDepthManagement;
 			this.isAlphaManagement = isAlphaManagement;
 			this.timeMoveOneRenderable = timeMoveOneRenderable;
