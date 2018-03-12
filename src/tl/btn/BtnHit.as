@@ -7,7 +7,7 @@
 	
 	public class BtnHit extends MovieClip implements IBtn {
 		
-		private var isConstructed: Boolean = false;
+		protected var isConstructed: Boolean = false;
 		private var _isEnabled: Boolean;
 		private var isOver: Boolean;
 		public var vecInjector: Vector.<InjectorBtnHit>;
