@@ -142,7 +142,6 @@ package tl.game.firework {
 			this.removeLines();
 			this.removeSoundFirework();
 			this.parent.removeChild(this);
-			delete this;
 		}
 		
 	}
