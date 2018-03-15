@@ -7,6 +7,7 @@
 	
 	public class BtnHit extends MovieClip implements IBtn {
 		
+		protected var isConstructed: Boolean = false;
 		private var _isEnabled: Boolean;
 		private var isOver: Boolean;
 		public var vecInjector: Vector.<InjectorBtnHit>;
@@ -22,8 +23,8 @@
 			this.initHit(hit);
 			this.addMouseEventsForIsOver();
 			this.isOver = false;
-			this._isEnabled = !isEnabled;
 			this.isEnabled = isEnabled;
+			this.isConstructed = true;
 		}
 		
 		//hit
@@ -81,7 +82,7 @@
 			this.hit.tabEnabled = false;
 			if (!this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.hit.mouseEnabled = this.hit.mouseChildren = this.hit.buttonMode = true;
+				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = true;
 				this.hit.addEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.addEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -93,7 +94,7 @@
 		private function removeMouseEvents(): void {
 			if (this.hit.buttonMode) {
 				this.dispatchEvent(new EventBtnHit(EventBtnHit.OUT));
-				this.hit.mouseEnabled = this.hit.mouseChildren = this.hit.buttonMode = false;
+				this.mouseEnabled = this.mouseChildren = this.hit.buttonMode = false;
 				this.hit.removeEventListener(MouseEvent.MOUSE_OVER, this.onMouseOver);
 				this.hit.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 				this.hit.removeEventListener(MouseEvent.MOUSE_DOWN, this.onMouseDown);
@@ -129,7 +130,7 @@
 		}
 		
 		public function set isEnabled(value: Boolean): void {
-			if (value != this._isEnabled) {
+			if ((value != this._isEnabled) || (!this.isConstructed)) {
 				if ((this.isOver) && (!value)) this.onMouseOut(null);
 				this._isEnabled = value;
 				this.setElementsIsEnabled(uint(value));
