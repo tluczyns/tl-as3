@@ -1,5 +1,4 @@
 ﻿package tl.types {
-	import flash.display.GraphicsSolidFill;
 	import tl.types.Singleton;
 	import flash.utils.Dictionary;
 	import com.greensock.plugins.TweenPlugin;
@@ -14,14 +13,15 @@
 	import flash.utils.getQualifiedSuperclassName;
 	import flash.text.TextField;
 	import flash.text.TextFormat;
-	import flash.display.Sprite;
 	import flash.display.MovieClip;
 	import com.greensock.plugins.FramePlugin;
 	import flash.geom.Matrix;
 	import flash.geom.Matrix3D;
 	import flash.display.DisplayObjectContainer;
+	import flash.display.Sprite;
 	import flash.display.Shape;
 	import flash.display.IGraphicsData;
+	import flash.display.GraphicsSolidFill;
 	import flash.display.Bitmap;
 	
 	public class DspObjUtils extends Singleton {
@@ -210,6 +210,15 @@
 				Shape(dspObj).graphics.clear();
 			}
 			dspObj = null;
+		}
+		
+		static public function stopPlayAllMovieClips(dspObj: DisplayObject, isStopPlay: uint): void {
+			if (dspObj is MovieClip)
+				MovieClip(dspObj)[["stop","play"][isStopPlay]]();
+			if (dspObj is DisplayObjectContainer) {
+				for (var i: uint = 0; i < DisplayObjectContainer(dspObj).numChildren; i++)
+					DspObjUtils.stopPlayAllMovieClips(DisplayObjectContainer(dspObj).getChildAt(i), isStopPlay);
+			}
 		}
 		
 	}

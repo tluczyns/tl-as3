@@ -166,7 +166,7 @@
 		
 		//
 		
-		protected function removeHit(): void {
+		protected function deleteHit(): void {
 			if (this.hit != null) {
 				this.removeChild(this.hit);
 				this.hit = null;
@@ -176,10 +176,12 @@
 		public function destroy(): void {
 			//Tweener.removeTweens(this);
 			//TweenNano.killTweensOf(this);
-			this._isEnabled = false;
-			this.removeMouseEvents();
-			this.removeMouseEventsForIsOver();
-			this.removeHit();
+			if (this.isConstructed) {
+				this._isEnabled = false;
+				this.removeMouseEvents();
+				this.removeMouseEventsForIsOver();
+				this.deleteHit();
+			}
 		}
 		
 	}
