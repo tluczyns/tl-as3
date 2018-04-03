@@ -22,6 +22,8 @@ package tl.btn {
 			for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
 				var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
 				tweenMouseOutOver.paused(isPausedVecTweenMouseOutOver);
+				if (isPausedVecTweenMouseOutOver) tweenMouseOutOver.pause(0);
+				else tweenMouseOutOver.resume(0);
 			}
 		}
 		
