@@ -57,7 +57,7 @@ package tl.loader {
 			this.loaderProgress = this.createLoaderProgress();
 			//this.loaderProgress.alpha = 0;
 			this.addChild(this.loaderProgress);
-			TweenNano.from(this.loaderProgress, LoaderSwfOne.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.startLoading});
+			TweenNano.from(this.loaderProgress, LoaderSwfMultiple.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.startLoading});
 			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 1, transition: "linear", onComplete: this.startLoading});
 		}
 		
@@ -88,7 +88,7 @@ package tl.loader {
 		}
 		
 		protected function hideLoaderProgressAndShowSwf(): void {
-			TweenNano.to(this.loaderProgress, LoaderSwfOne.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.removeLoaderProgressAndShowSwf});
+			TweenNano.to(this.loaderProgress, LoaderSwfMultiple.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.removeLoaderProgressAndShowSwf});
 			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 0, transition: "linear", onComplete: this.removeLoaderProgressAndShowSwf})
 		}
 		
@@ -115,7 +115,7 @@ package tl.loader {
 			this.initSwfVariables();
 			this.addChild(this.swfApplication);
 			this.swfApplication.alpha = 1 - uint(this.isTweenShow);
-			if (this.isTweenShow) TweenNano.from(this.swfApplication, LoaderSwfOne.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
+			if (this.isTweenShow) TweenNano.from(this.swfApplication, LoaderSwfMultiple.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
 			//if (this.isTweenShow) Tweener.addTween(this.swfApplication, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 1, transition: "linear", onComplete: this.initSwf})
 			else this.initSwf();
 		}
