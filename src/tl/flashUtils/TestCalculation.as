@@ -9,7 +9,7 @@ package tl.flashUtils {
 		}
 		
 		override public function start(): void {
-			if (!Capabilities.isDebugger) {
+			//if (!Capabilities.isDebugger) {
 				super.start();
 				for (var i:int = 0; i < 20000000; i++) {
 					var test:int = i;
@@ -27,7 +27,7 @@ package tl.flashUtils {
 					var testBitShiftFloor: Number = n >> 0;
 				}
 				this._speed = 1 / (getTimer() - this.timeStart);
-			} else this._speed = -1
+			//} else this._speed = -1
 		}
 		
 	}
