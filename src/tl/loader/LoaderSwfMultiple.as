@@ -35,6 +35,7 @@ package tl.loader {
 			for (var i: uint = 0; i < arrNameSwf.length; i++)
 				this.arrPathSwf[i] = pathAssets + addToPathSwf + arrNameSwf[i];
 			this.numSwfApplication = numSwfApplication;
+			this.arrWeightSwf = arrWeightSwf;
 			if (!this.arrWeightSwf) {
 				this.arrWeightSwf = new Array(this.arrPathSwf.length);
 				for (i = 0; i < this.arrPathSwf.length; i++)
