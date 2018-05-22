@@ -166,37 +166,46 @@
 			var containerClone: Sprite = new Sprite();
 			for (var i: uint = 0; i < container.numChildren; i++) {
 				var child: DisplayObject = container.getChildAt(i);
-				var childClone: DisplayObject;
-				if (child is Shape) {
-					childClone = new Shape();
-					var graphicsChild: Vector.<IGraphicsData> = Shape(child).graphics.readGraphicsData();
-					if (colorToSet != -1) {
-						for each (var iGraphicsData: IGraphicsData in graphicsChild) {
-							if (iGraphicsData is GraphicsSolidFill) {
-								GraphicsSolidFill(iGraphicsData).color = colorToSet;
-								GraphicsSolidFill(iGraphicsData).alpha = alphaToSet;
+				if ((child.visible) && (child.alpha > 0)) {
+					var childClone: DisplayObject;
+					if (child is Shape) {
+						childClone = new Shape();
+						var graphicsChild: Vector.<IGraphicsData> = Shape(child).graphics.readGraphicsData();
+						if (colorToSet != -1) {
+							for each (var iGraphicsData: IGraphicsData in graphicsChild) {
+								if (iGraphicsData is GraphicsSolidFill) {
+									GraphicsSolidFill(iGraphicsData).color = colorToSet;
+									GraphicsSolidFill(iGraphicsData).alpha = alphaToSet;
+								}
 							}
 						}
-					}
-					Shape(childClone).graphics.drawGraphicsData(graphicsChild);
-				} else if (child is DisplayObjectContainer) childClone = DspObjUtils.cloneGraphics(DisplayObjectContainer(child), colorToSet, alphaToSet);
-				containerClone.addChild(childClone);
+						Shape(childClone).graphics.drawGraphicsData(graphicsChild);
+					} else if (child is DisplayObjectContainer) childClone = DspObjUtils.cloneGraphics(DisplayObjectContainer(child), colorToSet, alphaToSet);
+					DspObjUtils.cloneDspObjProps(childClone, child);
+					containerClone.addChild(childClone);
+				}
 			}
 			return containerClone;
 		}
 		
-		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object): void {
+		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object, isTryCloneName: Boolean = true): void {
 			dspObjSrc = dspObjSrc || {};
 			dspObjSrc.scaleX = dspObjSrc.scaleX || dspObjSrc.scale;
 			dspObjSrc.scaleY = dspObjSrc.scaleY || dspObjSrc.scale;
-			try {
-				if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
-			} catch (e: Error) {}
-			dspObjTarget.x = dspObjSrc.x || 0;
-			dspObjTarget.y = dspObjSrc.y || 0;
-			dspObjTarget.rotation = dspObjSrc.rotation || 0;
-			dspObjTarget.scaleX = dspObjSrc.scaleX || 1;
-			dspObjTarget.scaleY = dspObjSrc.scaleY || 1;
+			if (isTryCloneName) {
+				try {
+					if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
+				} catch (e: Error) {}
+			}
+			if ((dspObjSrc is DisplayObject) && (dspObjTarget is DisplayObject))
+				DisplayObject(dspObjTarget).transform.matrix = DisplayObject(dspObjSrc).transform.matrix.clone();
+			else {
+				dspObjTarget.x = dspObjSrc.x || 0;
+				dspObjTarget.y = dspObjSrc.y || 0;
+				dspObjTarget.rotation = dspObjSrc.rotation || 0;
+				dspObjTarget.scaleX = dspObjSrc.scaleX || 1;
+				dspObjTarget.scaleY = dspObjSrc.scaleY || 1;
+			}
 		}
 		
 		static public function deleteDspObj(dspObj: DisplayObject): void {
