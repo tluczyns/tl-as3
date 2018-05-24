@@ -32,10 +32,10 @@
 		private function initHit(hit: Sprite = null, rectDimension: Rectangle = null): void {
 			if (this.hit == null) { 
 				if (!hit) hit = this.createGenericHit(rectDimension);
-				this.addChild(hit);
 				this.hit = hit;
 			}
-			if (this.numChildren > 0) this.setChildIndex(this.hit, this.numChildren - 1);
+			this.addChild(this.hit);
+			this.setChildIndex(this.hit, this.numChildren - 1);
 			this.hit.alpha = 0;
 		}
 		
