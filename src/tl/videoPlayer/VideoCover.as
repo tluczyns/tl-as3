@@ -49,8 +49,8 @@
 		
 		private function hideShowMarkPausePlay(isHideShow: uint, isFromMouseOrEvent: uint): void {
 			var targetAlpha: Number;
-			if (isHideShow == 0) targetAlpha = [0, 0.2][uint(this.isOver)]
-			else if (isHideShow == 1) targetAlpha = [0.2, 1][isFromMouseOrEvent];
+			if (isHideShow == 0) targetAlpha = [0, 0.15][uint(this.isOver)]
+			else if (isHideShow == 1) targetAlpha = [0.15, 1][isFromMouseOrEvent];
 			TweenNano.killTweensOf(this.markPausePlay);
 			TweenNano.to(this.markPausePlay, 5, {alpha: targetAlpha, ease: Linear.easeNone, delay: [0, 5][uint((isFromMouseOrEvent == 1) && (isHideShow == 1))], useFrames: true});
 		}
