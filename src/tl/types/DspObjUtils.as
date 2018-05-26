@@ -188,7 +188,50 @@
 			return containerClone;
 		}
 		
-		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object, isTryCloneName: Boolean = true): void {
+		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object, isTryCloneName: Boolean = true, isSetMrxTransformWithParent: Boolean = false, parentDspObjSrcUntilWhichCopyDspObjProps: DisplayObjectContainer = null): void {
+			dspObjSrc = dspObjSrc || {};
+			dspObjSrc.scaleX = dspObjSrc.scaleX || dspObjSrc.scale;
+			dspObjSrc.scaleY = dspObjSrc.scaleY || dspObjSrc.scale;
+			if (isTryCloneName) {
+				try {
+					if (dspObjSrc.name) dspObjTarget.name = dspObjSrc.name;
+				} catch (e: Error) {}
+			}
+			var mrxTransformSrc: Matrix;
+			var mrxTransformSrcWithParent: Matrix;
+			if (dspObjSrc is DisplayObject) {
+				mrxTransformSrc = DisplayObject(dspObjSrc).transform.matrix.clone();
+				if ((isSetMrxTransformWithParent) && (parentDspObjSrcUntilWhichCopyDspObjProps)) {
+					mrxTransformSrcWithParent = mrxTransformSrc.clone();
+					var parentDspObjSrc: DisplayObjectContainer = DisplayObject(dspObjSrc).parent;
+					while ((parentDspObjSrc) && (parentDspObjSrc != parentDspObjSrcUntilWhichCopyDspObjProps)) {
+						mrxTransformSrcWithParent.concat(parentDspObjSrc.transform.matrix);
+						parentDspObjSrc = parentDspObjSrc.parent;
+					}
+				}
+			} else {
+				mrxTransformSrc = dspObjSrc.mrxTransform;
+				if (isSetMrxTransformWithParent) mrxTransformSrcWithParent = dspObjSrc.mrxTransformWithParent;
+			}
+			var mrxTransformTarget: Matrix = [mrxTransformSrc, mrxTransformSrcWithParent][uint(isSetMrxTransformWithParent)];
+			if  (mrxTransformSrc) {
+				if (dspObjTarget is DisplayObject)
+					DisplayObject(dspObjTarget).transform.matrix = mrxTransformTarget;
+				else {
+					dspObjTarget.mrxTransform = mrxTransformSrc;
+					dspObjTarget.mrxTransformWithParent = mrxTransformSrcWithParent;
+				}
+			}
+			if ((!mrxTransformSrc) || (!(dspObjTarget is DisplayObject))) {
+				dspObjTarget.x = (mrxTransformTarget ? mrxTransformTarget.tx : dspObjSrc.x) || 0;
+				dspObjTarget.y = (mrxTransformTarget ? mrxTransformTarget.ty : dspObjSrc.y) || 0;
+				dspObjTarget.rotation = (mrxTransformTarget ? (Math.atan(mrxTransformTarget.c / mrxTransformTarget.d) || Math.atan(- mrxTransformTarget.b / mrxTransformTarget.a)) : dspObjSrc.rotation) || 0;
+				dspObjTarget.scaleX = (mrxTransformTarget ? Math.sqrt(Math.pow(mrxTransformTarget.a, 2) + Math.pow(mrxTransformTarget.b, 2)) : dspObjSrc.scaleX) || 1;
+				dspObjTarget.scaleY = (mrxTransformTarget ? Math.sqrt(Math.pow(mrxTransformTarget.c, 2) + Math.pow(mrxTransformTarget.d, 2)) : dspObjSrc.scaleY) || 1;
+			}
+		}
+		
+		/*static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object, isTryCloneName: Boolean = true): void {
 			dspObjSrc = dspObjSrc || {};
 			dspObjSrc.scaleX = dspObjSrc.scaleX || dspObjSrc.scale;
 			dspObjSrc.scaleY = dspObjSrc.scaleY || dspObjSrc.scale;
@@ -206,7 +249,7 @@
 				dspObjTarget.scaleX = dspObjSrc.scaleX || 1;
 				dspObjTarget.scaleY = dspObjSrc.scaleY || 1;
 			}
-		}
+		}*/
 		
 		static public function deleteDspObj(dspObj: DisplayObject): void {
 			if (dspObj is DisplayObjectContainer) {
