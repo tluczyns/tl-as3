@@ -201,6 +201,7 @@
 			var mrxTransformSrcWithParent: Matrix;
 			if (dspObjSrc is DisplayObject) {
 				mrxTransformSrc = DisplayObject(dspObjSrc).transform.matrix.clone();
+				DisplayObject(dspObjSrc).transform.matrix = mrxTransformSrc; //needed - bug in flash?
 				if ((isSetMrxTransformWithParent) && (parentDspObjSrcUntilWhichCopyDspObjProps)) {
 					mrxTransformSrcWithParent = mrxTransformSrc.clone();
 					var parentDspObjSrc: DisplayObjectContainer = DisplayObject(dspObjSrc).parent;
