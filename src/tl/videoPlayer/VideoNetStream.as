@@ -120,7 +120,7 @@ package tl.videoPlayer {
 					else this.isTimeBAForSeekChanged = false;
 					time += this.timeBAForSeek;
 				}
-				var ratioPlayedTimeStream: Number = time / this.metadata.duration;
+				var ratioPlayedTimeStream: Number = Math.min(time / this.metadata.duration, 1);
 				ModelVideoPlayer.dispatchEvent(EventModelVideoPlayer.STREAM_PROGRESS, ratioPlayedTimeStream);
 			}
 		}
