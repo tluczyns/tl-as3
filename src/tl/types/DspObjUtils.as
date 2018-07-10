@@ -274,6 +274,17 @@
 			}
 		}
 		
+		static public function lookForChild(container: DisplayObjectContainer, classChildToFind: Class = null, nameChildToFind: String = null): DisplayObject {
+			var childFound: DisplayObject = null;
+			var i: uint = 0;
+			while ((!childFound) && (i < container.numChildren)) {
+				var child: DisplayObject = container.getChildAt(i++);
+				if (((classChildToFind) && (child is classChildToFind)) || ((nameChildToFind) && (child.name == nameChildToFind))) childFound = child;
+				else if (child is DisplayObjectContainer) childFound = DspObjUtils.lookForChild(DisplayObjectContainer(child), classChildToFind, nameChildToFind);
+			}
+			return childFound;
+		}
+		
 	}
 
 }
