@@ -20,11 +20,11 @@ package tl.tf {
 			tf.wordWrap = [false, true][isSingleMultiLine];
 			tf.antiAliasType = [AntiAliasType.NORMAL, AntiAliasType.ADVANCED][isAntiAliasNormalAdvanced];
 			tf.autoSize = [[TextFieldAutoSize.LEFT, TextFieldAutoSize.CENTER, TextFieldAutoSize.NONE][isAutoSizeLeftCenterNone], TextFieldAutoSize.LEFT][isDynamicInput];
-			if (isDynamicInput == 1) {
+			/*if (isDynamicInput == 1) {
 				var heightForInputText: Number = tf.height + 5;
 				tf.autoSize = TextFieldAutoSize.NONE;
 				tf.height = heightForInputText;
-			}
+			}*/
 			var isFont: Boolean = ((tFormat != null) && (TextFieldUtilsLite.isFontExists(tFormat.font)));
 			tf.embedFonts = isFont;
 			if (tFormat != null) {
