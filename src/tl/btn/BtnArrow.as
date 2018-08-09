@@ -35,14 +35,14 @@
 			return hit;
 		}
 		
-		private function initArrow(arrow: DisplayObject = null): void {
+		protected function initArrow(arrow: DisplayObject = null): void {
 			if ((this.arrow == null) && (arrow != null)) {
 				this.addChild(arrow);
 				this.arrow = arrow;
 			}
 		}
 		
-		private function deleteArrow(): void {
+		protected function deleteArrow(): void {
 			TweenMax.killTweensOf(this.arrow);
 			this.removeChild(this.arrow);
 			this.arrow = null;

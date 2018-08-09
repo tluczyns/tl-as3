@@ -34,9 +34,9 @@ package tl.gallery {
 			/*arrData = [0xff0000, 0x00ff00, 0x0000ff, 0xff00ff, 0x00ffff, 0xffff00];
 			this.x = this.y = 300;*/
 			this.arrData = arrData;
+			this.optionsController = optionsController || new OptionsController();
+			this.optionsVisual = optionsVisual || new OptionsVisual();
 			if ((this.arrData) && (this.arrData.length)) {
-				this.optionsController = optionsController || new OptionsController();
-				this.optionsVisual = optionsVisual || new OptionsVisual();
 				this.arrItemInField = [];
 				this.createItems();
 				this.numFieldForItemSelected = (numFieldForItemSelected == -1) ? Math.ceil((this.lengthArrItemInField - 1) / 2) - 1 : numFieldForItemSelected;
@@ -114,12 +114,12 @@ package tl.gallery {
 		
 		//arrows
 		
-		private var containerBtnArrow: Sprite;
-		protected var vecBtnArrowPrevNext: Vector.<BtnArrow>;
+		public var containerBtnArrow: Sprite;
+		public var vecBtnArrowPrevNext: Vector.<BtnArrow>;
 		
 		private function createArrows(): void {
 			this.vecBtnArrowPrevNext = new Vector.<BtnArrow>(2);
-			this.containerBtnArrow = new Sprite();
+			this.containerBtnArrow = this.getContainerBtnArrow();
 			for (var i: uint = 0; i < this.vecBtnArrowPrevNext.length; i++) {
 				var classBtnArrowPrevNext: Class = this.getClassBtnArrowPrevNext();
 				var btnArrowPrevNext: BtnArrow = new classBtnArrowPrevNext(i);
@@ -132,11 +132,15 @@ package tl.gallery {
 			this.setPositionArrowsInit();
 		}
 		
+		protected function getContainerBtnArrow(): Sprite {
+			return new Sprite();
+		}
+		
 		protected function getClassBtnArrowPrevNext(): Class {
 			return BtnArrow;
 		}
 		
-		protected function setPositionArrowsInit(): void { }
+		protected function setPositionArrowsInit(): void {}
 		
 		protected function setPositionArrowsOnItem(): void {}
 
@@ -163,7 +167,7 @@ package tl.gallery {
 		
 		//tfNumItem
 		
-		protected var tfNumItem: TextField;
+		public var tfNumItem: TextField;
 		
 		private function createTFNumItem(): void {
 			this.tfNumItem = this.getTFNumItem();

@@ -17,6 +17,7 @@
 		public function BtnHit(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
 			this.vecInjector = new Vector.<InjectorBtnHit>();
 			if (isConstruct) this.construct(hit, isEnabled);
+			else this.hit = hit;
 		}
 		
 		public function construct(hit: Sprite = null, isEnabled: Boolean = true): void {
