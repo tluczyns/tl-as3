@@ -16,7 +16,7 @@ package tl.gallery {
 	
 	public class GalleryCircle extends Sprite {
 		
-		protected var arrData: Array;
+		public var arrData: Array;
 		public var arrItem: Array;
 		protected var containerItem: Sprite;
 		protected var arrItemInField: Array;
