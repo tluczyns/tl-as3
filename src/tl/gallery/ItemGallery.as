@@ -5,7 +5,7 @@ package tl.gallery {
 	
 	public class ItemGallery extends BtnHitWithEvents {
 		
-		protected var gallery: GalleryCircle;
+		public var gallery: GalleryCircle;
 		public var num: uint;
 		protected var objData: Object;
 		public var time: Number;

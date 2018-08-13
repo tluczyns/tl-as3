@@ -142,7 +142,7 @@ package tl.gallery {
 		
 		protected function setPositionArrowsInit(): void {}
 		
-		protected function setPositionArrowsOnItem(): void {}
+		protected function setPositionArrowsOnItemSelected(): void {}
 
 		protected function onBtnArrowClicked(e: EventBtnHit): void {
 			this.selectPrevNextItem(BtnArrow(e.target).isPrevNext);
@@ -181,9 +181,11 @@ package tl.gallery {
 		
 		protected function setPositionTFNumItemInit(): void {}
 		
-		protected function setValueTFNumItem(): void {
+		private function setValueTFNumItem(): void {
 			this.tfNumItem.text = String(this.numItemSelected + 1) + "/" + String(this.arrItem.length);
 		}
+		
+		protected function setPositionTFNumItemOnItemSelected(): void {}
 		
 		private function deleteTFNumItem(): void {
 			this.removeChild(this.tfNumItem);
@@ -272,12 +274,15 @@ package tl.gallery {
 				if (this.numItemSelected != -1) ItemGallery(this.arrItem[this.numItemSelected]).selected = false;
 				this.numItemSelected = numItemSelected;
 				ItemGallery(this.arrItem[this.numItemSelected]).selected = true;
-				if (this.tfNumItem) this.setValueTFNumItem();
+				if (this.tfNumItem) {
+					this.setValueTFNumItem();
+					this.setPositionTFNumItemOnItemSelected();
+				}
 				if ((this.vecBtnArrowPrevNext) && (!this.optionsController.isLoopItemsByArrow)) this.checkIsEdgeInnerItemAndBlockUnblockArrows();
+				if (this.containerBtnArrow) this.setPositionArrowsOnItemSelected();
 				var timeNumItemSelected: Number = MathExt.moduloPositive((this.numItemSelected - this.numFieldForItemSelected) * this.timeOne, this.timeTotal);
 				var diffTimeGlobal: Number = MathExt.minDiffWithSign(timeNumItemSelected, this.time, this.timeTotal);
 				TweenMax.to(this, Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
-				if (this.containerBtnArrow) this.setPositionArrowsOnItem();
 			//}
 		}
 		
@@ -299,7 +304,7 @@ package tl.gallery {
 			//render
 			for (i = 0; i < this.arrItemInField.length; i++) {
 				itemInField = this.arrItem[(numItemFirst + i) % this.arrItem.length];
-				itemInField.render(itemInField.time, this.timeOne);
+				if (itemInField.time) itemInField.render(itemInField.time, this.timeOne);
 				this.arrItemInField[i] = itemInField;
 			}
 			//depth management
