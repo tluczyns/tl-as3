@@ -27,6 +27,7 @@ package tl.gallery {
 		protected var timeOne: Number;
 		private var timeTotal: Number;
 		protected var _time: Number;
+		public var timeAnimToItemSelected: Number;
 		public var optionsController: OptionsController;
 		protected var optionsVisual: OptionsVisual;
 		
@@ -282,7 +283,8 @@ package tl.gallery {
 				if (this.containerBtnArrow) this.setPositionArrowsOnItemSelected();
 				var timeNumItemSelected: Number = MathExt.moduloPositive((this.numItemSelected - this.numFieldForItemSelected) * this.timeOne, this.timeTotal);
 				var diffTimeGlobal: Number = MathExt.minDiffWithSign(timeNumItemSelected, this.time, this.timeTotal);
-				TweenMax.to(this, Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
+				this.timeAnimToItemSelected = Math.abs(diffTimeGlobal) / this.timeOne * this.optionsVisual.timeMoveOneItem
+				TweenMax.to(this, this.timeAnimToItemSelected, {time: this.time + diffTimeGlobal, ease: Quad.easeOut});
 			//}
 		}
 		
