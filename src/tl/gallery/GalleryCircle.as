@@ -351,7 +351,7 @@ package tl.gallery {
 					if (this.optionsController.isArrow) this.deleteArrows();
 					if (this.optionsController.isTFNumItem) this.deleteTFNumItem();
 				}
-				TweenMax.killTweensOf(this);
+				TweenMax.killTweensOf(this, false, {time: true});
 			}
 		}
 		
