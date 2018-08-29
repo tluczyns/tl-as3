@@ -89,18 +89,18 @@ package tl.loader {
 		}
 		
 		protected function hideLoaderProgressAndShowSwf(): void {
-			TweenNano.to(this.loaderProgress, LoaderSwfMultiple.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.removeLoaderProgressAndShowSwf});
-			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 0, transition: "linear", onComplete: this.removeLoaderProgressAndShowSwf})
+			TweenNano.to(this.loaderProgress, LoaderSwfMultiple.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.deleteLoaderProgressAndShowSwf});
+			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 0, transition: "linear", onComplete: this.deleteLoaderProgressAndShowSwf})
 		}
 		
-		protected function removeLoaderProgress(): void {
+		protected function deleteLoaderProgress(): void {
 			this.loaderProgress.destroy();
 			this.removeChild(this.loaderProgress);
 			this.loaderProgress = null;
 		}
 
-		private function removeLoaderProgressAndShowSwf(): void {
-			this.removeLoaderProgress();
+		private function deleteLoaderProgressAndShowSwf(): void {
+			this.deleteLoaderProgress();
 			this.showSwf();
 		}
 		
