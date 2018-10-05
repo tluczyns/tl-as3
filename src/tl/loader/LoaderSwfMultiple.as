@@ -46,20 +46,20 @@ package tl.loader {
 			this.prepareQueueLoadContent();
 		}
 		
-		protected function createLoaderProgress(): LoaderProgress {
-			return new LoaderProgress(null, this.isTLOrCenterAnchorPointWhenCenterOnStage);
-		}
-		
-		protected function get isTLOrCenterAnchorPointWhenCenterOnStage(): uint {
-			return 0;
-		}
-		
 		protected function createAndInitLoaderProgress(): void {
 			this.loaderProgress = this.createLoaderProgress();
 			//this.loaderProgress.alpha = 0;
 			this.addChild(this.loaderProgress);
 			TweenNano.from(this.loaderProgress, LoaderSwfMultiple.TIME_HIDE_SHOW, {alpha: 0, ease: Linear.easeNone, onComplete: this.startLoading});
 			//Tweener.addTween(this.loaderProgress, {time: LoaderSwfMultiple.TIME_HIDE_SHOW, alpha: 1, transition: "linear", onComplete: this.startLoading});
+		}
+		
+		protected function createLoaderProgress(): LoaderProgress {
+			return new LoaderProgress(null, this.isTLOrCenterAnchorPointWhenCenterOnStage);
+		}
+		
+		protected function get isTLOrCenterAnchorPointWhenCenterOnStage(): uint {
+			return 0;
 		}
 		
 		private function prepareQueueLoadContent(): void {
