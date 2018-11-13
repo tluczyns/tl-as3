@@ -3,7 +3,7 @@ package tl.form {
 	import tl.service.DescriptionCall;
 	import flash.utils.Dictionary;
 	import flash.text.TextFormat;
-	import tl.so.SharedObjectInstance;
+	import tl.so.ISharedObject;
 	import tl.btn.BtnHit;
 	import tl.btn.InjectorBtnHitClickedOnKeyEnter;
 	import flash.events.Event;
@@ -12,6 +12,7 @@ package tl.form {
 	import flash.text.TextFieldAutoSize;
 	import flash.geom.Point;
 	import flash.events.FocusEvent;
+	import tl.so.SharedObjectInstance;
 	import tl.btn.EventBtnHit;
 	import tl.types.DspObjUtils;
 	import com.hurlant.util.Base64;
@@ -31,7 +32,7 @@ package tl.form {
 		private var dictTFToBgTF: Dictionary;
 		protected var dictTFToTFMessageForTF: Dictionary;
 		private var tFormatMessageForTF: TextFormat;
-		private var so: SharedObjectInstance;
+		private var so: ISharedObject;
 		protected var dictTFToStrInit: Dictionary;
 		private var dictTFToIsNoData: Dictionary;
 		protected var arrTF: Array;
@@ -41,14 +42,14 @@ package tl.form {
 		private var injectorBtnSubmitClickedOnKeyEnter: InjectorBtnHitClickedOnKeyEnter;
 		private var idCallSubmitForm: int;
 		
-		public function Form(descriptionCall: DescriptionCall, soName: String = "", tFormatMessageForTF: TextFormat = null, colorsTFWithBg: ColorsTFWithBg = null, isEnterListener: Boolean = true): void {
+		public function Form(descriptionCall: DescriptionCall, nameSO: String = "", tFormatMessageForTF: TextFormat = null, colorsTFWithBg: ColorsTFWithBg = null, isEnterListener: Boolean = true): void {
 			this.descriptionCall = descriptionCall;
 			this.colorsTFWithBg = colorsTFWithBg;
 			this.isEnterListener = isEnterListener;
 			this.initSoPropForTFs();
 			this.initBgTFForTFs();
 			this.initMessageTFForTFs(tFormatMessageForTF);
-			this.createSO(soName);
+			this.createSO(nameSO);
 			this.initTFs();
 			this.isSubmitting = false;
 			this.createBtnSubmit();
@@ -154,10 +155,14 @@ package tl.form {
 		
 		//so
 		
-		private function createSO(soName: String): void {
-			if ((soName) && (soName != "")) this.so = new SharedObjectInstance(soName);
+		private function createSO(nameSO: String): void {
+			if ((nameSO) && (nameSO != "")) this.so = this.getSO(nameSO);  
 		}
-
+		
+		protected function getSO(nameSO: String): ISharedObject {
+			return new SharedObjectInstance(nameSO);
+		}
+		
 		private function removeSO(): void {
 			if (this.so) {
 				this.so.destroy();
