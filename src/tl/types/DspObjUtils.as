@@ -1,4 +1,5 @@
 ﻿package tl.types {
+	import flash.display.GraphicsStroke;
 	import tl.types.Singleton;
 	import flash.utils.Dictionary;
 	import com.greensock.plugins.TweenPlugin;
@@ -162,30 +163,38 @@
 			return {r: int(r*255),g: int(g*255), b: int(b*255)};
 		}
 		
-		static public function cloneGraphics(container: DisplayObjectContainer, colorToSet: int = -1,  alphaToSet: Number = 1): Sprite {
-			var containerClone: Sprite = new Sprite();
-			for (var i: uint = 0; i < container.numChildren; i++) {
-				var child: DisplayObject = container.getChildAt(i);
-				if ((child.visible) && (child.alpha > 0)) {
-					var childClone: DisplayObject;
-					if (child is Shape) {
-						childClone = new Shape();
-						var graphicsChild: Vector.<IGraphicsData> = Shape(child).graphics.readGraphicsData();
-						if (colorToSet != -1) {
-							for each (var iGraphicsData: IGraphicsData in graphicsChild) {
-								if (iGraphicsData is GraphicsSolidFill) {
-									GraphicsSolidFill(iGraphicsData).color = colorToSet;
-									GraphicsSolidFill(iGraphicsData).alpha = alphaToSet;
-								}
-							}
+		static public function cloneGraphics(dspObject: DisplayObject, colorToSet: int = -1,  alphaToSet: Number = 1): DisplayObject {
+			var dspObjectClone: DisplayObject = null;
+			var classBaseDspObject: Class = (dspObject is Shape) ? Shape : ((dspObject is Sprite) ? Sprite : Object);
+			if ((classBaseDspObject == Shape) || (classBaseDspObject == Sprite)) {
+				dspObjectClone = new classBaseDspObject();
+				var graphicsDspObj: Vector.<IGraphicsData> = classBaseDspObject(dspObject).graphics.readGraphicsData();
+				if (colorToSet != -1) {
+					for each (var iGraphicsData: IGraphicsData in graphicsDspObj) {
+						var graphicsSolidFill: GraphicsSolidFill = null;
+						if (iGraphicsData is GraphicsSolidFill)	graphicsSolidFill = GraphicsSolidFill(iGraphicsData)
+						else if ((iGraphicsData is GraphicsStroke) && (GraphicsStroke(iGraphicsData).fill is GraphicsSolidFill)) graphicsSolidFill = GraphicsSolidFill(GraphicsStroke(iGraphicsData).fill);
+						if (graphicsSolidFill) {
+							graphicsSolidFill.color = colorToSet;
+							graphicsSolidFill.alpha = alphaToSet;
 						}
-						Shape(childClone).graphics.drawGraphicsData(graphicsChild);
-					} else if (child is DisplayObjectContainer) childClone = DspObjUtils.cloneGraphics(DisplayObjectContainer(child), colorToSet, alphaToSet);
-					DspObjUtils.cloneDspObjProps(childClone, child);
-					containerClone.addChild(childClone);
+					}
+				}
+				classBaseDspObject(dspObjectClone).graphics.drawGraphicsData(graphicsDspObj);
+			}
+			if (dspObject is DisplayObjectContainer) {
+				if (!dspObjectClone) dspObjectClone = new Sprite();
+				for (var i: uint = 0; i < DisplayObjectContainer(dspObject).numChildren; i++) {
+					var child: DisplayObject = DisplayObjectContainer(dspObject).getChildAt(i);
+					var childClone: DisplayObject = DspObjUtils.cloneGraphics(child, colorToSet, alphaToSet);
+					if (childClone) Sprite(dspObjectClone).addChild(childClone);
 				}
 			}
-			return containerClone;
+			DspObjUtils.cloneDspObjProps(dspObjectClone, dspObject, false);
+			dspObjectClone.visible = dspObject.visible;
+			if (alphaToSet == 1) dspObjectClone.alpha = dspObject.alpha;
+			dspObjectClone.blendMode = dspObject.blendMode;
+			return dspObjectClone;
 		}
 		
 		static public function cloneDspObjProps(dspObjTarget: Object, dspObjSrc: Object, isTryCloneName: Boolean = true, isSetMrxTransformWithParent: Boolean = false, parentDspObjSrcUntilWhichCopyDspObjProps: DisplayObjectContainer = null): void {
