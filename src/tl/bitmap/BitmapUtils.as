@@ -45,6 +45,13 @@ package tl.bitmap {
 			return bmpDataResult;
 		}
 		
+		static public function getBitmapDataCropByColorBounds(bmpDataSrc: BitmapData, colorToFind: uint): BitmapData {
+			var boundsBmpDataSrcByColor: Rectangle = bmpDataSrc.getColorBoundsRect(0xFFFFFFFF, colorToFind, false);
+			var bmpDataResult: BitmapData = new BitmapData(boundsBmpDataSrcByColor.width, boundsBmpDataSrcByColor.height, true, 0);
+			bmpDataResult.copyPixels(bmpDataSrc, boundsBmpDataSrcByColor, new Point(0, 0));
+			return bmpDataResult;
+		}
+		
 		static private function drawEraseGradientToBmpData(bmpDataToDrawEraseGradient: BitmapData, rotationGradient: Number, arrAlpha: Array = null, arrRatio: Array = null): void {
 			var arrColor: Array = [];
 			for (var i: uint = 0; i < arrAlpha.length; i++) arrColor.push(0);

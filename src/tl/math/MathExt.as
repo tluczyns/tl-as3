@@ -131,7 +131,7 @@ package tl.math {
 		
 		static public function getHSL(objRGB: Object): Object {
 			const r: Number = objRGB.r / 255, g: Number = objRGB.g / 255, b: Number = objRGB.b / 255;
-			var max: Number = Math.max(r, g, b), min = Math.min(r, g, b);
+			var max: Number = Math.max(r, g, b), min: Number = Math.min(r, g, b);
 			var h: Number, s: Number, l: Number = (max + min) / 2;
 
 			if (max == min) {
@@ -155,7 +155,7 @@ package tl.math {
 			if (s == 0) {
 				r = g = b = l; // achromatic
 			} else {
-				function hue2rgb(p, q, t): Number {
+				function hue2rgb(p: Number, q: Number, t: Number): Number {
 					if (t < 0) t += 1;
 					if (t > 1) t -= 1;
 					if (t < 1/6) return p + (q - p) * 6 * t;
