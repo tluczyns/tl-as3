@@ -33,8 +33,8 @@ package tl.bitmap {
 				if (isBoundToTLAnchor)
 					mrxForBounds.translate(-boundsDspObjectSrc.x, -boundsDspObjectSrc.y);
 				mrxForBounds.scale(dspObjectSrc.scaleX, dspObjectSrc.scaleY);
-				var widthBmpDataResult: uint = dspObjectSrc.width;
-				var heightBmpDataResult: uint = dspObjectSrc.height;
+				var widthBmpDataResult: uint = Math.ceil(dspObjectSrc.width);
+				var heightBmpDataResult: uint = Math.ceil(dspObjectSrc.height);
 				if (!isBoundToTLAnchor) {
 					widthBmpDataResult += dspObjectSrc.x;
 					heightBmpDataResult += dspObjectSrc.y;
