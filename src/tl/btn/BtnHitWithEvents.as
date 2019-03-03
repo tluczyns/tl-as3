@@ -39,7 +39,7 @@ package tl.btn {
 		override public function setElementsOnOutOver(isOutOver: uint): void {
 			if (this.tweenMouseOutOver)
 				this.tweenMouseOutOver[["reverse", "play"][isOutOver]]();
-}
+		}
 		
 		override public function destroy(): void {
 			this.deleteTweenMouseOutOver();
