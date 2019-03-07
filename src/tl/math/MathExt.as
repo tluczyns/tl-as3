@@ -196,9 +196,14 @@ package tl.math {
 			return Math.log(val) * Math.LOG10E;
 		}
 		
-		static public function calculateProjectionPointOnLine(pointLineStart: Object, pointLineEnd: Object, point: Object): Point {
-			var u: Number = ((pointLineEnd.x - pointLineStart.x) * (point.x - pointLineStart.x) + (pointLineEnd.y - pointLineStart.y) * (point.y - pointLineStart.y)) / (Math.pow(pointLineEnd.x - pointLineStart.x, 2) + Math.pow(pointLineEnd.y - pointLineStart.y, 2));
-			return new Point(pointLineStart.x + u * (pointLineEnd.x - pointLineStart.x), pointLineStart.y + u * (pointLineEnd.y - pointLineStart.y));
+		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object): Point {
+			var u: Number = ((pointSegmentEnd.x - pointSegmentStart.x) * (point.x - pointSegmentStart.x) + (pointSegmentEnd.y - pointSegmentStart.y) * (point.y - pointSegmentStart.y)) / (Math.pow(pointSegmentEnd.x - pointSegmentStart.x, 2) + Math.pow(pointSegmentEnd.y - pointSegmentStart.y, 2));
+			return new Point(pointSegmentStart.x + u * (pointSegmentEnd.x - pointSegmentStart.x), pointSegmentStart.y + u * (pointSegmentEnd.y - pointSegmentStart.y));
+		}
+		
+		static public function calculateOffsetPointWithDistanceFromSegment(pointSegmentStart: Point, pointSegmentEnd: Point, distance: Number): Point {
+			var angleRadians: Number = Math.atan2(Math.abs(pointSegmentEnd.y - pointSegmentStart.y), Math.abs(pointSegmentEnd.x - pointSegmentStart.x));
+			return new Point(Math.sin(angleRadians) * distance, Math.cos(angleRadians) * distance);
 		}
 		
 		static public function rotatePoint(pointToRotate: Object, angleRadians: Number, pointReference: Object = null): Point {
