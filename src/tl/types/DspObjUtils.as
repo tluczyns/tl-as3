@@ -95,8 +95,8 @@
 		
 		static public function skew(target: DisplayObject, _x:Number, _y:Number):void {
 			var mtx: Matrix = new Matrix();
-			mtx.b = _y * Math.PI/180;
-			mtx.c = _x * Math.PI/180;
+			mtx.b = _y / target.width;
+			mtx.c = _x / target.height;
 			mtx.concat(target.transform.matrix);
 			target.transform.matrix = mtx;
 		}
