@@ -202,8 +202,8 @@ package tl.math {
 		}
 		
 		static public function calculateOffsetPointWithDistanceFromSegment(pointSegmentStart: Point, pointSegmentEnd: Point, distance: Number): Point {
-			var angleRadians: Number = Math.atan2(Math.abs(pointSegmentEnd.y - pointSegmentStart.y), Math.abs(pointSegmentEnd.x - pointSegmentStart.x));
-			return new Point(Math.sin(angleRadians) * distance, Math.cos(angleRadians) * distance);
+			var angleRadians: Number = angleRadians = Math.atan2(pointSegmentEnd.y - pointSegmentStart.y, pointSegmentEnd.x - pointSegmentStart.x);
+			return new Point(Math.sin(angleRadians) * distance, - Math.cos(angleRadians) * distance);
 		}
 		
 		static public function rotatePoint(pointToRotate: Object, angleRadians: Number, pointReference: Object = null): Point {
