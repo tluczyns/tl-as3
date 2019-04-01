@@ -52,7 +52,7 @@ package tl.bitmap {
 			return bmpDataResult;
 		}
 		
-		static private function drawEraseGradientToBmpData(bmpDataToDrawEraseGradient: BitmapData, rotationGradient: Number, arrAlpha: Array = null, arrRatio: Array = null): void {
+		static public function drawEraseGradientToBmpData(bmpDataToDrawEraseGradient: BitmapData, rotationGradient: Number, arrAlpha: Array = null, arrRatio: Array = null): void {
 			var arrColor: Array = [];
 			for (var i: uint = 0; i < arrAlpha.length; i++) arrColor.push(0);
 			var mrxGradient: Matrix = new Matrix();
