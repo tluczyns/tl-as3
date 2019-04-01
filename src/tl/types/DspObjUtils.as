@@ -237,6 +237,15 @@
 			}
 		}
 		
+		static public function setTargetMovieClipsOnSameFrame(dspObjSrc: DisplayObject, dspObjTarget: DisplayObject): void {
+			if ((dspObjSrc is MovieClip) && (dspObjTarget is MovieClip))
+				MovieClip(dspObjTarget).gotoAndPlay(MovieClip(dspObjSrc).currentFrame);
+			if (dspObjSrc is DisplayObjectContainer) {
+				for (var i: uint = 0; i < DisplayObjectContainer(dspObjSrc).numChildren; i++)
+					DspObjUtils.setTargetMovieClipsOnSameFrame(DisplayObjectContainer(dspObjSrc).getChildAt(i), DisplayObjectContainer(dspObjTarget).getChildAt(i));
+			}
+		}
+		
 		static public function lookForChild(container: DisplayObjectContainer, classChildToFind: Class = null, nameChildToFind: String = null): DisplayObject {
 			var childFound: DisplayObject = null;
 			var i: uint = 0;
