@@ -55,55 +55,52 @@ package tl.graphics {
 			gfx.endFill();
 		}
 		
-		static public function drawRoundPath(g:Graphics, points:Vector.<Point>,  radius:Number = 20, closePath:Boolean = false):void   {  
-			// code by Philippe / http://philippe.elsass.me  
-			var count:int = points.length;  
-			if (count < 2) return;  
-			if (closePath && count < 3) return;  
-		  
-			var p0:Point = points[0];  
-			var p1:Point = points[1];  
-			var p2:Point;  
-			var pp0:Point;  
-			var pp2:Point;  
-		  
-			var last:Point;  
-			if (!closePath)  
-			{  
-				g.moveTo(p0.x, p0.y);  
-				last = points[count - 1];  
-			}  
-		  
-			var n:int = (closePath) ? count + 1 : count - 1;  
-		  
-			for (var i:int = 1; i < n; i++)  
-			{  
-				p2 = points[(i + 1) % count];  
-		  
-				var v0:Point = p0.subtract(p1);  
-				var v2:Point = p2.subtract(p1);  
-				var r:Number = Math.max(1, Math.min(radius, Math.min(v0.length / 2, v2.length / 2)));  
-				v0.normalize(r);  
-				v2.normalize(r);  
-				pp0 = p1.add(v0);  
-				pp2 = p1.add(v2);  
-		  
-				if (i == 1 && closePath)  
-				{  
-					g.moveTo(pp0.x, pp0.y);  
-					last = pp0;  
-				}  
-				else g.lineTo(pp0.x, pp0.y);  
-		  
-				g.curveTo(p1.x, p1.y, pp2.x, pp2.y);  
-				p0 = p1;  
-				p1 = p2;  
-			}  
-		  
-			g.lineTo(last.x, last.y);  
+		static public function drawRoundPath(vecPosSrc: Vector.<Point>, graphics: Graphics = null, radius: Number = 20, closePath: Boolean = false): Vector.<Point> {
+			var graphics: Graphics;
+			var vecPosTarget: Vector.<Point>;
+			if (!graphics) vecPosTarget = new Vector.<Point>();
+			// code by Philippe / http://philippe.elsass.me
+			var count: int = vecPosSrc.length;
+			if (count < 2) return null;
+			if (closePath && count < 3) return null;
+			
+			var p0:Point = vecPosSrc[0];
+			var p1:Point = vecPosSrc[1];
+			var p2:Point;
+			var pp0:Point;
+			var pp2:Point;
+			
+			var last:Point;
+			if (!closePath) {
+				graphics ? graphics.moveTo(p0.x, p0.y) : vecPosTarget.push(p0);
+				last = vecPosSrc[count - 1];
+			}
+			var n: int = (closePath) ? count + 1 : count - 1;
+			for (var i: int = 1; i < n; i++) {
+				p2 = vecPosSrc[(i + 1) % count];
+				
+				var v0: Point = p0.subtract(p1);
+				var v2: Point = p2.subtract(p1);
+				var r: Number = Math.max(1, Math.min(radius, Math.min(v0.length / 2, v2.length / 2)));
+				v0.normalize(r);
+				v2.normalize(r);
+				pp0 = p1.add(v0);
+				pp2 = p1.add(v2);
+				
+				if (i == 1 && closePath) {
+					graphics ? graphics.moveTo(pp0.x, pp0.y) : vecPosTarget.push(pp0);
+					last = pp0;
+				} else {
+					graphics ? graphics.lineTo(pp0.x, pp0.y) : vecPosTarget.push(pp0);
+				}
+				graphics ? graphics.curveTo(p1.x, p1.y, pp2.x, pp2.y) : vecPosTarget.push(p1, pp2);
+				p0 = p1;
+				p1 = p2;
+			}
+			graphics ? graphics.lineTo(last.x, last.y) : vecPosTarget.push(last);
+			return vecPosTarget;
 		}
 		
-			
 	}
 
 }
