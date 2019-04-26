@@ -62,6 +62,10 @@ package tl.fx.sparkle {
 			TweenMax.to(this.shpGradientSparkle, time, {x: this.bmpMaskForSparkle.width, ease: Linear.easeNone, repeat: [0, -1][uint(isRepeat)], repeatDelay: repeatDelay, delay: startDelay});
 		}
 		
+		public function pauseResume(isPauseResume: uint): void {
+			TweenMax(TweenMax.getTweensOf(this.shpGradientSparkle)[0]).paused(Boolean(1 - isPauseResume));
+		}
+		
 		public function destroy(): void {
 			TweenMax.killTweensOf(this.shpGradientSparkle);
 			this.shpGradientSparkle.mask = null;
