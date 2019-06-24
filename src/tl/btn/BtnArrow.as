@@ -2,6 +2,7 @@
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	import flash.geom.Rectangle;
+	import com.greensock.core.Animation;
 	import com.greensock.TweenMax;
 	import com.greensock.easing.*;
 	
@@ -53,12 +54,12 @@
 			TweenMax.to(this, 0.3, {alpha: [0.3, 1][isDisabledEnabled], ease: Linear.easeNone});
 		}
 		
-		override protected function createVecTweenMouseOutOver(): Vector.<TweenMax> {
+		override protected function createTweenMouseOutOver(): Animation {
 			var objTweenFrom: Object = {useFrames: (this.timeAnimArrow >= 1), immediateRender: true}
 			objTweenFrom[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow + [this.arrow[["width", "height"][this.isMoveXOrY]] + this.moveXYArrow, 0][this.isPrevNext];
 			var objTweenTo: Object = {ease: Cubic.easeOut, onComplete: this.animArrow};
 			objTweenTo[["x", "y"][this.isMoveXOrY]] = objTweenFrom[["x", "y"][this.isMoveXOrY]] + this.moveXYArrow;
-			return new <TweenMax>[TweenMax.fromTo(this.arrow, this.timeAnimArrow, objTweenFrom, objTweenTo)];
+			return TweenMax.fromTo(this.arrow, this.timeAnimArrow, objTweenFrom, objTweenTo);
 		}
 		
 		override public function setElementsOnOutOver(isOutOver: uint): void {

@@ -3,7 +3,7 @@ package tl.game.firework {
 	import tl.loader.SoundExt;
 	import flash.events.Event;
 	import flash.geom.ColorTransform;
-	import tl.types.DspObjUtils;
+	import tl.math.MathExt;
 	import tl.loader.Library;
 	
 	public class Firework extends Sprite {
@@ -36,7 +36,7 @@ package tl.game.firework {
 		
 		private function setColor(): void {
 			var colorTransform: ColorTransform = new ColorTransform();
-			var objRGB: Object = DspObjUtils.getRGB(this.getHSL());
+			var objRGB: Object = MathExt.getRGB(this.getHSL());
 			colorTransform.color = objRGB.r << 16 | objRGB.g << 8 | objRGB.b;
 			this.transform.colorTransform = colorTransform;
 		}

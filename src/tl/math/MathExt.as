@@ -117,16 +117,59 @@ package tl.math {
 			return channel;
 		}
 		
-		static public function splitRGB(color: uint): Array {
-			return [color >> 16 & 0xff, color >> 8 & 0xff, color & 0xff];
+		static public function splitRGB(color: uint): Object {
+			return {r: color >> 16 & 0xff, g: color >> 8 & 0xff, b: color & 0xff};
 		}
 		
-		static public function joinRGB(arrChannel: Array): uint {			
-			return arrChannel[0] << 16 | arrChannel[1] << 8 | arrChannel[2];
+		static public function joinRGB(objRGB: Object): uint {			
+			return objRGB.r << 16 | objRGB.g << 8 | objRGB.b;
 		}
 		
 		static public function convertColorHTMLToUint(colorHTML: String): uint {
 			return uint(colorHTML.replace("#", "0x"));
+		}
+		
+		static public function getHSL(objRGB: Object): Object {
+			const r: Number = objRGB.r / 255, g: Number = objRGB.g / 255, b: Number = objRGB.b / 255;
+			var max: Number = Math.max(r, g, b), min: Number = Math.min(r, g, b);
+			var h: Number, s: Number, l: Number = (max + min) / 2;
+
+			if (max == min) {
+				h = s = 0; // achromatic
+			} else {
+				var d: Number = max - min;
+				s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+				switch (max) {
+					case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+					case g: h = (b - r) / d + 2; break;
+					case b: h = (r - g) / d + 4; break;
+				}
+				h /= 6;
+			}
+			return {h: h, s: s, l: l};
+		}
+		
+		static public function getRGB(objHSL: Object): Object {
+			var h:Number = objHSL.h, s:Number = objHSL.s, l:Number = objHSL.l;
+			var r: Number, g: Number, b: Number;
+			if (s == 0) {
+				r = g = b = l; // achromatic
+			} else {
+				function hue2rgb(p: Number, q: Number, t: Number): Number {
+					if (t < 0) t += 1;
+					if (t > 1) t -= 1;
+					if (t < 1/6) return p + (q - p) * 6 * t;
+					if (t < 1/2) return q;
+					if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+					return p;
+				}
+				var q: Number = l < 0.5 ? l * (1 + s) : l + s - l * s;
+				var p: Number = 2 * l - q;
+				r = hue2rgb(p, q, h + 1/3);
+				g = hue2rgb(p, q, h);
+				b = hue2rgb(p, q, h - 1/3);
+			}
+			return {r: int(r * 255), g: int(g * 255), b: int(b * 255)};
 		}
 		
 		static public function addZerosBeforeNumberAndReturnString(number: *, digitCount: uint): String {
@@ -138,9 +181,10 @@ package tl.math {
 		}
 		
 		static public function convertColorUintToHTML(color: uint) : String {
-            var arrRGBColor: Array = MathExt.splitRGB(color);
+            var objRGB: Object = MathExt.splitRGB(color);
+			var arrRGB: Array = [objRGB.r, objRGB.g, objRGB.b];
             var colorHTML: String = "#";
-			for (var i:int = 0; i < arrRGBColor.length; i++) colorHTML += MathExt.addZerosBeforeNumberAndReturnString(uint(arrRGBColor[i]).toString(16), 2);
+			for (var i: int = 0; i < arrRGB.length; i++) colorHTML += MathExt.addZerosBeforeNumberAndReturnString(uint(arrRGB[i]).toString(16), 2);
             return colorHTML;
         }
 		
@@ -152,9 +196,14 @@ package tl.math {
 			return Math.log(val) * Math.LOG10E;
 		}
 		
-		static public function calculateProjectionPointOnLine(pointLineStart: Object, pointLineEnd: Object, point: Object): Point {
-			var u: Number = ((pointLineEnd.x - pointLineStart.x) * (point.x - pointLineStart.x) + (pointLineEnd.y - pointLineStart.y) * (point.y - pointLineStart.y)) / (Math.pow(pointLineEnd.x - pointLineStart.x, 2) + Math.pow(pointLineEnd.y - pointLineStart.y, 2));
-			return new Point(pointLineStart.x + u * (pointLineEnd.x - pointLineStart.x), pointLineStart.y + u * (pointLineEnd.y - pointLineStart.y));
+		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object): Point {
+			var u: Number = ((pointSegmentEnd.x - pointSegmentStart.x) * (point.x - pointSegmentStart.x) + (pointSegmentEnd.y - pointSegmentStart.y) * (point.y - pointSegmentStart.y)) / (Math.pow(pointSegmentEnd.x - pointSegmentStart.x, 2) + Math.pow(pointSegmentEnd.y - pointSegmentStart.y, 2));
+			return new Point(pointSegmentStart.x + u * (pointSegmentEnd.x - pointSegmentStart.x), pointSegmentStart.y + u * (pointSegmentEnd.y - pointSegmentStart.y));
+		}
+		
+		static public function calculateOffsetPointWithDistanceFromSegment(pointSegmentStart: Point, pointSegmentEnd: Point, distance: Number): Point {
+			var angleRadians: Number = angleRadians = Math.atan2(pointSegmentEnd.y - pointSegmentStart.y, pointSegmentEnd.x - pointSegmentStart.x);
+			return new Point(Math.sin(angleRadians) * distance, - Math.cos(angleRadians) * distance);
 		}
 		
 		static public function rotatePoint(pointToRotate: Object, angleRadians: Number, pointReference: Object = null): Point {

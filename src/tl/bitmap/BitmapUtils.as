@@ -33,8 +33,8 @@ package tl.bitmap {
 				if (isBoundToTLAnchor)
 					mrxForBounds.translate(-boundsDspObjectSrc.x, -boundsDspObjectSrc.y);
 				mrxForBounds.scale(dspObjectSrc.scaleX, dspObjectSrc.scaleY);
-				var widthBmpDataResult: uint = dspObjectSrc.width;
-				var heightBmpDataResult: uint = dspObjectSrc.height;
+				var widthBmpDataResult: uint = Math.ceil(dspObjectSrc.width);
+				var heightBmpDataResult: uint = Math.ceil(dspObjectSrc.height);
 				if (!isBoundToTLAnchor) {
 					widthBmpDataResult += dspObjectSrc.x;
 					heightBmpDataResult += dspObjectSrc.y;
@@ -45,7 +45,14 @@ package tl.bitmap {
 			return bmpDataResult;
 		}
 		
-		static private function drawEraseGradientToBmpData(bmpDataToDrawEraseGradient: BitmapData, rotationGradient: Number, arrAlpha: Array = null, arrRatio: Array = null): void {
+		static public function getBitmapDataCropByColorBounds(bmpDataSrc: BitmapData, colorToFind: uint): BitmapData {
+			var boundsBmpDataSrcByColor: Rectangle = bmpDataSrc.getColorBoundsRect(0xFFFFFFFF, colorToFind, false);
+			var bmpDataResult: BitmapData = new BitmapData(boundsBmpDataSrcByColor.width, boundsBmpDataSrcByColor.height, true, 0);
+			bmpDataResult.copyPixels(bmpDataSrc, boundsBmpDataSrcByColor, new Point(0, 0));
+			return bmpDataResult;
+		}
+		
+		static public function drawEraseGradientToBmpData(bmpDataToDrawEraseGradient: BitmapData, rotationGradient: Number, arrAlpha: Array = null, arrRatio: Array = null): void {
 			var arrColor: Array = [];
 			for (var i: uint = 0; i < arrAlpha.length; i++) arrColor.push(0);
 			var mrxGradient: Matrix = new Matrix();

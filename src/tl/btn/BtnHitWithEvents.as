@@ -1,56 +1,48 @@
 package tl.btn {
-	import com.greensock.TweenMax;
+	import com.greensock.core.Animation;
 	import flash.display.Sprite;
 
 	public class BtnHitWithEvents extends BtnHitWithEventsSimple implements IBtnWithEvents {
 		
-		public var vecTweenMouseOutOver: Vector.<TweenMax>;
+		public var tweenMouseOutOver: Animation;
 		
 		public function BtnHitWithEvents(hit: Sprite = null, isEnabled: Boolean = true, isConstruct: Boolean = true): void {
-			this.vecTweenMouseOutOver = this.createVecTweenMouseOutOver();
-			this.pauseVecTweenMouseOutOver();
+			this.tweenMouseOutOver = this.createTweenMouseOutOver();
+			this.pauseTweenMouseOutOver();
 			super(hit, isEnabled, isConstruct);
 		}
 		
-		protected function createVecTweenMouseOutOver(): Vector.<TweenMax> {
+		protected function createTweenMouseOutOver(): Animation {
 			//throw new Error("no effect on btn over/out? come on!");
-			return new <TweenMax>[];
+			return null;
 		}
 		
-		private function pauseVecTweenMouseOutOver(): void {
-			var isPausedVecTweenMouseOutOver: Boolean = this.isPausedVecTweenMouseOutOver;
-			for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
-				var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
-				tweenMouseOutOver.paused(isPausedVecTweenMouseOutOver);
-				if (isPausedVecTweenMouseOutOver) tweenMouseOutOver.pause(0);
-				else tweenMouseOutOver.resume(0);
+		private function pauseTweenMouseOutOver(): void {
+			if (this.tweenMouseOutOver) {
+				this.tweenMouseOutOver.paused(this.isPausedTweenMouseOutOver);
+				if (this.isPausedTweenMouseOutOver) this.tweenMouseOutOver.pause(0);
+				else this.tweenMouseOutOver.resume(0);
 			}
 		}
 		
-		protected function get isPausedVecTweenMouseOutOver(): Boolean {
+		protected function get isPausedTweenMouseOutOver(): Boolean {
 			return true;
 		}
 		
-		private function removeVecTweenMouseOutOver(): void {
-			for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
-				var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
-				tweenMouseOutOver.kill();
-				tweenMouseOutOver = null;
+		private function deleteTweenMouseOutOver(): void {
+			if (this.tweenMouseOutOver) {
+				this.tweenMouseOutOver.kill();
+				this.tweenMouseOutOver = null;
 			}
-			this.vecTweenMouseOutOver = new <TweenMax>[];
 		}
 		
 		override public function setElementsOnOutOver(isOutOver: uint): void {
-			if (this.vecTweenMouseOutOver) {
-				for (var i: uint = 0; i < this.vecTweenMouseOutOver.length; i++) {
-					var tweenMouseOutOver: TweenMax = this.vecTweenMouseOutOver[i];
-					tweenMouseOutOver[["reverse", "play"][isOutOver]]();
-				}
-			}
+			if (this.tweenMouseOutOver)
+				this.tweenMouseOutOver[["reverse", "play"][isOutOver]]();
 		}
 		
 		override public function destroy(): void {
-			this.removeVecTweenMouseOutOver();
+			this.deleteTweenMouseOutOver();
 			super.destroy()
 		}
 		
