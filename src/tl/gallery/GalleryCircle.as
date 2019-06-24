@@ -96,7 +96,9 @@ package tl.gallery {
 			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.numFirstItemSelected));
 		}
 		
-		private function addControllers(): void {
+		//controllers
+		
+		protected function addControllers(): void {
 			if (this.arrData.length > 1) {
 				if (this.optionsController.isArrow) this.createArrows();
 				if (this.optionsController.isTFNumItem) this.createTFNumItem();
@@ -105,6 +107,17 @@ package tl.gallery {
 			}
 			
 		}
+		
+		protected function removeControllers(): void {
+			if (this.arrData.length > 1) {
+				if (this.optionsController.isAutoChangeItem) this.removeAutoChangeItem();
+				if (this.optionsController.isMouseWheel) this.deleteMouseWheel();
+				if (this.optionsController.isArrow) this.deleteArrows();
+				if (this.optionsController.isTFNumItem) this.deleteTFNumItem();
+			}
+		}
+		
+		//
 		
 		private function setInitialTime(): void {
 			this._time = MathExt.moduloPositive( -this.numFieldForItemSelected * this.timeOne, this.timeTotal);
@@ -345,12 +358,7 @@ package tl.gallery {
 			if ((this.arrData) && (this.arrData.length)) {
 				this.deleteItems();
 				this.removeEventListener(EventGallery.SELECTED_ITEM_CHANGED, this.onItemSelected);
-				if (this.arrData.length > 1) {
-					if (this.optionsController.isAutoChangeItem) this.removeAutoChangeItem();
-					if (this.optionsController.isMouseWheel) this.deleteMouseWheel();
-					if (this.optionsController.isArrow) this.deleteArrows();
-					if (this.optionsController.isTFNumItem) this.deleteTFNumItem();
-				}
+				this.removeControllers();
 				TweenMax.killTweensOf(this, false, {time: true});
 			}
 		}
