@@ -93,7 +93,7 @@ package tl.gallery {
 		protected function showItems(): void {
 			this.addControllers();
 			this.setInitialTime();
-			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.numFirstItemSelected));
+			this.setFirstItemSelected();
 		}
 		
 		//controllers
@@ -121,6 +121,10 @@ package tl.gallery {
 		
 		private function setInitialTime(): void {
 			this._time = MathExt.moduloPositive( -this.numFieldForItemSelected * this.timeOne, this.timeTotal);
+			
+		}
+		
+		private function setFirstItemSelected(): void {
 			this.numItemSelected = -1;
 			this.addEventListener(EventGallery.SELECTED_ITEM_CHANGED, this.onItemSelected)
 			this.dispatchEvent(new EventGallery(EventGallery.SELECTED_ITEM_CHANGED, this.numFirstItemSelected));
