@@ -200,7 +200,11 @@ package tl.gallery {
 		protected function setPositionTFNumItemInit(): void {}
 		
 		private function setValueTFNumItem(): void {
-			this.tfNumItem.text = String(this.numItemSelected + 1) + "/" + String(this.arrItem.length);
+			this.tfNumItem.text = String(this.numItemSelected + 1) + this.separatorTFNumItem + String(this.arrItem.length);
+		}
+		
+		protected function get separatorTFNumItem(): String {
+			return "/";
 		}
 		
 		protected function setPositionTFNumItemOnItemSelected(): void {}
