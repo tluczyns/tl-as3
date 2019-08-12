@@ -31,7 +31,7 @@
 		override public function createGenericHit(rectDimension: Rectangle = null): Sprite {
 			var hit: Sprite = new Sprite();
 			hit.graphics.beginFill(0xffffff, 0);
-			hit.graphics.drawRect(0, 0, this.arrow.width + [this.posXYInitArrow + this.moveXYArrow, 0][this.isMoveXOrY], this.arrow.y + this.arrow.height + [0, this.posXYInitArrow + this.moveXYArrow][this.isMoveXOrY]);
+			hit.graphics.drawRect([0, - this.arrow.width][uint((this.isPrevNext == 0) && (this.isMoveXOrY == 0))], [0, - this.arrow.height][uint((this.isPrevNext == 0) && (this.isMoveXOrY == 1))], this.arrow.width + [this.posXYInitArrow + this.moveXYArrow, 0][this.isMoveXOrY], this.arrow.y + this.arrow.height + [0, this.posXYInitArrow + this.moveXYArrow][this.isMoveXOrY]);
 			hit.graphics.endFill();
 			return hit;
 		}
