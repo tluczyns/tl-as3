@@ -293,7 +293,7 @@ package tl.gallery {
 		protected function onItemSelected(e: EventGallery): void {
 			var numItemSelected: uint = uint(e.data);
 			//if (numItemSelected != this.numItemSelected) {
-				if (this.numItemSelected != -1) ItemGallery(this.arrItem[this.numItemSelected]).selected = false;
+				if ((this.numItemSelected != -1) && (numItemSelected != this.numItemSelected)) ItemGallery(this.arrItem[this.numItemSelected]).selected = false;
 				this.numItemSelected = numItemSelected;
 				ItemGallery(this.arrItem[this.numItemSelected]).selected = true;
 				if (this.tfNumItem) {
