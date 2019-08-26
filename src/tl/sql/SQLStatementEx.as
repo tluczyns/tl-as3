@@ -14,6 +14,8 @@ package tl.sql {
 		//funkcja umożliwiająca wykonanie sqla w jednej linijce kodu
 		public function executeSQL(strSQL: String, parameters: Array = null):void {
 			this.text = strSQL;
+			for (var nameParameter: String in this.parameters)
+				delete this.parameters[nameParameter];
 			if (parameters != null) {
 				for (var i: uint; i < parameters.length; i++) {
 					var parameter: Array = parameters[i];
