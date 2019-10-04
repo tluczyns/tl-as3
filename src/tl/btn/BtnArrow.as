@@ -13,6 +13,7 @@
 		protected var moveXYArrow: Number;
 		protected var timeAnimArrow: Number;
 		private var posXYInitArrow: Number;
+		private var posXYStartAnimArrow: Number;
 		
 		public var arrow: DisplayObject;
 		
@@ -22,25 +23,26 @@
 			this.moveXYArrow = moveXYArrow;
 			this.timeAnimArrow = timeAnimArrow;
 			this.initArrow(arrow);
-			this.posXYInitArrow = this.arrow[["x", "y"][this.isMoveXOrY]];
-			if (this.isPrevNext == 0)
-				this.arrow[["scaleX", "scaleY"][this.isMoveXOrY]] = -1;
 			super(hit);
 		}
 		
 		override public function createGenericHit(rectDimension: Rectangle = null): Sprite {
 			var hit: Sprite = new Sprite();
 			hit.graphics.beginFill(0xffffff, 0);
-			hit.graphics.drawRect([0, - this.arrow.width][uint((this.isPrevNext == 0) && (this.isMoveXOrY == 0))], [0, - this.arrow.height][uint((this.isPrevNext == 0) && (this.isMoveXOrY == 1))], this.arrow.width + [this.posXYInitArrow + this.moveXYArrow, 0][this.isMoveXOrY], this.arrow.y + this.arrow.height + [0, this.posXYInitArrow + this.moveXYArrow][this.isMoveXOrY]);
+			hit.graphics.drawRect(- [this.moveXYArrow, 0][this.isMoveXOrY], - [0, this.moveXYArrow][this.isMoveXOrY], this.posXYInitArrow + this.arrow.width + [this.moveXYArrow * 2, 0][this.isMoveXOrY], this.posXYInitArrow + this.arrow.height + [0, this.moveXYArrow * 2][this.isMoveXOrY]);
 			hit.graphics.endFill();
 			return hit;
 		}
 		
-		protected function initArrow(arrow: DisplayObject = null): void {
+		private function initArrow(arrow: DisplayObject = null): void {
 			if ((this.arrow == null) && (arrow != null)) {
-				this.addChild(arrow);
 				this.arrow = arrow;
+				this.addChild(this.arrow);
 			}
+			this.posXYInitArrow = this.arrow[["x", "y"][this.isMoveXOrY]];
+			this.posXYStartAnimArrow = this.posXYInitArrow + [this.arrow[["width", "height"][this.isMoveXOrY]] + this.moveXYArrow, 0][this.isPrevNext];
+			this.arrow[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow;
+			if (this.isPrevNext == 0) this.arrow[["scaleX", "scaleY"][this.isMoveXOrY]] = -1;
 		}
 		
 		protected function deleteArrow(): void {
@@ -55,11 +57,9 @@
 		}
 		
 		override protected function createTweenMouseOutOver(): Animation {
-			var objTweenFrom: Object = {useFrames: (this.timeAnimArrow >= 1), immediateRender: true}
-			objTweenFrom[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow + [this.arrow[["width", "height"][this.isMoveXOrY]] + this.moveXYArrow, 0][this.isPrevNext];
-			var objTweenTo: Object = {ease: Cubic.easeOut, onComplete: this.animArrow};
-			objTweenTo[["x", "y"][this.isMoveXOrY]] = objTweenFrom[["x", "y"][this.isMoveXOrY]] + this.moveXYArrow;
-			return TweenMax.fromTo(this.arrow, this.timeAnimArrow, objTweenFrom, objTweenTo);
+			var objTween: Object = {ease: Cubic.easeOut, onComplete: this.animArrow};
+			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow + this.moveXYArrow;
+			return new TweenMax(this.arrow, this.timeAnimArrow, objTween);
 		}
 		
 		override public function setElementsOnOutOver(isOutOver: uint): void {
@@ -69,7 +69,7 @@
 		
 		private function animArrow(): void {
 			var objTween: Object = {useFrames: uint(this.timeAnimArrow >= 1), ease: Sine.easeIn, yoyo: true, repeat: -1};
-			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow - this.moveXYArrow + [this.arrow[["width", "height"][this.isMoveXOrY]], 0][this.isPrevNext];
+			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow - this.moveXYArrow;
 			TweenMax.to(this.arrow, this.timeAnimArrow, objTween);
 		}
 		
