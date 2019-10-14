@@ -22,10 +22,11 @@ package tl.game {
 				if (value >= this._maxValue) break;
 				random -= this._arrProbability[value];
 			}
-			this._arrProbability[value] *= 0.5;
-			var probabilityToSubstractFromOther: Number = this._arrProbability[value] / (this._maxValue - 1);
+			var probabilityToSubstractFromSelected: Number = this._arrProbability[value] * 0.99;
+			this._arrProbability[value] -= probabilityToSubstractFromSelected;
+			var probabilityToAddToOther: Number = probabilityToSubstractFromSelected / (this._maxValue - 1);
 			for (var i: uint = 0; i < this._maxValue; i++)
-				if (i != value) this._arrProbability[i] += probabilityToSubstractFromOther;
+				if (i != value) this._arrProbability[i] += probabilityToAddToOther;
 			return value;
 		} 
 		
