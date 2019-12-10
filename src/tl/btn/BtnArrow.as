@@ -13,7 +13,6 @@
 		protected var moveXYArrow: Number;
 		protected var timeAnimArrow: Number;
 		private var posXYInitArrow: Number;
-		private var posXYStartAnimArrow: Number;
 		
 		public var arrow: DisplayObject;
 		
@@ -40,8 +39,7 @@
 				this.addChild(this.arrow);
 			}
 			this.posXYInitArrow = this.arrow[["x", "y"][this.isMoveXOrY]];
-			this.posXYStartAnimArrow = this.posXYInitArrow + [this.arrow[["width", "height"][this.isMoveXOrY]] + this.moveXYArrow, 0][this.isPrevNext];
-			this.arrow[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow;
+			this.arrow[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow;
 			if (this.isPrevNext == 0) this.arrow[["scaleX", "scaleY"][this.isMoveXOrY]] = -1;
 		}
 		
@@ -58,7 +56,7 @@
 		
 		override protected function createTweenMouseOutOver(): Animation {
 			var objTween: Object = {ease: Cubic.easeOut, onComplete: this.animArrow};
-			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow + this.moveXYArrow;
+			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow + this.moveXYArrow;
 			return new TweenMax(this.arrow, this.timeAnimArrow, objTween);
 		}
 		
@@ -69,7 +67,7 @@
 		
 		private function animArrow(): void {
 			var objTween: Object = {useFrames: uint(this.timeAnimArrow >= 1), ease: Sine.easeIn, yoyo: true, repeat: -1};
-			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYStartAnimArrow - this.moveXYArrow;
+			objTween[["x", "y"][this.isMoveXOrY]] = this.posXYInitArrow - this.moveXYArrow;
 			TweenMax.to(this.arrow, this.timeAnimArrow, objTween);
 		}
 		
