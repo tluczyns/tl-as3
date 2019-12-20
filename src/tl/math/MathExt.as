@@ -196,9 +196,23 @@ package tl.math {
 			return Math.log(val) * Math.LOG10E;
 		}
 		
-		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object): Point {
+		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object, isForcePointProjectionOnSegment: Boolean = false): Point {
+			if (!(pointSegmentStart is Point)) pointSegmentStart = new Point(pointSegmentStart.x, pointSegmentStart.y);
+			if (!(pointSegmentEnd is Point)) pointSegmentEnd = new Point(pointSegmentEnd.x, pointSegmentEnd.y);
 			var u: Number = ((pointSegmentEnd.x - pointSegmentStart.x) * (point.x - pointSegmentStart.x) + (pointSegmentEnd.y - pointSegmentStart.y) * (point.y - pointSegmentStart.y)) / (Math.pow(pointSegmentEnd.x - pointSegmentStart.x, 2) + Math.pow(pointSegmentEnd.y - pointSegmentStart.y, 2));
-			return new Point(pointSegmentStart.x + u * (pointSegmentEnd.x - pointSegmentStart.x), pointSegmentStart.y + u * (pointSegmentEnd.y - pointSegmentStart.y));
+			var pointProjection: Point = new Point(pointSegmentStart.x + u * (pointSegmentEnd.x - pointSegmentStart.x), pointSegmentStart.y + u * (pointSegmentEnd.y - pointSegmentStart.y));
+			if (isForcePointProjectionOnSegment) {
+				var nameCoord: String = ["x", "y"][uint(pointSegmentStart.x == pointSegmentEnd.x)];
+				var pointSegmentWithMinCoord: Point = Point((pointSegmentStart[nameCoord] < pointSegmentEnd[nameCoord]) ? pointSegmentStart : pointSegmentEnd);
+				var pointSegmentWithMaxCoord: Point = Point((pointSegmentWithMinCoord == pointSegmentStart) ? pointSegmentEnd : pointSegmentStart);
+				if (pointProjection[nameCoord] < pointSegmentWithMinCoord[nameCoord]) pointProjection = pointSegmentWithMinCoord;
+				else if (pointProjection[nameCoord] > pointSegmentWithMaxCoord[nameCoord]) pointProjection = pointSegmentWithMaxCoord;
+			}
+			return pointProjection;
+		}
+		
+		static public function calculateDistancePointFromSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object): Number {
+			return Math.abs((pointSegmentEnd.y - pointSegmentStart.y) * point.x - (pointSegmentEnd.x - pointSegmentStart.x) * point.y + pointSegmentEnd.x * pointSegmentStart.y - pointSegmentStart.x * pointSegmentEnd.y) / Math.pow(Math.pow(pointSegmentEnd.y - pointSegmentStart.y, 2) + Math.pow(pointSegmentEnd.x - pointSegmentStart.x, 2), 0.5);
 		}
 		
 		static public function calculateOffsetPointWithDistanceFromSegment(pointSegmentStart: Point, pointSegmentEnd: Point, distance: Number): Point {
