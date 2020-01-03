@@ -97,7 +97,7 @@ package tl.math {
 		}
 		
 		
-		//d³ugoœæ przeciwprostok¹tnej
+		//dlugosc przeciwprostok¹tnej
 		public static function hypotenuse(leg1: Number, leg2: Number): Number {
 			return Math.pow(Math.pow(leg1, 2) + Math.pow(leg2, 2), 0.5);
 		}
@@ -194,6 +194,10 @@ package tl.math {
 		
 		static public function log10(val: Number): Number {
 			return Math.log(val) * Math.LOG10E;
+		}
+		
+		static public function calculateLengthSegment(pointSegmentStart: Object, pointSegmentEnd: Object): Number {
+			return MathExt.hypotenuse(Math.abs(pointSegmentEnd.x - pointSegmentStart.x), Math.abs(pointSegmentEnd.y - pointSegmentStart.y));
 		}
 		
 		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object, isForcePointProjectionOnSegment: Boolean = false): Point {
