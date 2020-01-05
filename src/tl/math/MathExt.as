@@ -39,10 +39,6 @@ package tl.math {
 			return arrDigit;
 		}
 		
-		public static function distanceBetweenTwoPoints(point1: Point, point2: Point): Number {
-			return Math.pow(Math.pow(point1.x - point2.x, 2) + Math.pow(point1.y - point2.y, 2), 0.5);
-		}
-		
 		//ró¿nica k¹tów ze znakiem (stopnie)
 		public static function getAngleSmallestDifference(angle1: Number, angle2: Number): Number {
 			var diff: Number;
@@ -196,8 +192,8 @@ package tl.math {
 			return Math.log(val) * Math.LOG10E;
 		}
 		
-		static public function calculateLengthSegment(pointSegmentStart: Object, pointSegmentEnd: Object): Number {
-			return MathExt.hypotenuse(Math.abs(pointSegmentEnd.x - pointSegmentStart.x), Math.abs(pointSegmentEnd.y - pointSegmentStart.y));
+		static public function distanceBetweenTwoPoints(pointStart: Object, pointEnd: Object): Number {
+			return MathExt.hypotenuse(Math.abs(pointEnd.x - pointStart.x), Math.abs(pointEnd.y - pointStart.y));
 		}
 		
 		static public function calculateProjectionPointOnSegment(pointSegmentStart: Object, pointSegmentEnd: Object, point: Object, isForcePointProjectionOnSegment: Boolean = false): Point {
