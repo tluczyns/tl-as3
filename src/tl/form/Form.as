@@ -163,7 +163,7 @@ package tl.form {
 			return new SharedObjectInstance(nameSO);
 		}
 		
-		private function removeSO(): void {
+		private function deleteSO(): void {
 			if (this.so) {
 				this.so.destroy();
 				this.so = null;
@@ -181,7 +181,7 @@ package tl.form {
 			this.addChild(this.tfMessage);
 		}
 		
-		private function removeTFMessage(): void {
+		private function deleteTFMessage(): void {
 			this.removeChild(this.tfMessage);
 			this.tfMessage.destroy();
 			this.tfMessage = null;
@@ -201,7 +201,7 @@ package tl.form {
 			this.idCallSubmitForm = -1;
 		}
 		
-		private function removeBtnSubmit(): void {
+		protected function deleteBtnSubmit(): void {
 			if (this.isEnterListener) {
 				this.injectorBtnSubmitClickedOnKeyEnter.destroy();
 				this.injectorBtnSubmitClickedOnKeyEnter = null;
@@ -369,9 +369,9 @@ package tl.form {
 			this.blockUnblock(0);
 			if (this.idCallSubmitForm != -1) this.descriptionCall.serviceAmf.abort(this.idCallSubmitForm);
 			else if (this.descriptionCall.isUrlLoaderOrServiceAmfOrExternalInterfaceOrCustomMethod == 2) ExternalInterfaceExt.removeCallback("onExternalInterfaceResult");
-			if (this.tfMessage) this.removeTFMessage();
-			if (this.btnSubmit) this.removeBtnSubmit();
-			this.removeSO();
+			if (this.tfMessage) this.deleteTFMessage();
+			if (this.btnSubmit) this.deleteBtnSubmit();
+			this.deleteSO();
 		}
 		
 	}
