@@ -279,7 +279,6 @@ package tl.galleryMulti {
 		public function createEventSelectItemChanged(): void {
 			if (!this.isCreatedEventSelectItemChanged) {
 				this.isCreatedEventSelectItemChanged = true;
-				StateModel.init();
 				StateModel.addEventListener(EventStateModel.CHANGE_PARAMETERS, this.selectItem, 110);
 				this.selectItem(null);
 			}
