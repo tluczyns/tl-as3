@@ -14,6 +14,7 @@ package tl.form {
 	import flash.events.FocusEvent;
 	import tl.so.SharedObjectInstance;
 	import tl.btn.EventBtnHit;
+	import tl.ui.Key;
 	import tl.types.DspObjUtils;
 	import com.hurlant.util.Base64;
 	import tl.loader.URLLoaderExt;
@@ -205,6 +206,7 @@ package tl.form {
 			if (this.isEnterListener) {
 				this.injectorBtnSubmitClickedOnKeyEnter.destroy();
 				this.injectorBtnSubmitClickedOnKeyEnter = null;
+				Key.destroy();
 			}
 			this.btnSubmit.destroy();
 			this.removeChild(DisplayObject(this.btnSubmit));
