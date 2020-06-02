@@ -26,9 +26,10 @@
 		}
 		
 		override public function createGenericHit(rectDimension: Rectangle = null): Sprite {
+			rectDimension = this.getRect(this);
 			var hit: Sprite = new Sprite();
 			hit.graphics.beginFill(0xffffff, 0);
-			hit.graphics.drawRect(- [this.moveXYArrow, 0][this.isMoveXOrY], - [0, this.moveXYArrow][this.isMoveXOrY], this.posXYInitArrow + this.arrow.width + [this.moveXYArrow * 2, 0][this.isMoveXOrY], this.posXYInitArrow + this.arrow.height + [0, this.moveXYArrow * 2][this.isMoveXOrY]);
+			hit.graphics.drawRect(rectDimension.x - [this.moveXYArrow, 0][this.isMoveXOrY], rectDimension.y - [0, this.moveXYArrow][this.isMoveXOrY], this.arrow.width + [this.moveXYArrow * 2, 0][this.isMoveXOrY], this.arrow.height + [0, this.moveXYArrow * 2][this.isMoveXOrY]);
 			hit.graphics.endFill();
 			return hit;
 		}
