@@ -1,5 +1,4 @@
 ﻿package tl.types {
-	import flash.display.GraphicsStroke;
 	import tl.types.Singleton;
 	import flash.utils.Dictionary;
 	import com.greensock.plugins.TweenPlugin;
@@ -23,7 +22,10 @@
 	import flash.display.Shape;
 	import flash.display.IGraphicsData;
 	import flash.display.GraphicsSolidFill;
+	import flash.display.GraphicsStroke;
 	import flash.display.Bitmap;
+	import flash.media.Sound;
+	import flash.display.BitmapData;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -255,6 +257,23 @@
 				else if (child is DisplayObjectContainer) childFound = DspObjUtils.lookForChild(DisplayObjectContainer(child), classChildToFind, nameChildToFind);
 			}
 			return childFound;
+		}
+		
+		static public function getDspObjFromNameClass(nameClassDspObj: String): DisplayObject {
+			var classDspObj: Class = getDefinitionByName(nameClassDspObj) as Class;
+			var dspObj: *;
+			try {
+				dspObj = new classDspObj();
+				if (!((dspObj is MovieClip) || (dspObj is Sound)))
+					dspObj = null;
+			} catch (e: Error) {}
+			if (!dspObj) {
+				try {
+					var bmpDataDspObj: BitmapData = new classDspObj(0, 0);
+					if (bmpDataDspObj) dspObj  = new Bitmap(bmpDataDspObj, "auto", true);
+				} catch (e: Error) {}	
+			}
+			return dspObj;
 		}
 		
 	}
