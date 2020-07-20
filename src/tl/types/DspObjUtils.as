@@ -146,10 +146,12 @@
 					if (childClone) Sprite(dspObjectClone).addChild(childClone);
 				}
 			}
-			DspObjUtils.cloneDspObjProps(dspObjectClone, dspObject, false);
-			dspObjectClone.visible = dspObject.visible;
-			if (alphaToSet == 1) dspObjectClone.alpha = dspObject.alpha;
-			dspObjectClone.blendMode = dspObject.blendMode;
+			if (dspObjectClone) {
+				DspObjUtils.cloneDspObjProps(dspObjectClone, dspObject, false);
+				dspObjectClone.visible = dspObject.visible;
+				if (alphaToSet == 1) dspObjectClone.alpha = dspObject.alpha;
+				dspObjectClone.blendMode = dspObject.blendMode;
+			}
 			return dspObjectClone;
 		}
 		
