@@ -26,6 +26,7 @@
 	import flash.display.Bitmap;
 	import flash.media.Sound;
 	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -276,6 +277,12 @@
 				} catch (e: Error) {}	
 			}
 			return dspObj;
+		}
+		
+		static public function adjustDspObjCoordsByItsRect(dspObj: DisplayObject): void {
+			var rectDspObj: Rectangle = dspObj.getRect(dspObj);
+			dspObj.x -= (rectDspObj.x * dspObj.scaleX);
+			dspObj.y -= (rectDspObj.y * dspObj.scaleY);
 		}
 		
 	}
