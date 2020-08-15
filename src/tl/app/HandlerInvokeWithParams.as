@@ -7,6 +7,7 @@ package tl.app {
 	import flash.events.InvokeEvent;
 	//import flash.display.NativeWindowDisplayState;
 	//import flash.utils.setTimeout;	
+	import tl.vspm.StateModel;
 	
 	public class HandlerInvokeWithParams extends Singleton {
 		
@@ -61,7 +62,10 @@ package tl.app {
 			//HandlerInvokeWithParams.stage.nativeWindow.maximize();
 			if (e.arguments && e.arguments.length) {
 				var urlWithParams: String = e.arguments[0];
-			//	urlWithParams = "aa://page=34&search=ssaddsa"
+				//urlWithParams = "aa://page=34&search=ssaddsa"
+				urlWithParams = urlWithParams.replace(/^['"]*|\/*['"]*$/g, ""); //removing start/end quotes and last slash
+				var indexOfSeparator: int = urlWithParams.indexOf(":");
+				if (indexOfSeparator > -1) StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams.substring(indexOfSeparator + 3));
 				HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
 					return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
 				}, HandlerInvokeWithParams);
