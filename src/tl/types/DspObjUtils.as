@@ -1,5 +1,4 @@
 ﻿package tl.types {
-	import flash.display.GraphicsStroke;
 	import tl.types.Singleton;
 	import flash.utils.Dictionary;
 	import com.greensock.plugins.TweenPlugin;
@@ -23,7 +22,11 @@
 	import flash.display.Shape;
 	import flash.display.IGraphicsData;
 	import flash.display.GraphicsSolidFill;
+	import flash.display.GraphicsStroke;
 	import flash.display.Bitmap;
+	import flash.media.Sound;
+	import flash.display.BitmapData;
+	import flash.geom.Rectangle;
 	
 	public class DspObjUtils extends Singleton {
 	
@@ -144,10 +147,12 @@
 					if (childClone) Sprite(dspObjectClone).addChild(childClone);
 				}
 			}
-			DspObjUtils.cloneDspObjProps(dspObjectClone, dspObject, false);
-			dspObjectClone.visible = dspObject.visible;
-			if (alphaToSet == 1) dspObjectClone.alpha = dspObject.alpha;
-			dspObjectClone.blendMode = dspObject.blendMode;
+			if (dspObjectClone) {
+				DspObjUtils.cloneDspObjProps(dspObjectClone, dspObject, false);
+				dspObjectClone.visible = dspObject.visible;
+				if (alphaToSet == 1) dspObjectClone.alpha = dspObject.alpha;
+				dspObjectClone.blendMode = dspObject.blendMode;
+			}
 			return dspObjectClone;
 		}
 		
@@ -255,6 +260,29 @@
 				else if (child is DisplayObjectContainer) childFound = DspObjUtils.lookForChild(DisplayObjectContainer(child), classChildToFind, nameChildToFind);
 			}
 			return childFound;
+		}
+		
+		static public function getDspObjFromNameClass(nameClassDspObj: String): DisplayObject {
+			var classDspObj: Class = getDefinitionByName(nameClassDspObj) as Class;
+			var dspObj: *;
+			try {
+				dspObj = new classDspObj();
+				if (!((dspObj is MovieClip) || (dspObj is Sound)))
+					dspObj = null;
+			} catch (e: Error) {}
+			if (!dspObj) {
+				try {
+					var bmpDataDspObj: BitmapData = new classDspObj(0, 0);
+					if (bmpDataDspObj) dspObj  = new Bitmap(bmpDataDspObj, "auto", true);
+				} catch (e: Error) {}	
+			}
+			return dspObj;
+		}
+		
+		static public function adjustDspObjCoordsByItsRect(dspObj: DisplayObject): void {
+			var rectDspObj: Rectangle = dspObj.getRect(dspObj);
+			dspObj.x -= (rectDspObj.x * dspObj.scaleX);
+			dspObj.y -= (rectDspObj.y * dspObj.scaleY);
 		}
 		
 	}
