@@ -13,12 +13,14 @@ package tl.app {
 		static private var arrNameParam: Array;
 		static private var arrValueParam: Array;
 		
-		static public function init(stage: Stage, functionHandleParams: Function, arrNameParam: Array): void {
+		static public function init(stage: Stage, functionHandleParams: Function = null, arrNameParam: Array = null): void {
 			HandlerInvokeWithParams.isAppReady = false;
 			HandlerInvokeWithParams.stage = stage;
 			HandlerInvokeWithParams.functionHandleParams = functionHandleParams;
-			HandlerInvokeWithParams.arrNameParam = arrNameParam;
-			HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length)
+			if (arrNameParam) {
+				HandlerInvokeWithParams.arrNameParam = arrNameParam;
+				HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length)
+			}
 			HandlerInvokeWithParams.addInvokeEvents();
 		}
 		
@@ -39,9 +41,10 @@ package tl.app {
 				urlWithParams = urlWithParams.replace(/^['"]*|\/*['"]*$/g, ""); //removing start/end quotes and last slash
 				var indexOfSeparator: int = urlWithParams.indexOf(":");
 				if (indexOfSeparator > -1) StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams.substring(indexOfSeparator + 3));
-				HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
-					return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
-				}, HandlerInvokeWithParams);
+				if (HandlerInvokeWithParams.arrNameParam) 
+					HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
+						return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
+					}, HandlerInvokeWithParams);
 				if (HandlerInvokeWithParams.isAppReady) HandlerInvokeWithParams.callFunctionHandleParams();
 			}
 		}
@@ -55,7 +58,7 @@ package tl.app {
 		}
 		
 		static private function callFunctionHandleParams(): void {
-			HandlerInvokeWithParams.functionHandleParams.apply(null, HandlerInvokeWithParams.arrValueParam);
+			if (HandlerInvokeWithParams.functionHandleParams != null) HandlerInvokeWithParams.functionHandleParams.apply(null, HandlerInvokeWithParams.arrValueParam);
 		}
 		
 		static public function setAppReadyAndCallFunctionHandleParams(): void {
