@@ -12,8 +12,9 @@ package tl.app {
 		static private var functionHandleParams: Function;
 		static private var arrNameParam: Array;
 		static private var arrValueParam: Array;
+		static private var isMaximizeOnInvoke: Boolean;
 		
-		static public function init(stage: Stage, functionHandleParams: Function = null, arrNameParam: Array = null): void {
+		static public function init(stage: Stage, functionHandleParams: Function = null, arrNameParam: Array = null, isMaximizeOnInvoke: Boolean = false): void {
 			HandlerInvokeWithParams.isAppReady = false;
 			HandlerInvokeWithParams.stage = stage;
 			HandlerInvokeWithParams.functionHandleParams = functionHandleParams;
@@ -21,6 +22,7 @@ package tl.app {
 				HandlerInvokeWithParams.arrNameParam = arrNameParam;
 				HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length)
 			}
+			HandlerInvokeWithParams.isMaximizeOnInvoke = isMaximizeOnInvoke;
 			HandlerInvokeWithParams.addInvokeEvents();
 		}
 		
@@ -34,7 +36,7 @@ package tl.app {
 			HandlerInvokeWithParams.stage.nativeWindow.activate();
 			NativeApplication.nativeApplication.activate(HandlerInvokeWithParams.stage.nativeWindow);
 			HandlerInvokeWithParams.stage.focus = HandlerInvokeWithParams.stage;
-			HandlerInvokeWithParams.stage.nativeWindow.maximize();
+			if (HandlerInvokeWithParams.isMaximizeOnInvoke) HandlerInvokeWithParams.stage.nativeWindow.maximize();
 			if (e.arguments && e.arguments.length) {
 				var urlWithParams: String = e.arguments[0];
 				//urlWithParams = "aa://page=34&search=ssaddsa"
