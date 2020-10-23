@@ -314,7 +314,7 @@ package tl.gallery {
 		} 
 		
 		public function set time(value: Number): void {
-			this._time = MathExt.moduloPositive(value, this.timeTotal) + 0.000001;
+			this._time = MathExt.moduloPositive(value, this.timeTotal);
 			var numItemFirst: Number = Math.floor(this._time / this.timeOne);
 			var itemInField: ItemGallery;
 			var i: uint;

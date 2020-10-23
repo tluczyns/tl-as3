@@ -70,10 +70,10 @@ package tl.math {
 			return Math.min(diff, range - diff);
 		}
 		
-		//2 minDiffWithSign 7 w range 8 = -3, 0 minDiffWithSign 1.25 w range 1.5 = 0.25
+		//2 minDiffWithSign 7 w range 8 = -3, 0 minDiffWithSign 1.25 w range 1.5 = -0.25
 		static public function minDiffWithSign(val1: Number, val2: Number, range: Number): Number {
 			var diff:Number = (val1 - val2) % range;
-			if (diff != diff % (range / 2))
+			if (Math.abs(diff) > range / 2)
 				diff = ((diff < 0) ? diff + range : diff - range) % range;
 			return diff;
 		}
