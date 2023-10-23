@@ -9,20 +9,24 @@ package tl.app {
 		
 		static private var isAppReady: Boolean;
 		static private var stage: Stage;
-		static private var functionHandleParams: Function;
+		static private var functionHandle: Function;
 		static private var arrNameParam: Array;
 		static private var arrValueParam: Array;
 		static private var isMaximizeOnInvoke: Boolean;
+		static private var isForVSPM: Boolean;
+		static private var indSection: String;
 		
-		static public function init(stage: Stage, functionHandleParams: Function = null, arrNameParam: Array = null, isMaximizeOnInvoke: Boolean = false): void {
+		static public function init(stage: Stage, functionHandle: Function = null, arrNameParam: Array = null, isMaximizeOnInvoke: Boolean = false, isForVSPM: Boolean = false): void {
 			HandlerInvokeWithParams.isAppReady = false;
 			HandlerInvokeWithParams.stage = stage;
-			HandlerInvokeWithParams.functionHandleParams = functionHandleParams;
+			HandlerInvokeWithParams.functionHandle = functionHandle;
+			arrNameParam = arrNameParam || [];
 			if (arrNameParam) {
 				HandlerInvokeWithParams.arrNameParam = arrNameParam;
 				HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length)
 			}
 			HandlerInvokeWithParams.isMaximizeOnInvoke = isMaximizeOnInvoke;
+			HandlerInvokeWithParams.isForVSPM = isForVSPM;
 			HandlerInvokeWithParams.addInvokeEvents();
 		}
 		
@@ -42,12 +46,16 @@ package tl.app {
 				//urlWithParams = "aa://page=34&search=ssaddsa"
 				urlWithParams = urlWithParams.replace(/^['"]*|\/*['"]*$/g, ""); //removing start/end quotes and last slash
 				var indexOfSeparator: int = urlWithParams.indexOf(":");
-				if (indexOfSeparator > -1) StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams.substring(indexOfSeparator + 3));
-				if (HandlerInvokeWithParams.arrNameParam) 
-					HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
-						return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
-					}, HandlerInvokeWithParams);
-				if (HandlerInvokeWithParams.isAppReady) HandlerInvokeWithParams.callFunctionHandleParams();
+				if (indexOfSeparator > -1) {
+					urlWithParams = urlWithParams.substring(indexOfSeparator + 3);
+					StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams);
+					if (HandlerInvokeWithParams.arrNameParam) 
+						HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
+							return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
+						}, HandlerInvokeWithParams);
+					if (HandlerInvokeWithParams.isForVSPM) HandlerInvokeWithParams.indSection = urlWithParams;
+					if (HandlerInvokeWithParams.isAppReady) HandlerInvokeWithParams.callFunctionHandle();
+				}
 			}
 		}
 		
@@ -59,13 +67,22 @@ package tl.app {
 			return valueParam;
 		}
 		
-		static private function callFunctionHandleParams(): void {
-			if (HandlerInvokeWithParams.functionHandleParams != null) HandlerInvokeWithParams.functionHandleParams.apply(null, HandlerInvokeWithParams.arrValueParam);
+		static private function callFunctionHandle(): void {
+			if (HandlerInvokeWithParams.functionHandle != null) {
+				var arrValueParam: Array
+				if (HandlerInvokeWithParams.isForVSPM) {
+					arrValueParam = HandlerInvokeWithParams.arrValueParam.concat();
+					arrValueParam.unshift(HandlerInvokeWithParams.indSection);
+				} else {
+					arrValueParam = HandlerInvokeWithParams.arrValueParam;
+				}
+				HandlerInvokeWithParams.functionHandle.apply(null, arrValueParam);
+			}
 		}
 		
-		static public function setAppReadyAndCallFunctionHandleParams(): void {
+		static public function setAppReadyAndCallFunctionHandle(): void {
 			HandlerInvokeWithParams.isAppReady = true;
-			HandlerInvokeWithParams.callFunctionHandleParams();
+			HandlerInvokeWithParams.callFunctionHandle();
 		}
 		
 	}
