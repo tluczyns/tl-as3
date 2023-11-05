@@ -1,9 +1,11 @@
 package tl.app {
 	import tl.types.Singleton;
 	import flash.display.Stage;
+	import com.childoftv.websockets.WebSocketServer;
 	import flash.desktop.NativeApplication;
 	import flash.events.InvokeEvent;
 	import tl.vspm.StateModel;
+	import com.childoftv.websockets.events.ClientEvent;
 	
 	public class HandlerInvokeWithParams extends Singleton {
 		
@@ -13,6 +15,7 @@ package tl.app {
 		static private var arrNameParam: Array;
 		static private var arrValueParam: Array;
 		static private var isMaximizeOnInvoke: Boolean;
+		static private var webSocketServer: WebSocketServer;
 		static private var isForVSPM: Boolean;
 		static private var indSection: String;
 		
@@ -20,11 +23,8 @@ package tl.app {
 			HandlerInvokeWithParams.isAppReady = false;
 			HandlerInvokeWithParams.stage = stage;
 			HandlerInvokeWithParams.functionHandle = functionHandle;
-			arrNameParam = arrNameParam || [];
-			if (arrNameParam) {
-				HandlerInvokeWithParams.arrNameParam = arrNameParam;
-				HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length)
-			}
+			HandlerInvokeWithParams.arrNameParam = arrNameParam || [];
+			HandlerInvokeWithParams.arrValueParam = new Array(HandlerInvokeWithParams.arrNameParam.length);
 			HandlerInvokeWithParams.isMaximizeOnInvoke = isMaximizeOnInvoke;
 			HandlerInvokeWithParams.isForVSPM = isForVSPM;
 			HandlerInvokeWithParams.addInvokeEvents();
@@ -49,10 +49,11 @@ package tl.app {
 				if (indexOfSeparator > -1) {
 					urlWithParams = urlWithParams.substring(indexOfSeparator + 3);
 					StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams);
-					if (HandlerInvokeWithParams.arrNameParam) 
-						HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
-							return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
-						}, HandlerInvokeWithParams);
+					HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
+						return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
+					}, HandlerInvokeWithParams);
+					var portSocketServer: uint = uint(HandlerInvokeWithParams.getValueParam(urlWithParams, "portSocketServer"));
+					if (portSocketServer) HandlerInvokeWithParams.createSocketServer(portSocketServer);
 					if (HandlerInvokeWithParams.isForVSPM) HandlerInvokeWithParams.indSection = urlWithParams;
 					if (HandlerInvokeWithParams.isAppReady) HandlerInvokeWithParams.callFunctionHandle();
 				}
@@ -65,6 +66,19 @@ package tl.app {
 			var valueParam: String;
 			if ((matchValueParam) && (matchValueParam.length >= 2)) valueParam = matchValueParam[1];
 			return valueParam;
+		}
+		
+		static private function createSocketServer(portSocketServer: uint): void {
+			if (!HandlerInvokeWithParams.webSocketServer) {
+				HandlerInvokeWithParams.webSocketServer = new WebSocketServer();
+				HandlerInvokeWithParams.webSocketServer.addEventListener(ClientEvent.CLIENT_MESSAGE_EVENT, HandlerInvokeWithParams.onWebSocketServerClientMessage);
+				HandlerInvokeWithParams.webSocketServer.attemptBind(portSocketServer, "127.0.0.1");
+			}
+		}
+		
+		static public function onWebSocketServerClientMessage(e: ClientEvent): void {
+			var location: String = HandlerInvokeWithParams.webSocketServer.getClientKeyBySocket(e.socket);
+			trace("Client message from ", location, e.msg);
 		}
 		
 		static private function callFunctionHandle(): void {
