@@ -12,7 +12,7 @@ package tl.gallery {
 		}
 		
 		override protected function get lengthArrItemInField(): Number {
-			return (this.countFieldsForItems == 1) ? 1 : this.countFieldsForItems + 1;
+			return (this.arrData.length == 1) ? 1 : this.countFieldsForItems + 1;
 		}
 		
 		override protected function initItem(item: ItemGallery): void {

@@ -42,7 +42,7 @@ package tl.gallery {
 				this.createItems();
 				this.numFieldForItemSelected = (numFieldForItemSelected == -1) ? Math.ceil((this.lengthArrItemInField - 1) / 2) - 1 : numFieldForItemSelected;
 				this.numFirstItemSelected = numFirstItemSelected;
-				this.timeOne = 1 / ((this.lengthArrItemInField == 1) ? 2 : this.lengthArrItemInField);//this.lengthArrItemInField - 1//this.arrItemInField.length;
+				this.timeOne = 1 / ((this.arrData.length == 1) ? 2 : this.lengthArrItemInField);//this.lengthArrItemInField - 1//this.arrItemInField.length;
 				this.timeTotal = this.timeOne * this.arrItem.length;
 				this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
 			}// else throw new Error("no or empty data");
