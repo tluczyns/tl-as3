@@ -73,14 +73,14 @@ package tl.loader {
 		}
 		
 		protected function get isTweenShow(): Boolean {
-			return false;
+			return true;
 		}
 		
 		protected function showSwf(): void {
 			this.initSwfVariables();
 			this.addChild(this.swf);
-			this.swf.alpha = 1 - uint(this.isTweenShow);
-			if (!isTweenShow) TweenNano.from(this.swf.content, LoaderSwfOne.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
+			this.swf.alpha = 1;
+			if (this.isTweenShow) TweenNano.from(this.swf.content, LoaderSwfOne.TIME_SHOW_SWF, {alpha: 0, ease: Linear.easeNone, onComplete: this.initSwf});
 			//if (!isTweenShow) Tweener.addTween(this.swf.content, {time: LoaderSwfOne.TIME_HIDE_SHOW, alpha: 1, transition: "linear", onComplete: this.initSwf})
 			else this.initSwf();
 		}
