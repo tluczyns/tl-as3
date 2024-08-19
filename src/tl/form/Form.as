@@ -34,10 +34,15 @@ package tl.form {
 		protected var dictTFToTFMessageForTF: Dictionary;
 		private var tFormatMessageForTF: TextFormat;
 		private var so: ISharedObject;
+		private var isFieldPasswordPresent: Boolean;
+		private var dictTFToIsPassword: Dictionary;
 		protected var dictTFToStrInit: Dictionary;
 		private var dictTFToIsNoData: Dictionary;
 		protected var arrTF: Array;
 		protected var tfMessage: TFMessageForm;
+		protected var btnShowHidePassword: IBtnShowHidePassword;
+		private var _isPasswordHiddenVisible: int = -1;
+		private var tfPasswordWithFocus: TextField;
 		public var isSubmitting: Boolean;
 		public var btnSubmit: BtnHit;
 		private var injectorBtnSubmitClickedOnKeyEnter: InjectorBtnHitClickedOnKeyEnter;
@@ -52,6 +57,7 @@ package tl.form {
 			this.initMessageTFForTFs(tFormatMessageForTF);
 			this.createSO(nameSO);
 			this.initTFs();
+			this.createBtnShowHidePassword();
 			this.isSubmitting = false;
 			this.createBtnSubmit();
 			this.addEventListener(Event.ADDED_TO_STAGE, this.onAddedToStage);
@@ -72,7 +78,7 @@ package tl.form {
 		}
 		
 		protected function initMessageTFForTFs(tFormatMessageForTF: TextFormat): void {
-			this.dictTFToTFMessageForTF = new Dictionary();	
+			this.dictTFToTFMessageForTF = new Dictionary();
 			this.tFormatMessageForTF = tFormatMessageForTF;
 		}
 		
@@ -97,13 +103,17 @@ package tl.form {
 		
 		protected function initTFs(): void {
 			this.arrTF = new Array();
+			this.isFieldPasswordPresent = false;
+			this.dictTFToIsPassword = new Dictionary();
 			this.dictTFToStrInit = new Dictionary();
 			this.dictTFToIsNoData = new Dictionary();
 		}
 		
-		protected function initTF(tf: TextField, strInitTF: String): void {
+		protected function initTF(tf: TextField, strInitTF: String, isPassword: Boolean = false): void {
 			tf.tabIndex = this.arrTF.length;
 			tf.focusRect = false;
+			if (isPassword) this.isFieldPasswordPresent = true;
+			this.dictTFToIsPassword[tf] = isPassword;
 			this.addStrInitForTF(tf, strInitTF);
 			this.addListenersForTF(tf);
 			this.arrTF.push(tf);
@@ -131,11 +141,16 @@ package tl.form {
 		protected function onTFFocusIn(e: FocusEvent): void {
 			var tf: TextField  = TextField(e.target);
 			if (tf.text == this.dictTFToStrInit[tf]) tf.text = "";
+			if (this.dictTFToIsPassword[tf]) {
+				this.checkAndSetTFToDisplayAsPassword(tf);
+				this.tfPasswordWithFocus = tf;
+			}
 		}
 		
 		protected function onTFFocusOut(e: FocusEvent): void {
 			var tf: TextField  = TextField(e.target);
 			if (tf.text == "") tf.text = this.dictTFToStrInit[tf];
+			if (this.dictTFToIsPassword[tf]) this.checkAndSetTFToDisplayAsPassword(tf);
 			this.checkAndHideShowBadTFMessage(tf);
 		}
 		
@@ -183,10 +198,58 @@ package tl.form {
 		}
 		
 		private function deleteTFMessage(): void {
-			this.removeChild(this.tfMessage);
-			this.tfMessage.destroy();
-			this.tfMessage = null;
-			
+			if (this.tfMessage) {
+				this.removeChild(this.tfMessage);
+				this.tfMessage.destroy();
+				this.tfMessage = null;
+			}
+		}
+		
+		//btn showHidePassword
+		
+		protected function get classBtnShowHidePassword(): Class {
+			return BtnHit;
+		}
+		
+		protected function createBtnShowHidePassword(): void {
+			if (this.isFieldPasswordPresent) {
+				this.btnShowHidePassword = new this.classBtnShowHidePassword();
+				this.addChild(DisplayObject(this.btnShowHidePassword));
+				this.btnShowHidePassword.addEventListener(EventBtnHit.CLICKED, this.onBtnShowHidePasswordClicked);
+				this.isPasswordHiddenVisible = 0;
+			}
+		}
+		
+		protected function deleteBtnShowHidePassword(): void {
+			if (this.btnShowHidePassword) {
+				this.btnShowHidePassword.removeEventListener(EventBtnHit.CLICKED, this.onBtnShowHidePasswordClicked);
+				this.btnShowHidePassword.destroy();
+				if (this.contains(DisplayObject(this.btnShowHidePassword))) this.removeChild(DisplayObject(this.btnShowHidePassword));
+				this.btnShowHidePassword = null;
+			}
+		}
+		
+		private function onBtnShowHidePasswordClicked(e: EventBtnHit): void {
+			this.isPasswordHiddenVisible = 1 - this.isPasswordHiddenVisible;
+			if (this.tfPasswordWithFocus) {
+				this.stage.focus = this.tfPasswordWithFocus;
+				this.tfPasswordWithFocus.text = this.tfPasswordWithFocus.text; //force rerendering for problem with position of cursor at end of tf
+			}
+		}
+		
+		private function get isPasswordHiddenVisible(): uint {
+			return this._isPasswordHiddenVisible;
+		}
+		
+		private function set isPasswordHiddenVisible(value: uint): void {
+			this._isPasswordHiddenVisible = value;
+			this.btnShowHidePassword.changeIndicator(value);
+			for (var tf: * in this.dictTFToIsPassword)
+				if (this.dictTFToIsPassword[tf]) this.checkAndSetTFToDisplayAsPassword(tf) 
+		}
+		
+		private function checkAndSetTFToDisplayAsPassword(tf: TextField): void {
+			tf.displayAsPassword = ((tf.text != this.dictTFToStrInit[tf]) && (this.isPasswordHiddenVisible == 0));
 		}
 		
 		//btn submit
@@ -208,6 +271,7 @@ package tl.form {
 				this.injectorBtnSubmitClickedOnKeyEnter = null;
 				Key.destroy();
 			}
+			this.btnSubmit.removeEventListener(EventBtnHit.CLICKED, this.onBtnSubmitClicked);
 			this.btnSubmit.destroy();
 			this.removeChild(DisplayObject(this.btnSubmit));
 			this.btnSubmit = null;
@@ -371,9 +435,10 @@ package tl.form {
 			this.blockUnblock(0);
 			if (this.idCallSubmitForm != -1) this.descriptionCall.serviceAmf.abort(this.idCallSubmitForm);
 			else if (this.descriptionCall.isUrlLoaderOrServiceAmfOrExternalInterfaceOrCustomMethod == 2) ExternalInterfaceExt.removeCallback("onExternalInterfaceResult");
-			if (this.tfMessage) this.deleteTFMessage();
-			if (this.btnSubmit) this.deleteBtnSubmit();
+			this.deleteTFMessage();
+			this.deleteBtnSubmit();
 			this.deleteSO();
+			this.deleteBtnShowHidePassword();
 		}
 		
 	}
