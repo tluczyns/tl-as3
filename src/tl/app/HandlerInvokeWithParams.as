@@ -4,7 +4,7 @@ package tl.app {
 	import com.childoftv.websockets.WebSocketServer;
 	import flash.desktop.NativeApplication;
 	import flash.events.InvokeEvent;
-	import tl.vspm.StateModel;
+	import tl.vspm.Metrics;
 	import com.childoftv.websockets.events.ClientEvent;
 	
 	public class HandlerInvokeWithParams extends Singleton {
@@ -48,7 +48,7 @@ package tl.app {
 				var indexOfSeparator: int = urlWithParams.indexOf(":");
 				if (indexOfSeparator > -1) {
 					urlWithParams = urlWithParams.substring(indexOfSeparator + 3);
-					StateModel.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams);
+					Metrics.trackEvent("invokeApp", urlWithParams.substring(0, indexOfSeparator), urlWithParams);
 					HandlerInvokeWithParams.arrValueParam = HandlerInvokeWithParams.arrNameParam.map(function(nameParam: String, index: int, array: Array): String {
 						return HandlerInvokeWithParams.getValueParam(urlWithParams, nameParam);
 					}, HandlerInvokeWithParams);
